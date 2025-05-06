@@ -1,26 +1,242 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --primary-color: #5A31F4;
+  --primary: #5A31F4;
+  --primary-dark: #4921D8;
+  --background-color: #F1F3FA;
+  --background: #F1F3FA;
+  --light: #F1F3FA;
+  --text-color: #2C2E3A;
+  --text: #2C2E3A;
+  --dark: #2C2E3A;
+  --accent-1: #FF8661;
+  --accent1: #FF8661;
+  --accent: #FF8661;
+  --accent-2: #FFC145;
+  --accent2: #FFC145;
+  --supporting-color: #3DA1C4;
+  --supporting: #3DA1C4;
+  --contrast-button: #F4A261;
+  --contrast: #F4A261;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+/* Define explicit class for text-white since it's not being recognized */
+.text-white {
+  color: #FFFFFF !important;
+}
+
+/* Modern gradient animations */
+.gradient-bg {
+  background: linear-gradient(-45deg, var(--primary), var(--accent), var(--contrast), var(--supporting));
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Animated underline effect */
+.hover-underline {
+  position: relative;
+  text-decoration: none;
+}
+
+.hover-underline::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.hover-underline:hover::after {
+  width: 100%;
+}
+
+/* 3D Card effect */
+.card-3d {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.card-3d:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Shining button effect */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  transform: rotate(30deg);
+  transition: transform 0.5s ease;
+}
+
+.btn-shine:hover::before {
+  transform: rotate(30deg) translate(50%, 50%);
+}
+
+/* Custom button classes */
+.btn-primary {
+  background-color: var(--primary);
+  color: #FFFFFF;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: var(--primary-dark);
+  transition: all 0.3s ease;
+  z-index: -1;
+}
+
+.btn-primary:hover::before {
+  width: 100%;
+}
+
+.btn-contrast {
+  background-color: var(--contrast);
+  color: #FFFFFF;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-contrast::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: #E08C56;
+  transition: all 0.3s ease;
+  z-index: -1;
+}
+
+.btn-contrast:hover::before {
+  width: 100%;
+}
+
+/* Card component */
+.card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Input component */
+.input-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(90, 49, 244, 0.2);
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(90, 49, 244, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(90, 49, 244, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(90, 49, 244, 0);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity;
+  }
+  
+  .btn-contrast {
+    @apply bg-contrast text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity;
+  }
+
+  .card {
+    @apply bg-white p-6 rounded-xl shadow-md;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+  }
 }

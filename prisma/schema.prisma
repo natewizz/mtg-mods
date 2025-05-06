@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  username      String?         @unique
+  email         String?         @unique
+  emailVerified DateTime?
+  image         String?
+  favoriteDeck  String?
+  bio           String?         @db.Text
+  accounts      Account[]
+  bookmarks     Bookmark[]
+  recipes       Recipe[]
+  sessions      Session[]
+  tried         Tried[]
+  credentials   UserCredential?
+  votes         Vote[]
+}
+
+model UserCredential {
+  id             String @id @default(cuid())
+  userId         String @unique
+  hashedPassword String
+  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId], map: "Account_userId_fkey")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Session_userId_fkey")
+}
+
+model Recipe {
+  id           String      @id @default(cuid())
+  title        String
+  description  String      @db.Text
+  instructions String      @db.Text
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  authorId     String
+  bookmarks    Bookmark[]
+  author       User        @relation(fields: [authorId], references: [id])
+  tags         RecipeTag[]
+  tried        Tried[]
+  votes        Vote[]
+
+  @@index([authorId], map: "Recipe_authorId_fkey")
+}
+
+model Tag {
+  id        String      @id @default(cuid())
+  name      String      @unique
+  createdAt DateTime    @default(now())
+  recipes   RecipeTag[]
+}
+
+model RecipeTag {
+  id       String  @id @default(cuid())
+  name     String
+  recipeId String
+  tagId    String?
+  recipe   Recipe  @relation(fields: [recipeId], references: [id])
+  Tag      Tag?    @relation(fields: [tagId], references: [id])
+
+  @@unique([name, recipeId])
+  @@index([recipeId], map: "RecipeTag_recipeId_fkey")
+  @@index([tagId], map: "RecipeTag_tagId_fkey")
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  userId    String
+  recipeId  String
+  value     Int
+  createdAt DateTime @default(now())
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, recipeId])
+  @@index([recipeId], map: "Vote_recipeId_fkey")
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  recipeId  String
+  createdAt DateTime @default(now())
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, recipeId])
+  @@index([recipeId], map: "Bookmark_recipeId_fkey")
+}
+
+model Tried {
+  id        String   @id @default(cuid())
+  userId    String
+  recipeId  String
+  createdAt DateTime @default(now())
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, recipeId])
+  @@index([recipeId], map: "Tried_recipeId_fkey")
+}

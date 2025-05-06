@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String     @id @default(cuid())
+  name          String?
+  email         String?    @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  recipes       Recipe[]
+  votes         Vote[]
+  bookmarks     Bookmark[]
+  tried         Tried[]
+}
+
+model Recipe {
+  id           String      @id @default(cuid())
+  name         String
+  description  String
+  instructions String      @db.Text
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  author       User        @relation(fields: [authorId], references: [id])
+  authorId     String
+  votes        Vote[]
+  bookmarks    Bookmark[]
+  tried        Tried[]
+  tags         RecipeTag[]
+}
+
+model Tag {
+  id        String      @id @default(cuid())
+  name      String      @unique
+  recipes   RecipeTag[]
+  createdAt DateTime    @default(now())
+}
+
+model RecipeTag {
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  recipeId  String
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  tagId     String
+  createdAt DateTime @default(now())
+
+  @@id([recipeId, tagId])
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  value     Int // 1 for upvote, -1 for downvote
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  recipeId  String
+
+  @@unique([userId, recipeId])
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  recipeId  String
+
+  @@unique([userId, recipeId])
+}
+
+model Tried {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  recipeId  String
+
+  @@unique([userId, recipeId])
+}

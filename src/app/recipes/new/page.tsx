@@ -1,0 +1,1 @@
+'use client'; export default function NewRecipePage() { return ( <div className="max-w-2xl mx-auto"> <h1 className="text-3xl font-bold text-[var(--dark)] mb-6">Share a New Recipe</h1> <p>Create your recipe form here.</p> </div> ); }
