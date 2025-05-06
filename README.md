@@ -1,4 +1,10 @@
+# MTG Mods
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## About the Project
+
+MTG Mods is a platform for sharing and discovering Magic: The Gathering card modifications and recipes. Connect with other modders, share feedback, and collaborate on projects.
 
 ## Getting Started
 
