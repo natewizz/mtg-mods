@@ -72,7 +72,8 @@ export const authOptions = {
             id: user.id,
             email: user.email,
             name: user.name,
-            image: user.image
+            image: user.image,
+            username: user.username
           };
         } catch (error) {
           console.error("Auth error:", error);
@@ -88,15 +89,66 @@ export const authOptions = {
     signIn: "/auth/signin",
   },
   callbacks: {
+    async signIn({ user }) {
+      // Allow the sign in to succeed
+      return true;
+    },
+    async redirect({ url, baseUrl }) {
+      // If the redirect URL is already set, respect it
+      if (url.startsWith(baseUrl)) {
+        return url;
+      }
+      
+      // Default redirect URL (will be checked in session callback)
+      return baseUrl;
+    },
     async session({ session, token }) {
       // Add the user ID from token to the session
       if (session.user && token.sub) {
         session.user.id = token.sub;
+        
+        // Fetch the username from the database and add it to the session
+        try {
+          const user = await prisma.user.findUnique({
+            where: { id: token.sub },
+            select: { username: true }
+          });
+          
+          if (user) {
+            session.user.username = user.username;
+          }
+        } catch (error) {
+          console.error("Error fetching username for session:", error);
+        }
       }
       return session;
     },
+    async jwt({ token, user }) {
+      // When signing in, add the user's ID to the token
+      if (user) {
+        token.sub = user.id;
+        
+        // Include username if available
+        if ('username' in user) {
+          token.username = user.username;
+        }
+        
+        // Set a flag to check if username should be set up
+        token.needsUsernameSetup = !user.username;
+      }
+      return token;
+    }
   },
   debug: process.env.NODE_ENV === "development",
+  events: {
+    async signIn({ user, isNewUser }) {
+      // Check if user needs to set up username
+      if (!user.username) {
+        // This will be handled by the client-side redirect in SignInForm
+        console.log("User needs to set up username");
+      }
+    }
+  }
 };
 
 // Standard Auth.js setup for App Router
@@ -129,13 +181,28 @@ export async function auth() {
       return null;
     }
     
+    // If we have the user ID, try to fetch the username from the database
+    let username = null;
+    if (decoded.sub) {
+      try {
+        const user = await prisma.user.findUnique({
+          where: { id: decoded.sub },
+          select: { username: true }
+        });
+        username = user?.username;
+      } catch (error) {
+        console.error('Error fetching username:', error);
+      }
+    }
+    
     // Create session object similar to what NextAuth would return
     return {
       user: {
         id: decoded.sub,
         name: decoded.name,
         email: decoded.email,
-        image: decoded.picture
+        image: decoded.picture,
+        username: username || decoded.username || null
       },
       expires: new Date(decoded.exp * 1000).toISOString()
     };

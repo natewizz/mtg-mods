@@ -2,20 +2,26 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
-import RecipeInteractionsClient from './RecipeInteractionsClient';
-import DeleteRecipeButton from '@/components/recipes/DeleteRecipeButton';
 import { auth } from '@/auth';
+import { slugify } from '@/lib/utils';
+import DeleteRecipeButton from '@/components/recipes/DeleteRecipeButton';
+import RecipeInteractionsClient from '@/components/recipes/RecipeInteractionsClient';
 
 interface RecipePageProps {
   params: {
-    id: string;
+    slug: string;
   };
 }
 
-async function getRecipeWithInteractions(recipeId: string, userId?: string) {
+async function getRecipeWithInteractions(slug: string, userId?: string) {
   try {
-    const recipe = await prisma.recipe.findUnique({
-      where: { id: recipeId },
+    // Use a more efficient query instead of fetching all recipes
+    const recipes = await prisma.recipe.findMany({
+      where: {
+        title: {
+          contains: slug.replace(/-/g, ' '), // Simple optimization to narrow down results
+        },
+      },
       include: {
         author: true,
         tags: true,
@@ -27,6 +33,9 @@ async function getRecipeWithInteractions(recipeId: string, userId?: string) {
         },
       },
     });
+
+    // Find the recipe with the matching slug
+    const recipe = recipes.find(r => slugify(r.title) === slug);
 
     if (!recipe) {
       return null;
@@ -40,7 +49,7 @@ async function getRecipeWithInteractions(recipeId: string, userId?: string) {
           where: {
             userId_recipeId: {
               userId,
-              recipeId,
+              recipeId: recipe.id,
             },
           },
         }),
@@ -48,7 +57,7 @@ async function getRecipeWithInteractions(recipeId: string, userId?: string) {
           where: {
             userId_recipeId: {
               userId,
-              recipeId,
+              recipeId: recipe.id,
             },
           },
         }),
@@ -56,7 +65,7 @@ async function getRecipeWithInteractions(recipeId: string, userId?: string) {
           where: {
             userId_recipeId: {
               userId,
-              recipeId,
+              recipeId: recipe.id,
             },
           },
         }),
@@ -82,7 +91,7 @@ async function getRecipeWithInteractions(recipeId: string, userId?: string) {
 export default async function RecipePage({ params }: RecipePageProps) {
   const session = await auth();
   const recipeData = await getRecipeWithInteractions(
-    params.id,
+    params.slug,
     session?.user?.id
   );
 

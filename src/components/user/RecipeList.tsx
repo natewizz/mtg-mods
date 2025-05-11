@@ -2,6 +2,7 @@
 
 import { Recipe } from '@prisma/client';
 import Link from 'next/link';
+import { getRecipeUrl } from '@/lib/utils';
 
 // Export this type
 export type RecipeWithStats = Recipe & {
@@ -30,7 +31,7 @@ export default function RecipeList({ recipes, title, emptyMessage }: RecipeListP
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {recipes.map((recipe) => (
-            <Link href={`/recipes/${recipe.id}`} key={recipe.id}>
+            <Link href={getRecipeUrl(recipe.title)} key={recipe.id}>
               <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="p-4">
                   <h3 className="font-bold text-[#2C2E3A] text-lg">{recipe.title}</h3>

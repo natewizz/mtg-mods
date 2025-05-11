@@ -2,6 +2,49 @@
 
 All notable changes to the mtg-mods project will be documented in this file.
 
+## [2024-05-11] - URL Structure and User Experience Improvements
+
+### Added
+- New URL structure for recipes using slugified titles
+  - Created `/recipes/[slug]` routes for improved SEO and readability
+  - Added helper functions for generating consistent URL slugs
+  - Implemented redirect system for backward compatibility
+- New user profile URL structure
+  - Created `/profile/[username]` routes instead of ID-based routes
+  - Added `/profile/me` shortcut that redirects to the current user's profile
+  - Implemented legacy redirects from ID-based URLs to username-based URLs
+- Username selection feature
+  - Created UI for selecting from multiple MTG-themed username options
+  - Added username availability checking
+  - Implemented username generation based on MTG terminology
+
+### Changed
+- Updated username management
+  - Removed restriction on changing usernames
+  - Modified signup process to delay username creation until username setup
+  - Improved username storage with proper usage of transactions
+- Enhanced navigation throughout the application
+  - Updated all profile links to use the new URL structure
+  - Updated recipe links to use the new slug-based URLs
+  - Improved redirection logic for authentication flows
+- API routes now support lookups by both ID and username
+  - Modified user API endpoints to handle username or ID parameters
+  - Ensured proper error handling for non-existent users
+  - Optimized database queries for slug-based routes
+
+### Fixed
+- Fixed URL conflicts with Next.js dynamic routes
+  - Resolved issues with different slug names for the same dynamic path
+  - Created separate route hierarchies for legacy redirects
+- Fixed transaction errors with UsernameChange model
+  - Corrected SQL query issues with the ID field
+  - Implemented proper upsert logic for username changes
+  - Fixed type safety issues with Prisma client
+- Resolved navigation issues after profile updates
+  - Ensured proper redirection after username changes
+  - Fixed state management in profile components
+  - Improved error handling during profile operations
+
 ## [Unreleased]
 
 ### Added

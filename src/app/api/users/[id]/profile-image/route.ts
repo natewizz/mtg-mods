@@ -18,10 +18,26 @@ export async function POST(
     }
     
     // Await the params promise
-    const { id: userId } = await params;
+    const { id: userIdOrUsername } = await params;
+    
+    // Find the user by ID or username
+    let userToUpdate = await prisma.user.findUnique({
+      where: { id: userIdOrUsername },
+    });
+
+    // If not found by ID, try username
+    if (!userToUpdate) {
+      userToUpdate = await prisma.user.findUnique({
+        where: { username: userIdOrUsername },
+      });
+    }
+
+    if (!userToUpdate) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
     
     // User can only update their own profile image
-    if (session.user.id !== userId) {
+    if (session.user.id !== userToUpdate.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
     
@@ -63,7 +79,7 @@ export async function POST(
     // Update the user's profile with the new image URL
     const imageUrl = `/uploads/profile-images/${fileName}`;
     const updatedUser = await prisma.user.update({
-      where: { id: userId },
+      where: { id: userToUpdate.id },
       data: { image: imageUrl },
       select: {
         id: true,

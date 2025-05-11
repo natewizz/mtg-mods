@@ -43,9 +43,19 @@ function SignInForm() {
         return;
       }
 
-      // Redirect to home page or requested page
-      const callbackUrl = searchParams.get("callbackUrl") || "/";
-      router.push(callbackUrl);
+      // Check if we need to get the session data first
+      const session = await fetch("/api/auth/session");
+      const sessionData = await session.json();
+      
+      // If user doesn't have a username, redirect to username setup
+      if (!sessionData?.user?.username) {
+        router.push("/auth/setup-username");
+        return;
+      }
+      
+      // Otherwise, redirect to next page if provided in query params, otherwise to home
+      const next = searchParams.get("next") || "/";
+      router.push(next);
     } catch (error) {
       console.error("Login error:", error);
       setError("An unexpected error occurred");
@@ -56,7 +66,11 @@ function SignInForm() {
 
   const handleGoogleSignIn = () => {
     setIsLoading(true);
-    signIn("google", { callbackUrl: searchParams.get("callbackUrl") || "/" });
+    // When using OAuth, we'll rely on the server-side callback to handle redirects
+    // based on username status
+    signIn("google", { 
+      callbackUrl: "/auth/signin-callback" // We'll create this route to handle conditionally redirecting
+    });
   };
 
   return (
@@ -112,6 +126,11 @@ function SignInForm() {
             {errors.password && (
               <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
             )}
+            <div className="mt-1 text-right">
+              <Link href="/auth/forgot-password" className="text-sm text-[#5A31F4] hover:underline">
+                Forgot Password?
+              </Link>
+            </div>
           </div>
 
           <button

@@ -57,18 +57,16 @@ export async function POST(req: NextRequest) {
     
     // Create user with credentials in a transaction
     try {
-      // Generate a random username based on the email
-      const username = `user_${Math.random().toString(36).substring(2, 10)}`;
-      
+      // Do not create a username - leave it null until setup
       const user = await prisma.$transaction(async (tx) => {
-        console.log("Creating user with username:", username);
+        console.log("Creating new user without username");
         
         // Create the user
         const newUser = await tx.user.create({
           data: {
             name,
             email,
-            username, // Still need username in the database
+            // Username will be null until setup
           },
         });
         

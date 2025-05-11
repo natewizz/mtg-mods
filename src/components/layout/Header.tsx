@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import { SessionUser } from "@/lib/auth/types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Header() {
   const { data: session, status } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   
   // Safely access user properties with type safety
   const user = session?.user as SessionUser | undefined;
@@ -16,6 +17,13 @@ export default function Header() {
   const userName = user?.name;
   const userImage = user?.image;
   
+  // Update profile image when session changes
+  useEffect(() => {
+    if (userImage) {
+      setProfileImage(userImage);
+    }
+  }, [userImage]);
+
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-6 py-4">
@@ -60,10 +68,10 @@ export default function Header() {
               <div className="flex items-center gap-4">
                 <div className="relative group">
                   <button className="flex items-center gap-2 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                    {userImage ? (
+                    {profileImage ? (
                       <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-primary">
                         <Image 
-                          src={userImage}
+                          src={profileImage}
                           alt={userName || "User"}
                           fill
                           className="object-cover"
@@ -83,7 +91,7 @@ export default function Header() {
                   {/* Dropdown menu */}
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-10 opacity-0 scale-95 origin-top-right group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 ease-in-out">
                     <div className="py-1">
-                      <Link href={`/profile/${userId}`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      <Link href="/profile/me" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         My Profile
                       </Link>
                       <Link href="/recipes/new" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -136,9 +144,25 @@ export default function Header() {
             
             {session ? (
               <>
-                <Link href={`/profile/${userId}`} className="hover:text-primary transition-colors">
-                  My Profile
-                </Link>
+                <div className="flex items-center gap-2 py-2">
+                  {profileImage ? (
+                    <div className="relative w-6 h-6 rounded-full overflow-hidden border border-primary">
+                      <Image 
+                        src={profileImage}
+                        alt={userName || "User"}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs">
+                      {userName?.charAt(0) || "U"}
+                    </div>
+                  )}
+                  <Link href="/profile/me" className="hover:text-primary transition-colors">
+                    My Profile
+                  </Link>
+                </div>
                 <button
                   onClick={() => signOut()}
                   className="text-left text-red-600"

@@ -11,7 +11,7 @@ import { SessionUser } from "@/lib/auth/types";
 
 export default function ProfilePage() {
   const params = useParams();
-  const userId = params.id as string;
+  const username = params.username as string;
   const { data: session } = useSession();
   const [profile, setProfile] = useState<PrismaUser | null>(null);
   const [recipes, setRecipes] = useState<RecipeWithStats[]>([]);
@@ -21,12 +21,12 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (userId) {
+    if (username) {
       const fetchProfile = async () => {
         setLoading(true);
         setError(null);
         try {
-          const response = await fetch(`/api/users/${userId}`);
+          const response = await fetch(`/api/users/${username}`);
           if (!response.ok) {
             throw new Error('Failed to fetch profile');
           }
@@ -44,11 +44,40 @@ export default function ProfilePage() {
       };
       fetchProfile();
     }
-  }, [userId]);
+  }, [username]);
+
+  // Handle profile update
+  const handleProfileUpdate = async (data: Partial<PrismaUser>) => {
+    if (!profile) return Promise.reject(new Error('Profile not loaded'));
+
+    try {
+      const response = await fetch(`/api/users/${profile.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update profile');
+      }
+      
+      const updatedUser = await response.json();
+      setProfile((prevProfile) => prevProfile ? { ...prevProfile, ...updatedUser } : updatedUser);
+      return Promise.resolve();
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      return Promise.reject(err);
+    }
+  };
 
   // Cast to our custom type for type safety
   const user = session?.user as SessionUser | undefined;
-  const isOwnProfile = user?.id === userId;
+  // Check if this is the current user's profile by comparing user IDs
+  const isOwnProfile = user?.id === profile?.id;
 
   if (loading) {
     return (
@@ -71,6 +100,7 @@ export default function ProfilePage() {
       <ProfileCard 
         user={profile}
         isCurrentUser={isOwnProfile}
+        onUpdate={isOwnProfile ? handleProfileUpdate : undefined}
       />
       <ProfileTabs 
         recipes={recipes} 

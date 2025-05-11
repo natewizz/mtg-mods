@@ -57,7 +57,8 @@ export default function SignupPage() {
       }
 
       // Redirect to sign-in page after successful registration
-      router.push("/auth/signin?registered=true");
+      // Include both registered=true and next params
+      router.push("/auth/signin?registered=true&next=/auth/setup-username");
     } catch (error) {
       console.error("Signup error:", error);
       setError(error instanceof Error ? error.message : "An error occurred during signup");

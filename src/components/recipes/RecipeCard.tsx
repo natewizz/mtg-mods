@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Recipe, User, Vote, Tried } from '@prisma/client';
+import { getRecipeUrl } from '@/lib/utils';
 
 type RecipeWithRelations = Recipe & {
   author: User;
@@ -24,8 +25,11 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
   // Count of people who tried the recipe
   const triedCount = recipe._count?.tried || recipe.tried.length;
 
+  // Generate the recipe URL with only the title for SEO
+  const recipeUrl = getRecipeUrl(recipe.title);
+
   return (
-    <Link href={`/recipes/${recipe.id}`}>
+    <Link href={recipeUrl}>
       <div className="card hover:shadow-lg transition-shadow">
         <h2 className="text-xl font-bold mb-2 text-[var(--dark)]">{recipe.title}</h2>
         

@@ -24,6 +24,7 @@ model User {
   tried         Tried[]
   credentials   UserCredential?
   votes         Vote[]
+  usernameChange UsernameChange?
 }
 
 model UserCredential {
@@ -134,4 +135,23 @@ model Tried {
 
   @@unique([userId, recipeId])
   @@index([recipeId], map: "Tried_recipeId_fkey")
+}
+
+model PasswordReset {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+  
+  @@index([email])
+}
+
+model UsernameChange {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  previousValue String?
+  newValue      String
+  changedAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
