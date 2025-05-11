@@ -8,10 +8,12 @@ import { useForm } from "react-hook-form";
 type SignupFormData = {
   name: string;
   email: string;
-  username: string;
   password: string;
-  favoriteDeck: string;
-  bio: string;
+};
+
+type ApiError = {
+  error: string;
+  details?: Record<string, string[]>;
 };
 
 export default function SignupPage() {
@@ -25,6 +27,8 @@ export default function SignupPage() {
     setError(null);
 
     try {
+      console.log("Sending signup data:", { ...data, password: "***" });
+      
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
@@ -33,9 +37,23 @@ export default function SignupPage() {
         body: JSON.stringify(data),
       });
 
+      const responseData = await response.json();
+      
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to create account");
+        console.error("Signup error response:", responseData);
+        
+        // Parse error message from API response
+        const apiError = responseData as ApiError;
+        
+        if (apiError.details) {
+          // Format validation errors if they exist
+          const errorMessages = Object.entries(apiError.details)
+            .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
+            .join("; ");
+          throw new Error(errorMessages || apiError.error || "Failed to create account");
+        } else {
+          throw new Error(apiError.error || "Failed to create account");
+        }
       }
 
       // Redirect to sign-in page after successful registration
@@ -49,35 +67,37 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100">
+      <div className="bg-[#5A31F4] p-4">
+        <h1 className="text-2xl font-bold text-center text-white">Join MTG Mods</h1>
+      </div>
+      
       <div className="p-6">
-        <h1 className="text-2xl font-bold text-center text-[#2C2E3A] mb-6">Create an Account</h1>
-        
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded">
+          <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md">
             {error}
           </div>
         )}
         
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="name" className="block text-sm font-medium text-[#2C2E3A] mb-1">
               Name
             </label>
             <input
               id="name"
               type="text"
               {...register("name", { required: "Name is required" })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5A31F4]"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5A31F4] focus:border-transparent"
               placeholder="Your full name"
             />
             {errors.name && (
-              <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+              <p className="mt-1 text-sm text-[#FF8661]">{errors.name.message}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="email" className="block text-sm font-medium text-[#2C2E3A] mb-1">
               Email
             </label>
             <input
@@ -90,38 +110,16 @@ export default function SignupPage() {
                   message: "Invalid email address"
                 }
               })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5A31F4]"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5A31F4] focus:border-transparent"
               placeholder="your@email.com"
             />
             {errors.email && (
-              <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+              <p className="mt-1 text-sm text-[#FF8661]">{errors.email.message}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-              Username
-            </label>
-            <input
-              id="username"
-              type="text"
-              {...register("username", { 
-                required: "Username is required",
-                minLength: {
-                  value: 3,
-                  message: "Username must be at least 3 characters"
-                }
-              })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5A31F4]"
-              placeholder="Choose a username"
-            />
-            {errors.username && (
-              <p className="mt-1 text-sm text-red-600">{errors.username.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-sm font-medium text-[#2C2E3A] mb-1">
               Password
             </label>
             <input
@@ -134,53 +132,37 @@ export default function SignupPage() {
                   message: "Password must be at least 8 characters"
                 }
               })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5A31F4]"
-              placeholder="Create a password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5A31F4] focus:border-transparent"
+              placeholder="Create a password (8+ characters)"
             />
             {errors.password && (
-              <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+              <p className="mt-1 text-sm text-[#FF8661]">{errors.password.message}</p>
             )}
-          </div>
-
-          <div>
-            <label htmlFor="favoriteDeck" className="block text-sm font-medium text-gray-700 mb-1">
-              Favorite Deck (Optional)
-            </label>
-            <input
-              id="favoriteDeck"
-              type="text"
-              {...register("favoriteDeck")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5A31F4]"
-              placeholder="e.g., Blue/Black Control"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-1">
-              Bio (Optional)
-            </label>
-            <textarea
-              id="bio"
-              {...register("bio")}
-              rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5A31F4]"
-              placeholder="Tell us about yourself..."
-            />
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-2 px-4 bg-[#5A31F4] hover:bg-[#4A21E4] text-white rounded-md transition focus:outline-none focus:ring-2 focus:ring-[#5A31F4] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 px-4 bg-[#5A31F4] hover:bg-[#4A21E4] text-white rounded-md transition-colors duration-200 font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5A31F4] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "Creating Account..." : "Sign Up"}
+            {isSubmitting ? (
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Creating Account...
+              </span>
+            ) : (
+              "Create Account"
+            )}
           </button>
         </form>
 
-        <div className="mt-4 text-center">
-          <p className="text-gray-600">
+        <div className="mt-6 text-center">
+          <p className="text-[#2C2E3A]">
             Already have an account?{" "}
-            <Link href="/auth/signin" className="text-[#5A31F4] hover:underline">
+            <Link href="/auth/signin" className="text-[#5A31F4] hover:underline font-medium">
               Sign In
             </Link>
           </p>

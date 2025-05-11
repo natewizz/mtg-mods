@@ -24,36 +24,62 @@ All notable changes to the mtg-mods project will be documented in this file.
   - Added `/recipes/new` page for creating new recipes
   - Basic recipe listing interface
   - Recipe creation form
+- Recipe detailed features
+  - Added `/recipes/[id]` page for single recipe view
+  - Added `/recipes/[id]/edit` route for editing recipes 
+  - Implemented recipe interactions (upvote, bookmark, tried)
+  - Added RecipeCard component for consistent display
+  - Created DeleteRecipeButton for recipe management
+- API implementation
+  - Added recipe API endpoints for CRUD operations
+  - Added user profile image upload functionality
+  - Implemented recipe interactions API endpoints
+- Middleware implementation for authentication protection
 
 ### Planned
-- Recipe CRUD functionality
-- User profile system
 - Recipe feed and search
-- Interaction features (votes, bookmarks, tried)
+- User profile system enhancement
 - Admin functionality
 - Deployment configuration
 
 ### Changed
-- None yet
+- Updated Tailwind CSS configuration for v4 compatibility
+  - Switched from `@tailwind` directives to `@import "tailwindcss"`
+  - Added proper `@theme` configuration for custom colors
+  - Updated PostCSS configuration to use `@tailwindcss/postcss` plugin
+- Simplified signup form
+  - Removed username, favorite deck, and bio fields
+  - Improved styling with theme colors
+  - Added loading indicator for better UX
+  - These fields will be moved to user profile in the future
+- Enhanced recipe form with rich text editor
+- Improved authentication flow with better error handling
+- Updated package dependencies to latest versions
 
 ### Fixed
+- Resolved NextAuth API handler errors by updating route implementation
+- Fixed CSS styling issues with Tailwind v4 compatibility
 - Resolved routing issues with recipes pages
 - Fixed TypeScript linter errors for React components
 - Corrected directory structure for Next.js routing
 - Resolved path issues in import statements
 - Fixed ESLint configuration for NextAuth.js types
+- Environment variable handling with fix-env.js utility
+- Database connection verification with db-verify.js
 
 ### Security
 - Environment variables and sensitive data properly configured
 - Authentication credentials secured
 - Database credentials protected
+- Added middleware for route protection
+- Implemented proper authorization checks for recipe operations
 
 ### Documentation
 - Initial CHANGELOG.md created
 - Project plan document moved to project root
 - Database schema documentation in Prisma schema
 - Authentication setup documentation 
-- Updated changelog with recipes pages implementation
+- Updated changelog with recent implementation details
 
 ## [2024-03-21] - Task Manager Project
 

@@ -2,14 +2,14 @@
 // Note: NextAuth session is extended in next-auth.d.ts
 
 /**
- * Type definition for the user in a session
+ * Extended session user type to include properties added by our custom session callback
  */
-export type SessionUser = {
+export interface SessionUser {
   id: string;
   name?: string | null;
   email?: string | null;
   image?: string | null;
-};
+}
 
 /**
  * Type definition for a NextAuth session 

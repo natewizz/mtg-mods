@@ -1,6 +1,5 @@
 // @ts-nocheck
 // Next.js 15 + NextAuth.js v4 integration
-// This uses an approach that bypasses TypeScript errors with a cast
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -8,6 +7,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { config } from "@/config";
 import * as bcrypt from "bcrypt";
+import { cookies } from "next/headers";
+import { decode } from "next-auth/jwt";
 import type { SessionUser } from "@/lib/auth/types";
 
 // Note: Session type is extended in src/types/next-auth.d.ts
@@ -81,19 +82,13 @@ export const authOptions = {
     })
   ],
   session: {
-    strategy: "jwt" as const,
+    strategy: "jwt",
   },
   pages: {
     signIn: "/auth/signin",
   },
   callbacks: {
-    async session({ 
-      session, 
-      token 
-    }: { 
-      session: { user: SessionUser; expires: string }; 
-      token: { sub?: string; [key: string]: any } 
-    }) {
+    async session({ session, token }) {
       // Add the user ID from token to the session
       if (session.user && token.sub) {
         session.user.id = token.sub;
@@ -104,11 +99,48 @@ export const authOptions = {
   debug: process.env.NODE_ENV === "development",
 };
 
-// Bypass TypeScript errors with a cast to any
-const nextAuthHandler = NextAuth(authOptions) as any;
+// Standard Auth.js setup for App Router
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
 
-// Export for API route handler
-export const { GET, POST } = nextAuthHandler;
-
-// Export auth function for use in server components
-export const auth = nextAuthHandler.auth; 
+// Implementation of auth function for server components and API routes
+export async function auth() {
+  // Access cookies and find auth session token
+  const cookiesList = cookies();
+  
+  // Try both secure and non-secure cookie names (for dev and prod environments)
+  const isDev = process.env.NODE_ENV === 'development';
+  const cookieName = isDev ? 'next-auth.session-token' : '__Secure-next-auth.session-token';
+  const nextAuthSessionToken = cookiesList.get(cookieName)?.value;
+  
+  if (!nextAuthSessionToken) {
+    return null;
+  }
+  
+  try {
+    // Decode the session token to get user info
+    const secret = process.env.NEXTAUTH_SECRET || '';
+    const decoded = await decode({
+      token: nextAuthSessionToken,
+      secret
+    });
+    
+    if (!decoded) {
+      return null;
+    }
+    
+    // Create session object similar to what NextAuth would return
+    return {
+      user: {
+        id: decoded.sub,
+        name: decoded.name,
+        email: decoded.email,
+        image: decoded.picture
+      },
+      expires: new Date(decoded.exp * 1000).toISOString()
+    };
+  } catch (error) {
+    console.error('Error decoding session token:', error);
+    return null;
+  }
+} 
