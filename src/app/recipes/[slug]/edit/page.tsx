@@ -5,12 +5,6 @@ import { auth } from '@/auth';
 import { slugify } from '@/lib/utils';
 import RecipeForm from '@/components/recipes/RecipeForm';
 
-interface EditRecipePageProps {
-  params: {
-    slug: string;
-  };
-}
-
 async function getRecipeBySlug(slug: string) {
   try {
     // Use a more efficient query instead of fetching all recipes
@@ -33,7 +27,8 @@ async function getRecipeBySlug(slug: string) {
   }
 }
 
-export default async function EditRecipePage({ params }: EditRecipePageProps) {
+export default async function EditRecipePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const session = await auth();
   
   // Redirect to sign in if not authenticated
@@ -41,7 +36,7 @@ export default async function EditRecipePage({ params }: EditRecipePageProps) {
     redirect('/auth/signin?callbackUrl=/recipes');
   }
   
-  const recipe = await getRecipeBySlug(params.slug);
+  const recipe = await getRecipeBySlug(slug);
   
   // Recipe not found or user doesn't have permission
   if (!recipe) {

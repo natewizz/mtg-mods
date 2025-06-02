@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+interface TagCount {
+  name: string;
+  count: number; // Or BigInt, depending on what Prisma $queryRaw returns for COUNT
+}
+
 /**
  * GET /api/tags/popular
  * Returns tags that are used in at least 2 recipes
@@ -20,7 +25,7 @@ export async function GET() {
     
     // Extract just the tag names
     const tags = Array.isArray(tagCounts) 
-      ? tagCounts.map((tag: any) => tag.name)
+      ? tagCounts.map((tag: TagCount) => tag.name)
       : [];
     
     return NextResponse.json({ tags });

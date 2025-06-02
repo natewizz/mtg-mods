@@ -3,9 +3,15 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { v4 as uuidv4 } from 'uuid';
 
+// Define the context type for route handlers
+interface RouteContext {
+  params: { id: string };
+}
+
 export async function PUT(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  request: NextRequest,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  context: RouteContext
 ) {
   try {
     const session = await auth();
@@ -15,7 +21,7 @@ export async function PUT(
     }
 
     // Await the params promise
-    const { id: userIdOrUsername } = await params;
+    const { id: userIdOrUsername } = context.params;
     
     // Find the user by ID or username
     let userToUpdate = await prisma.user.findUnique({
@@ -38,7 +44,7 @@ export async function PUT(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const { username } = await req.json();
+    const { username } = await request.json();
 
     if (!username) {
       return NextResponse.json({ error: "Username is required" }, { status: 400 });

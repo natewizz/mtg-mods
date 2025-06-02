@@ -1,7 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
-import { Prisma } from "@prisma/client";
+
+// Define a basic Recipe interface (can be expanded based on your actual Recipe model)
+interface Recipe {
+  id: string;
+  // Add other common recipe fields if necessary, e.g., title: string;
+}
+
+interface RecipeWithCounts extends Recipe {
+  _count: {
+    votes: number;
+    tried: number;
+    bookmarks?: number; // Optional as it's not in all queries
+  };
+}
 
 // Extended user type for our modified schema
 interface ExtendedUser {
@@ -15,14 +28,19 @@ interface ExtendedUser {
   linkText: string | null;
 }
 
+// Define the context type for route handlers
+interface RouteContext {
+  params: { id: string };
+}
+
 // GET /api/users/[id] - Get a user's profile
 export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> } // Correct type for App Router dynamic params
+  request: NextRequest,
+  context: RouteContext
 ) {
   try {
     // Await the params promise
-    const { id: userIdOrUsername } = await params;
+    const { id: userIdOrUsername } = context.params;
     
     // Try to find user by ID first
     let user = await prisma.user.findUnique({
@@ -35,8 +53,8 @@ export async function GET(
         bio: true,
         linkUrl: true,
         linkText: true,
-      } as any,
-    }) as unknown as ExtendedUser;
+      },
+    });
 
     // If user not found by ID, try to find by username
     if (!user) {
@@ -50,8 +68,8 @@ export async function GET(
           bio: true,
           linkUrl: true,
           linkText: true,
-        } as any,
-      }) as unknown as ExtendedUser;
+        },
+      });
     }
 
     if (!user) {
@@ -104,12 +122,12 @@ export async function GET(
             },
           },
         },
-      } as any,
+      },
       orderBy: { createdAt: 'desc' },
     });
 
     const bookmarkedRecipesWithVoteSums = await Promise.all(
-      bookmarkedRecipes.map(async (bookmark: any) => {
+      bookmarkedRecipes.map(async (bookmark: { recipe: RecipeWithCounts }) => {
         const recipe = bookmark.recipe;
         const voteSum = await prisma.vote.aggregate({
           where: { recipeId: recipe.id },
@@ -136,12 +154,12 @@ export async function GET(
             },
           },
         },
-      } as any,
+      },
       orderBy: { createdAt: 'desc' },
     });
 
     const triedRecipesWithVoteSums = await Promise.all(
-      triedRecipes.map(async (tried: any) => {
+      triedRecipes.map(async (tried: { recipe: RecipeWithCounts }) => {
         const recipe = tried.recipe;
         const voteSum = await prisma.vote.aggregate({
           where: { recipeId: recipe.id },
@@ -168,8 +186,8 @@ export async function GET(
 
 // PATCH /api/users/[id] - Update user profile
 export async function PATCH(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> } // Correct type for App Router dynamic params
+  request: NextRequest,
+  context: RouteContext
 ) {
   try {
     const session = await auth();
@@ -179,7 +197,7 @@ export async function PATCH(
     }
     
     // Await the params promise
-    const { id: userIdOrUsername } = await params;
+    const { id: userIdOrUsername } = context.params;
     
     // Find the user by ID or username
     let userToUpdate = await prisma.user.findUnique({
@@ -202,10 +220,10 @@ export async function PATCH(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
     
-    const data = await req.json();
+    const data = await request.json();
     
     // Create validated payload
-    const updatePayload: any = {};
+    const updatePayload: Partial<ExtendedUser> = {};
     if (data.username && typeof data.username === 'string') updatePayload.username = data.username;
     if (data.bio && typeof data.bio === 'string') updatePayload.bio = data.bio;
     if (data.linkUrl !== undefined) updatePayload.linkUrl = data.linkUrl ? data.linkUrl : null;
@@ -236,8 +254,8 @@ export async function PATCH(
         bio: true,
         linkUrl: true,
         linkText: true,
-      } as any,
-    }) as unknown as ExtendedUser;
+      },
+    });
     
     return NextResponse.json(updatedUser);
   } catch (error) {

@@ -21,7 +21,7 @@ export default function RecipeInteractions({
   voteCount = 0,
   triedCount = 0,
 }: RecipeInteractionsProps) {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   
   // Local state for optimistic updates

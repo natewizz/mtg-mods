@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import RecipeForm from '@/components/recipes/RecipeForm';
 
 export default function NewRecipePage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   // Redirect unauthenticated users to sign in
   if (status === 'unauthenticated') {

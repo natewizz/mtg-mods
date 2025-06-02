@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getRecipeUrl } from '@/lib/utils';
-import Image from 'next/image';
 
 interface DiceRollProps {
   isRolling: boolean;

@@ -51,7 +51,7 @@ export default function ForgotPasswordPage() {
         {success ? (
           <div className="text-center">
             <div className="mb-4 p-4 bg-green-50 border border-green-200 text-green-700 rounded">
-              <p>If an account with that email exists, we've sent password reset instructions.</p>
+              <p>If an account with that email exists, we&apos;ve sent password reset instructions.</p>
               <p className="mt-2">Please check your email inbox and spam folder.</p>
             </div>
             <Link href="/auth/signin" className="inline-block mt-4 text-[#5A31F4] hover:underline">
@@ -61,7 +61,7 @@ export default function ForgotPasswordPage() {
         ) : (
           <>
             <p className="text-gray-600 mb-4">
-              Enter your email address and we'll send you instructions to reset your password.
+              Enter your email address and we&apos;ll send you instructions to reset your password.
             </p>
             
             {error && (

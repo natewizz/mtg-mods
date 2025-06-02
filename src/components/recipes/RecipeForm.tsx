@@ -7,7 +7,6 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Recipe } from '@prisma/client';
 import dynamic from 'next/dynamic';
-import { getTagStyle } from '@/lib/tag-utils';
 import TagPill from '@/components/ui/TagPill';
 
 // Dynamically import TinyMCE to avoid SSR issues
@@ -51,7 +50,6 @@ export default function RecipeForm({ recipe, isEditing = false }: RecipeFormProp
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
   const [allTags, setAllTags] = useState(tagSuggestions);
   
@@ -92,7 +90,6 @@ export default function RecipeForm({ recipe, isEditing = false }: RecipeFormProp
     formState: { errors },
     setValue,
     watch,
-    getValues,
   } = useForm<RecipeFormValues>({
     resolver: zodResolver(recipeSchema),
     defaultValues: {
@@ -103,15 +100,12 @@ export default function RecipeForm({ recipe, isEditing = false }: RecipeFormProp
     },
   });
 
-  // Watch the instructions field for the rich text editor
-  const instructions = watch('instructions');
   const tagsValue = watch('tags');
 
   // Initialize selected tags from existing recipe if editing
   useEffect(() => {
     if (isEditing && recipe?.tags && Array.isArray(recipe.tags)) {
       const existingTags = recipe.tags.map(tag => tag.name);
-      setSelectedTags(existingTags);
       setValue('tags', existingTags.join(', '));
     }
   }, [isEditing, recipe, setValue]);
@@ -141,9 +135,8 @@ export default function RecipeForm({ recipe, isEditing = false }: RecipeFormProp
       newTags = [...currentTags, tag];
     }
     
-    // Update form value and selected tags
+    // Update form value
     setValue('tags', newTags.join(', '));
-    setSelectedTags(newTags);
   };
 
   const isTagSelected = (tag: string): boolean => {
@@ -219,8 +212,6 @@ export default function RecipeForm({ recipe, isEditing = false }: RecipeFormProp
         throw new Error(errorData.message || 'Something went wrong');
       }
 
-      const result = await response.json();
-      
       // Create a URL-friendly slug from the title
       const slugifiedTitle = data.title
         .toLowerCase()
@@ -288,10 +279,18 @@ export default function RecipeForm({ recipe, isEditing = false }: RecipeFormProp
           apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
           initialValue={recipe?.instructions || ''}
           init={{
-            height: 400,
+            height: 500,
             menubar: false,
-            plugins: 'lists link image code table',
-            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image | removeformat | help',
+            plugins: [
+              'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',
+              'preview', 'anchor', 'searchreplace', 'visualblocks',
+              'code', 'fullscreen', 'insertdatetime', 'media', 'table',
+              'code', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks | '
+              + 'bold italic forecolor | alignleft aligncenter '
+              + 'alignright alignjustify | bullist numlist outdent indent | '
+              + 'removeformat | help',
             content_style: 'body { font-family:Inter,Helvetica,Arial,sans-serif; font-size:16px }',
           }}
           onEditorChange={handleEditorChange}

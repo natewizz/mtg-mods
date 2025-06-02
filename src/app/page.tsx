@@ -1,27 +1,46 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { SessionUser } from "@/lib/auth/types";
 import RandomRecipeButton from '@/components/ui/RandomRecipeButton';
 import { getLatestRecipes } from '@/lib/recipe-actions';
-import { Recipe } from '@prisma/client';
+import { Recipe, User, Vote, Tried, RecipeTag } from '@prisma/client';
 import TagPill from '@/components/ui/TagPill';
 import { slugify } from '@/lib/utils';
 
 // Types for latest recipes with related data
-interface RecipeWithRelations extends Recipe {
-  author: { name: string; id: string };
-  tags: { id: string; name: string }[];
-  _count: {
+type RecipeWithRelations = Recipe & {
+  author: User;
+  votes: Vote[];
+  tried: Tried[];
+  tags: RecipeTag[];
+  _count?: {
     votes: number;
     tried: number;
+  };
+};
+
+function toRecipeWithRelations(recipe: Partial<RecipeWithRelations>): RecipeWithRelations {
+  return {
+    ...recipe,
+    author: recipe.author as User,
+    tags: recipe.tags || [],
+    _count: recipe._count || { votes: 0, tried: 0 },
+    votes: recipe.votes || [],
+    tried: recipe.tried || [],
+    id: recipe.id!,
+    title: recipe.title!,
+    description: recipe.description!,
+    createdAt: recipe.createdAt!,
+    updatedAt: recipe.updatedAt!,
+    authorId: recipe.authorId!,
+    instructions: recipe.instructions!,
   };
 }
 
 export default function Home() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [latestRecipes, setLatestRecipes] = useState<RecipeWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,7 +49,7 @@ export default function Home() {
     const fetchLatestRecipes = async () => {
       try {
         const recipes = await getLatestRecipes(4);
-        setLatestRecipes(recipes as RecipeWithRelations[]);
+        setLatestRecipes(recipes.map(toRecipeWithRelations));
       } catch (error) {
         console.error('Error fetching latest recipes:', error);
       } finally {
@@ -49,12 +68,6 @@ export default function Home() {
     );
   }
   
-  // Cast to our custom type for type safety
-  const user = session?.user as SessionUser | undefined;
-  const isAuthenticated = !!user;
-  const userId = user?.id;
-  const userName = user?.name;
-
   return (
     <main className="min-h-screen">
       {/* Hero section with animated gradient background */}
@@ -128,13 +141,13 @@ export default function Home() {
                             <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                               <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
                             </svg>
-                            {recipe._count.votes}
+                            {recipe._count?.votes ?? 0}
                           </span>
                           <span className="flex items-center">
                             <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                             </svg>
-                            {recipe._count.tried}
+                            {recipe._count?.tried ?? 0}
                           </span>
                         </div>
                       </div>

@@ -8,12 +8,6 @@ import DeleteRecipeButton from '@/components/recipes/DeleteRecipeButton';
 import RecipeInteractionsClient from '@/components/recipes/RecipeInteractionsClient';
 import TagPill from '@/components/ui/TagPill';
 
-interface RecipePageProps {
-  params: {
-    slug: string;
-  };
-}
-
 async function getRecipeWithInteractions(slug: string, userId?: string) {
   try {
     // Use a more efficient query instead of fetching all recipes
@@ -129,10 +123,11 @@ async function getRecipeWithInteractions(slug: string, userId?: string) {
   }
 }
 
-export default async function RecipePage({ params }: RecipePageProps) {
+export default async function RecipePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const session = await auth();
   const recipeData = await getRecipeWithInteractions(
-    params.slug,
+    slug,
     session?.user?.id
   );
 
@@ -222,7 +217,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
           {isAuthor && (
             <div className="flex items-center space-x-4 mt-8 pt-4 border-t">
               <Link 
-                href={`/recipes/${params.slug}/edit`}
+                href={`/recipes/${slug}/edit`}
                 className="text-[var(--primary)] hover:underline"
               >
                 Edit Recipe
