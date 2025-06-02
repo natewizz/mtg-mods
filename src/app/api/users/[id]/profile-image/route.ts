@@ -86,7 +86,6 @@ export async function POST(
         name: true,
         username: true,
         image: true,
-        favoriteDeck: true,
         bio: true,
       },
     });

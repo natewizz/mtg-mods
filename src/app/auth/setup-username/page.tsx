@@ -14,11 +14,14 @@ export default function SetupUsernamePage() {
     // If the user is not authenticated, redirect to login
     if (status === "unauthenticated") {
       router.push("/auth/signin");
+      return;
     }
     
     // If the user already has a username, redirect to their profile
     if (status === "authenticated" && session?.user?.username) {
+      console.log("User already has a username:", session.user.username);
       router.push(`/profile/${session.user.username}`);
+      return;
     }
     
     if (status !== "loading") {

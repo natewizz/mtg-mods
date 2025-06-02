@@ -9,22 +9,23 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(cuid())
-  name          String?
-  username      String?         @unique
-  email         String?         @unique
-  emailVerified DateTime?
-  image         String?
-  favoriteDeck  String?
-  bio           String?         @db.Text
-  accounts      Account[]
-  bookmarks     Bookmark[]
-  recipes       Recipe[]
-  sessions      Session[]
-  tried         Tried[]
-  credentials   UserCredential?
-  votes         Vote[]
+  id             String          @id @default(cuid())
+  name           String?
+  username       String?         @unique
+  email          String?         @unique
+  emailVerified  DateTime?
+  image          String?
+  bio            String?         @db.Text
+  linkUrl        String?         @db.VarChar(255)
+  linkText       String?         @db.VarChar(255)
+  accounts       Account[]
+  bookmarks      Bookmark[]
+  recipes        Recipe[]
+  sessions       Session[]
+  tried          Tried[]
+  credentials    UserCredential?
   usernameChange UsernameChange?
+  votes          Vote[]
 }
 
 model UserCredential {
@@ -143,7 +144,7 @@ model PasswordReset {
   token     String   @unique
   expires   DateTime
   createdAt DateTime @default(now())
-  
+
   @@index([email])
 }
 
