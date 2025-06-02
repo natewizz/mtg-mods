@@ -18,7 +18,6 @@ export default function Header() {
   
   // Safely access user properties with type safety
   const user = session?.user as SessionUser | undefined;
-  const userId = user?.id;
   const userName = user?.name;
   const userImage = user?.image;
   

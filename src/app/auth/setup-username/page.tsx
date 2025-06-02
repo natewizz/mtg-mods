@@ -49,7 +49,7 @@ export default function SetupUsernamePage() {
       
       <div className="mb-8">
         <p className="text-center text-gray-600">
-          Let's set up your magical identity before you begin your journey.
+          Let&apos;s set up your magical identity before you begin your journey.
         </p>
       </div>
       

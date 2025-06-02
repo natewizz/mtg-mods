@@ -6,11 +6,9 @@ import DiscordProvider from "next-auth/providers/discord";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
-import { config } from "@/config";
 import * as bcrypt from "bcrypt";
 import { cookies } from "next/headers";
 import { decode } from "next-auth/jwt";
-import type { SessionUser } from "@/lib/auth/types";
 
 // Note: Session type is extended in src/types/next-auth.d.ts
 export const authOptions = {
@@ -101,7 +99,7 @@ export const authOptions = {
     signIn: "/auth/signin",
   },
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
+    async signIn({ }) {
       // Allow OAuth providers to link to an existing account with the same email
       return true;
     },
@@ -154,7 +152,7 @@ export const authOptions = {
   },
   debug: process.env.NODE_ENV === "development",
   events: {
-    async signIn({ user, isNewUser }) {
+    async signIn({ user }) {
       // Check if user needs to set up username
       if (!user.username) {
         // This will be handled by the client-side redirect in SignInForm

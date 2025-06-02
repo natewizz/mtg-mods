@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
@@ -10,8 +10,7 @@ type ResetPasswordFormData = {
   confirmPassword: string;
 };
 
-export default function ResetPasswordPage() {
-  const router = useRouter();
+function ResetPasswordPageContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   
@@ -210,5 +209,13 @@ export default function ResetPasswordPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div className="max-w-md mx-auto p-8 text-center">Loading...</div>}>
+      <ResetPasswordPageContent />
+    </Suspense>
   );
 } 

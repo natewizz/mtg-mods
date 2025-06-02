@@ -8,8 +8,8 @@ import { signIn } from "next-auth/react";
 
 // Extended interface to include new fields during transition
 interface ExtendedUser extends User {
-  linkUrl?: string | null;
-  linkText?: string | null;
+  linkUrl: string | null;
+  linkText: string | null;
 }
 
 type ProfileCardProps = {
@@ -41,7 +41,7 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
     try {
       const urlObj = new URL(url);
       return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-    } catch (_) {
+    } catch {
       return false;
     }
   };

@@ -20,13 +20,13 @@ export default function CommunityGuidelines() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">1. Be Respectful</h2>
           <p>
-            Treat others with the same respect you'd like to receive. Disagreements are natural, but 
+            Treat others with the same respect you&apos;d like to receive. Disagreements are natural, but 
             keep discussions civil and constructive.
           </p>
           <ul className="list-disc pl-6">
             <li>No personal attacks, harassment, or bullying</li>
             <li>Avoid inflammatory language or deliberate provocation</li>
-            <li>Respect others' ideas and contributions, even if you disagree</li>
+            <li>Respect others&apos; ideas and contributions, even if you disagree</li>
             <li>Provide constructive feedback rather than simply criticizing</li>
           </ul>
         </section>
@@ -40,7 +40,7 @@ export default function CommunityGuidelines() {
           <ul className="list-disc pl-6">
             <li>Be clear and thorough in your explanations</li>
             <li>Proofread your content before posting</li>
-            <li>Credit others if you're building on or modifying their ideas</li>
+            <li>Credit others if you&apos;re building on or modifying their ideas</li>
             <li>Consider playability, balance, and fun factor in your rule modifications</li>
             <li>Test your modifications before sharing when possible</li>
           </ul>

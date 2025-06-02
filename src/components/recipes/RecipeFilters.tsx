@@ -52,25 +52,22 @@ export default function RecipeFilters({
     setSortOption(option);
   };
   
-  // Apply filters and update URL
-  const applyFilters = () => {
+  // Apply filters when selections change
+  useEffect(() => {
+    // Move applyFilters logic here to avoid dependency warning
     // Create URL params
     const params = new URLSearchParams(searchParams);
-    
     if (selectedTags.length > 0) {
       params.set('tags', selectedTags.join(','));
     } else {
       params.delete('tags');
     }
-    
     params.set('sort', sortOption);
-    
     // Update URL without reloading
     router.push(`/recipes?${params.toString()}`, { scroll: false });
-    
     // Notify parent component
     onFiltersChange(selectedTags, sortOption);
-  };
+  }, [selectedTags, sortOption, searchParams, router, onFiltersChange]);
   
   // Clear tag filters only
   const clearTagFilters = () => {
@@ -81,12 +78,6 @@ export default function RecipeFilters({
   const clearSortOption = () => {
     setSortOption('newest');
   };
-  
-  // Apply filters when selections change
-  useEffect(() => {
-    applyFilters();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTags, sortOption]);
   
   // Toggle between showing top tags and all tags
   const toggleShowAllTags = () => {

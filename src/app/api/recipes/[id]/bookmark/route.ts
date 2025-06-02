@@ -3,13 +3,15 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 
 // Add a bookmark
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  context: any
 ) {
   try {
     const session = await auth();
-    
+    const recipeId = context.params.id;
     // Check if user is authenticated
     if (!session?.user) {
       return NextResponse.json(
@@ -17,10 +19,16 @@ export async function POST(
         { status: 401 }
       );
     }
+    if (!session.user.id) {
+      return NextResponse.json(
+        { message: 'User ID is missing from session' },
+        { status: 401 }
+      );
+    }
 
     // Check if recipe exists
     const recipe = await prisma.recipe.findUnique({
-      where: { id: params.id },
+      where: { id: recipeId },
     });
 
     if (!recipe) {
@@ -35,13 +43,13 @@ export async function POST(
       where: {
         userId_recipeId: {
           userId: session.user.id,
-          recipeId: params.id,
+          recipeId: recipeId,
         },
       },
       update: {}, // No update needed
       create: {
         userId: session.user.id,
-        recipeId: params.id,
+        recipeId: recipeId,
       },
     });
 
@@ -56,17 +64,25 @@ export async function POST(
 }
 
 // Remove a bookmark
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  context: any
 ) {
   try {
     const session = await auth();
-    
+    const recipeId = context.params.id;
     // Check if user is authenticated
     if (!session?.user) {
       return NextResponse.json(
         { message: 'You must be logged in to remove bookmarks' },
+        { status: 401 }
+      );
+    }
+    if (!session.user.id) {
+      return NextResponse.json(
+        { message: 'User ID is missing from session' },
         { status: 401 }
       );
     }
@@ -76,7 +92,7 @@ export async function DELETE(
       where: {
         userId_recipeId: {
           userId: session.user.id,
-          recipeId: params.id,
+          recipeId: recipeId,
         },
       },
     }).catch(() => null); // Catch the error if the bookmark doesn't exist

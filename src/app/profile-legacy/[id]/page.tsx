@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -9,7 +9,6 @@ export default function ProfileIdRedirect() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const id = params.id as string;
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const redirectToUsernameProfile = async () => {
@@ -42,8 +41,6 @@ export default function ProfileIdRedirect() {
       } catch (error) {
         console.error("Error redirecting to username profile:", error);
         router.push('/');
-      } finally {
-        setLoading(false);
       }
     };
 

@@ -38,9 +38,9 @@ export default function LearnPage() {
           </p>
           
           <div className="bg-[#F1F3FA] p-6 rounded-lg mb-8">
-            <h3 className="text-xl font-bold text-[#5A31F4] mb-3">Example Recipe: "Shared Destiny"</h3>
+            <h3 className="text-xl font-bold text-[#5A31F4] mb-3">Example Recipe: &quot;Shared Destiny&quot;</h3>
             <p className="text-gray-700 mb-3">
-              <strong>Basic Rule Change:</strong> All players draw from a single shared library created by shuffling together 20 cards from each player's deck.
+              <strong>Basic Rule Change:</strong> All players draw from a single shared library created by shuffling together 20 cards from each player&apos;s deck.
             </p>
             <p className="text-gray-700 mb-3">
               <strong>Additional Rules:</strong>
@@ -71,11 +71,11 @@ export default function LearnPage() {
               </div>
               <h3 className="text-xl font-bold text-[#2C2E3A] mb-3">Simple Mods</h3>
               <p className="text-gray-700">
-                Single rule changes that can be explained in a sentence or two. These don't fundamentally
+                Single rule changes that can be explained in a sentence or two. These don&apos;t fundamentally
                 alter core game mechanics but add interesting twists.
               </p>
               <div className="mt-4 text-sm bg-white p-3 rounded-md">
-                <strong>Example:</strong> "Players may cast one spell each turn from their graveyard."
+                <strong>Example:</strong> &quot;Players may cast one spell each turn from their graveyard.&quot;
               </div>
             </div>
             
@@ -89,7 +89,7 @@ export default function LearnPage() {
                 more explanation and potentially some preparation.
               </p>
               <div className="mt-4 text-sm bg-white p-3 rounded-md">
-                <strong>Example:</strong> "Players draft cards from a shared pile each turn and life totals affect draft priority."
+                <strong>Example:</strong> &quot;Players draft cards from a shared pile each turn and life totals affect draft priority.&quot;
               </div>
             </div>
             
@@ -103,7 +103,7 @@ export default function LearnPage() {
                 phases, or win conditions, often requiring additional components.
               </p>
               <div className="mt-4 text-sm bg-white p-3 rounded-md">
-                <strong>Example:</strong> "A roleplaying variant where players are adventurers in a dungeon with a Dungeon Master player controlling monsters."
+                <strong>Example:</strong> &quot;A roleplaying variant where players are adventurers in a dungeon with a Dungeon Master player controlling monsters.&quot;
               </div>
             </div>
           </div>
@@ -167,7 +167,7 @@ export default function LearnPage() {
           
           <p className="text-gray-700 mb-6 leading-relaxed">
             Creating your own game modifications is a rewarding way to express your creativity and 
-            deepen your understanding of MTG's mechanics. Here are some approaches to developing 
+            deepen your understanding of MTG&apos;s mechanics. Here are some approaches to developing 
             your own unique recipes:
           </p>
           
@@ -175,12 +175,12 @@ export default function LearnPage() {
             <div className="bg-[#F1F3FA] p-6 rounded-lg">
               <h3 className="text-xl font-bold text-[#5A31F4] mb-3">Starting With a Problem</h3>
               <p className="text-gray-700 mb-3">
-                Identify an aspect of MTG that you'd like to change or improve:
+                Identify an aspect of MTG that you&apos;d like to change or improve:
               </p>
               <ul className="list-disc pl-6 text-gray-700 space-y-2">
-                <li>"Games end too quickly in my playgroup"</li>
-                <li>"We have a player who always uses the same winning strategy"</li>
-                <li>"New players struggle to keep up with experienced ones"</li>
+                <li>&quot;Games end too quickly in my playgroup&quot;</li>
+                <li>&quot;We have a player who always uses the same winning strategy&quot;</li>
+                <li>&quot;New players struggle to keep up with experienced ones&quot;</li>
               </ul>
               <p className="text-gray-700 mt-3">
                 Then design rule modifications that address this specific problem.
@@ -201,15 +201,15 @@ export default function LearnPage() {
             </div>
             
             <div className="bg-[#F1F3FA] p-6 rounded-lg">
-              <h3 className="text-xl font-bold text-[#5A31F4] mb-3">Exploring "What If" Scenarios</h3>
+              <h3 className="text-xl font-bold text-[#5A31F4] mb-3">Exploring &quot;What If&quot; Scenarios</h3>
               <p className="text-gray-700 mb-3">
                 Ask disruptive questions and see where they lead:
               </p>
               <ul className="list-disc pl-6 text-gray-700 space-y-2">
-                <li>"What if players could cast spells during any phase?"</li>
-                <li>"What if life totals were shared between teammates?"</li>
-                <li>"What if losing a creature meant gaining some other advantage?"</li>
-                <li>"What if the board state periodically reset like a video game level?"</li>
+                <li>&quot;What if players could cast spells during any phase?&quot;</li>
+                <li>&quot;What if life totals were shared between teammates?&quot;</li>
+                <li>&quot;What if losing a creature meant gaining some other advantage?&quot;</li>
+                <li>&quot;What if the board state periodically reset like a video game level?&quot;</li>
               </ul>
             </div>
             
@@ -227,7 +227,7 @@ export default function LearnPage() {
         <div className="bg-gradient-to-r from-[#5A31F4] to-[#3DA1C4] rounded-xl shadow-md p-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-6">Ready to Create Your Own Recipe?</h2>
           <p className="text-xl text-white/80 max-w-2xl mx-auto mb-8">
-            Apply what you've learned and share your creative game modifications with the community
+            Apply what you&apos;ve learned and share your creative game modifications with the community
           </p>
           <Link 
             href="/recipes/new" 

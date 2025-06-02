@@ -2,17 +2,12 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { getRecipeUrl } from '@/lib/utils';
 
-interface RecipeIdRedirectProps {
-  params: {
-    id: string;
-  };
-}
-
 // This legacy route handles old ID-based URLs and redirects to the new slug-based format
-export default async function RecipeIdRedirect({ params }: RecipeIdRedirectProps) {
+export default async function RecipeIdRedirect({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   // Get the recipe to extract its title
   const recipe = await prisma.recipe.findUnique({
-    where: { id: params.id },
+    where: { id },
     select: { title: true },
   });
 

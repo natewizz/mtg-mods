@@ -20,7 +20,7 @@ export default function TermsOfService() {
           <h2 className="text-2xl font-semibold mb-4">2. User Content</h2>
           <p>
             Our Service allows you to post, link, store, share and otherwise make available certain 
-            information, text, graphics, or other material ("Content"). You are responsible for the 
+            information, text, graphics, or other material (&quot;Content&quot;). You are responsible for the 
             Content that you post on or through the Service, including its legality, reliability, 
             and appropriateness.
           </p>
@@ -80,7 +80,7 @@ export default function TermsOfService() {
           <h2 className="text-2xl font-semibold mb-4">6. Changes to Terms</h2>
           <p>
             We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision 
-            is material we will provide at least 30 days' notice prior to any new terms taking effect. What constitutes 
+            is material we will provide at least 30 days&apos; notice prior to any new terms taking effect. What constitutes 
             a material change will be determined at our sole discretion.
           </p>
           <p>

@@ -1,14 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, Suspense } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function SigninCallbackPage() {
+function SigninCallbackPageContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (status === "loading") return;
@@ -31,13 +30,19 @@ export default function SigninCallbackPage() {
       const next = searchParams.get("next") || "/";
       router.push(next);
     }
-
-    setLoading(false);
   }, [session, status, router, searchParams]);
 
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5A31F4]"></div>
     </div>
+  );
+}
+
+export default function SigninCallbackPage() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5A31F4]"></div></div>}>
+      <SigninCallbackPageContent />
+    </Suspense>
   );
 } 

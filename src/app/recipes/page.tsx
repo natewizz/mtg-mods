@@ -5,17 +5,11 @@ import RecipeFiltersWrapper from './RecipeFiltersWrapper';
 import { getFilteredRecipes, getPopularTags } from '@/lib/recipe-actions';
 import { SortOption } from '@/components/recipes/RecipeFilters';
 
-interface RecipesPageProps {
-  searchParams: {
-    tags?: string;
-    sort?: SortOption;
-  };
-}
-
-export default async function RecipesPage({ searchParams }: RecipesPageProps) {
+export default async function RecipesPage({ searchParams }: { searchParams: Promise<{ tags?: string; sort?: SortOption }> }) {
+  const resolvedSearchParams = await searchParams;
   // Parse filter parameters from URL
-  const tagFilters = searchParams.tags ? searchParams.tags.split(',') : [];
-  const sortBy = (searchParams.sort as SortOption) || 'newest';
+  const tagFilters = resolvedSearchParams.tags ? resolvedSearchParams.tags.split(',') : [];
+  const sortBy = (resolvedSearchParams.sort as SortOption) || 'newest';
   
   // Fetch filtered recipes and popular tags
   const [recipes, popularTags] = await Promise.all([

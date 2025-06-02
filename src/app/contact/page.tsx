@@ -97,7 +97,7 @@ export default function ContactPage() {
           
           {submitSuccess && (
             <div className="mb-6 p-4 bg-green-50 text-green-700 rounded-md border border-green-200">
-              Your message has been sent successfully! We'll get back to you soon.
+              Your message has been sent successfully! We&apos;ll get back to you soon.
             </div>
           )}
           
@@ -201,7 +201,7 @@ export default function ContactPage() {
           <div>
             <h3 className="text-lg font-medium text-[#5A31F4]">How do I submit a rule modification?</h3>
             <p className="mt-2">
-              You'll need to create an account first. Once logged in, you can click on the "Create Recipe" 
+              You&apos;ll need to create an account first. Once logged in, you can click on the &quot;Create Recipe&quot; 
               button to submit your rule modification. Make sure to provide clear instructions and consider 
               issues of balance and playability.
             </p>
