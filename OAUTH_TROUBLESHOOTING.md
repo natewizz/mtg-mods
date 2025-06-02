@@ -68,8 +68,7 @@ To fix these, create a `.env.local` file in the project root with:
 ```
 # NextAuth Environment Variables
 NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=qWC3YmnLPkgbZ1spsgyT/I+1AJiWk3S3djz9tN7HxGI=
-
+NEXTAUTH_SECRET=REDACTED
 # Optional: Google credentials if you prefer environment variables
 # GOOGLE_CLIENT_ID=your-new-client-id
 # GOOGLE_CLIENT_SECRET=your-new-client-secret
