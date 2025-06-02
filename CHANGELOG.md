@@ -2,6 +2,89 @@
 
 All notable changes to the mtg-mods project will be documented in this file.
 
+## [2024-05-25] - Profile Card Enhancements and Cleanup
+
+### Added
+- Enhanced ProfileCard component with improved styling
+  - Added gradient background to profile card
+  - Added border and shadow to profile image
+  - Implemented website URL validation with real-time feedback
+  - Added link icon for website URLs
+  - Created bordered bio section with improved visual hierarchy
+  - Improved form styling with username @ symbol prefix
+  - Added interactive hover effects and transitions
+
+### Changed
+- Updated user profile data structure
+  - Removed unused 'favoriteDeck' field from UI and database schema
+  - Repurposed website link functionality to replace favorite deck
+  - Modified API routes to use the new data structure
+  - Updated TypeScript types to reflect schema changes
+- Improved website link display
+  - Renamed "Website" to "Link" for better conciseness
+  - Moved link display inline with link icon
+  - Enhanced styling for better visibility
+
+### Fixed
+- Fixed TypeScript errors in API routes
+  - Added proper type casting for extended user fields
+  - Created ExtendedUser interface for type safety
+  - Fixed recipe property access in bookmarked and tried recipes
+  - Resolved userId type errors in query parameters
+- Fixed profile card UI responsiveness
+  - Improved mobile layout for profile information
+  - Enhanced form validation feedback
+  - Fixed spacing and alignment issues
+
+## [2024-05-13] - Recipe Filtering and Sorting System
+
+### Added
+- Comprehensive recipe filtering and sorting system
+  - Added tag-based filtering with multi-select functionality 
+  - Implemented sorting options: newest, oldest, most upvoted, most tried
+  - Created UI for displaying and managing selected filters
+  - Added URL parameter support for shareable filtered views
+- Tag management improvements
+  - Added support for displaying popular tags (appearing in 2+ recipes)
+  - Implemented MTG color-coded tag display throughout the application
+  - Created reusable TagPill component with proper vertical alignment
+- Enhanced recipe list UI
+  - Improved empty state handling with context-aware messages
+  - Added tag display on recipe cards
+  - Implemented responsive filter/sort controls
+
+### Changed
+- Updated recipes page architecture to support filtering
+  - Refactored recipe fetching to use server actions
+  - Implemented efficient database queries for filtered results
+  - Added client-side state management for filters
+- Improved recipe display
+  - Enhanced recipe cards with tag information
+  - Updated UI to accommodate filter controls
+  - Improved responsive layout for various screen sizes
+
+## [2024-05-12] - Tag System Improvements
+
+### Added
+- MTG color-themed tag styling system
+  - Created reusable TagPill component for consistent tag display
+  - Implemented tag categorization based on MTG color wheel design
+  - Added visual distinction between different tag categories
+- Enhanced tag selection interface in recipe form
+  - Added interactive tag suggestions with MTG-themed categories
+  - Implemented "Selected Tags" display for better user feedback
+  - Added tag categorization system by purpose/meaning
+
+### Changed
+- Updated recipe page, recipe card, and recipe form to use consistent tag styling
+- Improved visual hierarchy with color-coded tag pills
+- Enhanced user interface with MTG-themed color scheme for tags
+
+### Fixed
+- Fixed recipe redirection after creation to use slugified title URLs
+- Improved tag display consistency across the application
+- Fixed styling issues with tag pills in different contexts
+
 ## [2024-05-11] - URL Structure and User Experience Improvements
 
 ### Added

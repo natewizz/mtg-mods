@@ -3,6 +3,18 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { Prisma } from "@prisma/client";
 
+// Extended user type for our modified schema
+interface ExtendedUser {
+  id: string;
+  name: string | null;
+  username: string | null;
+  email: string | null;
+  image: string | null;
+  bio: string | null;
+  linkUrl: string | null;
+  linkText: string | null;
+}
+
 // GET /api/users/[id] - Get a user's profile
 export async function GET(
   req: NextRequest,
@@ -20,10 +32,11 @@ export async function GET(
         name: true,
         username: true,
         image: true,
-        favoriteDeck: true,
         bio: true,
-      },
-    });
+        linkUrl: true,
+        linkText: true,
+      } as any,
+    }) as unknown as ExtendedUser;
 
     // If user not found by ID, try to find by username
     if (!user) {
@@ -34,10 +47,11 @@ export async function GET(
           name: true,
           username: true,
           image: true,
-          favoriteDeck: true,
           bio: true,
-        },
-      });
+          linkUrl: true,
+          linkText: true,
+        } as any,
+      }) as unknown as ExtendedUser;
     }
 
     if (!user) {
@@ -45,7 +59,7 @@ export async function GET(
     }
 
     // Use the correct user ID for all subsequent queries
-    const userId = user.id;
+    const userId: string = user.id;
 
     // Get user recipes
     const recipes = await prisma.recipe.findMany({
@@ -90,12 +104,13 @@ export async function GET(
             },
           },
         },
-      },
+      } as any,
       orderBy: { createdAt: 'desc' },
     });
 
     const bookmarkedRecipesWithVoteSums = await Promise.all(
-      bookmarkedRecipes.map(async ({ recipe }) => {
+      bookmarkedRecipes.map(async (bookmark: any) => {
+        const recipe = bookmark.recipe;
         const voteSum = await prisma.vote.aggregate({
           where: { recipeId: recipe.id },
           _sum: { value: true },
@@ -121,12 +136,13 @@ export async function GET(
             },
           },
         },
-      },
+      } as any,
       orderBy: { createdAt: 'desc' },
     });
 
     const triedRecipesWithVoteSums = await Promise.all(
-      triedRecipes.map(async ({ recipe }) => {
+      triedRecipes.map(async (tried: any) => {
+        const recipe = tried.recipe;
         const voteSum = await prisma.vote.aggregate({
           where: { recipeId: recipe.id },
           _sum: { value: true },
@@ -189,10 +205,11 @@ export async function PATCH(
     const data = await req.json();
     
     // Create validated payload
-    const updatePayload: Prisma.UserUpdateInput = {};
+    const updatePayload: any = {};
     if (data.username && typeof data.username === 'string') updatePayload.username = data.username;
-    if (data.favoriteDeck && typeof data.favoriteDeck === 'string') updatePayload.favoriteDeck = data.favoriteDeck;
     if (data.bio && typeof data.bio === 'string') updatePayload.bio = data.bio;
+    if (data.linkUrl !== undefined) updatePayload.linkUrl = data.linkUrl ? data.linkUrl : null;
+    if (data.linkText !== undefined) updatePayload.linkText = data.linkText ? data.linkText : null;
 
     // Check if username is being updated and if it's taken
     if (updatePayload.username) {
@@ -216,10 +233,11 @@ export async function PATCH(
         name: true,
         username: true,
         image: true,
-        favoriteDeck: true,
         bio: true,
-      },
-    });
+        linkUrl: true,
+        linkText: true,
+      } as any,
+    }) as unknown as ExtendedUser;
     
     return NextResponse.json(updatedUser);
   } catch (error) {

@@ -4,13 +4,10 @@ module.exports = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       colors: {
-        white: "#FFFFFF",
-        black: "#000000",
         primary: "#5A31F4",
         "primary-dark": "#4921D8",
         background: "#F1F3FA",
@@ -30,7 +27,31 @@ module.exports = {
         'lg': '0.5rem',
         'full': '9999px',
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            color: '#2C2E3A',
+            a: {
+              color: '#5A31F4',
+              '&:hover': {
+                color: '#4921D8',
+              },
+            },
+            h1: {
+              color: '#5A31F4',
+            },
+            h2: {
+              color: '#2C2E3A',
+            },
+            h3: {
+              color: '#2C2E3A',
+            },
+          },
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 } 

@@ -4,12 +4,17 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import { SessionUser } from "@/lib/auth/types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   
   // Safely access user properties with type safety
   const user = session?.user as SessionUser | undefined;
@@ -24,13 +29,46 @@ export default function Header() {
     }
   }, [userImage]);
 
+  // Handle clicking outside to close dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current && 
+        buttonRef.current && 
+        !dropdownRef.current.contains(event.target as Node) && 
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    }
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Handle sign out with proper redirection
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push('/auth/signin');
+  };
+
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-primary flex items-center gap-2">
-            <span className="bg-primary text-white h-8 w-8 rounded-md flex items-center justify-center font-bold">M</span>
-            <span>MTG Mods</span>
+          <Link href="/" className="flex items-center">
+            <div className="relative h-14">
+              <Image 
+                src="/images/logo.png" 
+                alt="MTG Mods Logo" 
+                width={56} 
+                height={56} 
+                className="object-contain"
+                priority
+              />
+            </div>
           </Link>
           
           {/* Mobile menu button */}
@@ -61,13 +99,21 @@ export default function Header() {
             <Link href="/learn" className="hover-underline font-medium text-dark hover:text-primary transition-colors">
               Learn
             </Link>
+            <Link href="/contact" className="hover-underline font-medium text-dark hover:text-primary transition-colors">
+              Contact
+            </Link>
             
             {status === "loading" ? (
               <div className="h-8 w-8 rounded-full border-2 border-t-primary border-r-transparent animate-spin"></div>
             ) : session ? (
               <div className="flex items-center gap-4">
-                <div className="relative group">
-                  <button className="flex items-center gap-2 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                <div className="relative">
+                  <button 
+                    ref={buttonRef}
+                    className="flex items-center gap-2 p-2 rounded-full hover:bg-gray-100 transition-colors"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    onMouseEnter={() => setIsDropdownOpen(true)}
+                  >
                     {profileImage ? (
                       <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-primary">
                         <Image 
@@ -89,22 +135,29 @@ export default function Header() {
                   </button>
                   
                   {/* Dropdown menu */}
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-10 opacity-0 scale-95 origin-top-right group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 ease-in-out">
-                    <div className="py-1">
-                      <Link href="/profile/me" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        My Profile
-                      </Link>
-                      <Link href="/recipes/new" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        Create Recipe
-                      </Link>
-                      <Link href="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        Settings
-                      </Link>
-                      <button onClick={() => signOut()} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                        Sign Out
-                      </button>
+                  {isDropdownOpen && (
+                    <div 
+                      ref={dropdownRef}
+                      className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-10 transition-all duration-200 ease-in-out"
+                      onMouseEnter={() => setIsDropdownOpen(true)}
+                      onMouseLeave={() => setIsDropdownOpen(false)}
+                    >
+                      <div className="py-1">
+                        <Link href="/profile/me" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          My Profile
+                        </Link>
+                        <Link href="/recipes/new" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          Create Recipe
+                        </Link>
+                        <Link href="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          Settings
+                        </Link>
+                        <button onClick={handleSignOut} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                          Sign Out
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             ) : (
@@ -141,6 +194,9 @@ export default function Header() {
             <Link href="/learn" className="hover:text-primary transition-colors">
               Learn
             </Link>
+            <Link href="/contact" className="hover:text-primary transition-colors">
+              Contact
+            </Link>
             
             {session ? (
               <>
@@ -164,7 +220,7 @@ export default function Header() {
                   </Link>
                 </div>
                 <button
-                  onClick={() => signOut()}
+                  onClick={handleSignOut}
                   className="text-left text-red-600"
                 >
                   Sign Out

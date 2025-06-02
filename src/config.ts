@@ -14,4 +14,8 @@ export const config = {
     clientId: process.env.GOOGLE_CLIENT_ID || "your-google-client-id",
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || "your-google-client-secret",
   },
+  discord: {
+    clientId: process.env.DISCORD_CLIENT_ID || "your-discord-client-id",
+    clientSecret: process.env.DISCORD_CLIENT_SECRET || "your-discord-client-secret",
+  },
 }; 

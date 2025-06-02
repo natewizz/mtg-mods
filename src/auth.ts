@@ -2,6 +2,7 @@
 // Next.js 15 + NextAuth.js v4 integration
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import DiscordProvider from "next-auth/providers/discord";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
@@ -16,13 +17,24 @@ export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
-      clientId: config.google.clientId,
-      clientSecret: config.google.clientSecret,
+      clientId: "19569256258-c4oipcu5is7j5mr8lfeb356lec57hthf.apps.googleusercontent.com",
+      clientSecret: "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",
+      allowDangerousEmailAccountLinking: true,
       authorization: {
         params: {
           prompt: "consent",
           access_type: "offline",
           response_type: "code"
+        }
+      }
+    }),
+    DiscordProvider({
+      clientId: "1371192484943892611",
+      clientSecret: "NsUMNKJ5XB1mJ-7w43IPX8s8cfsksHfD",
+      allowDangerousEmailAccountLinking: true,
+      authorization: {
+        params: {
+          scope: "identify email"
         }
       }
     }),
@@ -89,8 +101,8 @@ export const authOptions = {
     signIn: "/auth/signin",
   },
   callbacks: {
-    async signIn({ user }) {
-      // Allow the sign in to succeed
+    async signIn({ user, account, profile, email, credentials }) {
+      // Allow OAuth providers to link to an existing account with the same email
       return true;
     },
     async redirect({ url, baseUrl }) {
@@ -111,14 +123,15 @@ export const authOptions = {
         try {
           const user = await prisma.user.findUnique({
             where: { id: token.sub },
-            select: { username: true }
+            select: { username: true, image: true }
           });
           
           if (user) {
             session.user.username = user.username;
+            session.user.image = user.image;
           }
         } catch (error) {
-          console.error("Error fetching username for session:", error);
+          console.error("Error fetching user data for session:", error);
         }
       }
       return session;
@@ -183,15 +196,17 @@ export async function auth() {
     
     // If we have the user ID, try to fetch the username from the database
     let username = null;
+    let image = null;
     if (decoded.sub) {
       try {
         const user = await prisma.user.findUnique({
           where: { id: decoded.sub },
-          select: { username: true }
+          select: { username: true, image: true }
         });
         username = user?.username;
+        image = user?.image;
       } catch (error) {
-        console.error('Error fetching username:', error);
+        console.error('Error fetching user data:', error);
       }
     }
     
@@ -201,7 +216,7 @@ export async function auth() {
         id: decoded.sub,
         name: decoded.name,
         email: decoded.email,
-        image: decoded.picture,
+        image: image || decoded.picture,
         username: username || decoded.username || null
       },
       expires: new Date(decoded.exp * 1000).toISOString()

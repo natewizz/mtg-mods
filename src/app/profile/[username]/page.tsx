@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ProfileCard from "@/components/user/ProfileCard";
 import ProfileTabs from "@/components/user/ProfileTabs";
@@ -11,6 +11,7 @@ import { SessionUser } from "@/lib/auth/types";
 
 export default function ProfilePage() {
   const params = useParams();
+  const router = useRouter();
   const username = params.username as string;
   const { data: session } = useSession();
   const [profile, setProfile] = useState<PrismaUser | null>(null);
@@ -66,6 +67,13 @@ export default function ProfilePage() {
       
       const updatedUser = await response.json();
       setProfile((prevProfile) => prevProfile ? { ...prevProfile, ...updatedUser } : updatedUser);
+      
+      // If username was changed, redirect to the new profile URL
+      if (data.username && data.username !== username) {
+        console.log(`Username changed from ${username} to ${data.username}. Redirecting...`);
+        router.push(`/profile/${data.username}`);
+      }
+      
       return Promise.resolve();
     } catch (err) {
       console.error('Error updating profile:', err);

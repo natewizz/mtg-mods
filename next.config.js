@@ -14,9 +14,13 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'placehold.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.discordapp.com',
       }
     ]
-  }
+  },
 };
 
 module.exports = nextConfig; 

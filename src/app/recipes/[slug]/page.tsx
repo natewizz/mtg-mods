@@ -6,6 +6,7 @@ import { auth } from '@/auth';
 import { slugify } from '@/lib/utils';
 import DeleteRecipeButton from '@/components/recipes/DeleteRecipeButton';
 import RecipeInteractionsClient from '@/components/recipes/RecipeInteractionsClient';
+import TagPill from '@/components/ui/TagPill';
 
 interface RecipePageProps {
   params: {
@@ -78,9 +79,49 @@ async function getRecipeWithInteractions(slug: string, userId?: string) {
       };
     }
 
+    // Get next and previous recipes by creation date
+    const [nextRecipe, prevRecipe] = await Promise.all([
+      // Next recipe (newer than current)
+      prisma.recipe.findFirst({
+        where: {
+          createdAt: {
+            gt: recipe.createdAt
+          }
+        },
+        orderBy: {
+          createdAt: 'asc'
+        },
+        select: {
+          title: true
+        }
+      }),
+      // Previous recipe (older than current)
+      prisma.recipe.findFirst({
+        where: {
+          createdAt: {
+            lt: recipe.createdAt
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        select: {
+          title: true
+        }
+      })
+    ]);
+
+    // Generate slugs for navigation
+    const nextSlug = nextRecipe ? slugify(nextRecipe.title) : null;
+    const prevSlug = prevRecipe ? slugify(prevRecipe.title) : null;
+
     return {
       recipe,
       userInteractions,
+      navigation: {
+        next: nextSlug,
+        prev: prevSlug
+      }
     };
   } catch (error) {
     console.error('Error fetching recipe:', error);
@@ -99,7 +140,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
     notFound();
   }
 
-  const { recipe, userInteractions } = recipeData;
+  const { recipe, userInteractions, navigation } = recipeData;
   const isAuthor = session?.user?.id === recipe.authorId;
 
   // Calculate total vote value
@@ -114,72 +155,100 @@ export default async function RecipePage({ params }: RecipePageProps) {
         </Link>
       </div>
 
-      <article className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-[var(--dark)] mb-4">{recipe.title}</h1>
-          
-          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6">
-            <div className="flex items-center">
-              <span className="font-medium">By</span>
-              <span className="ml-1">{recipe.author.name || recipe.author.username || 'Anonymous'}</span>
+      <div className="relative">
+        {/* Previous Recipe Arrow */}
+        {navigation.prev ? (
+          <Link href={`/recipes/${navigation.prev}`} className="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-12 lg:-ml-16 hidden md:block">
+            <div className="w-10 h-10 rounded-full bg-white/70 hover:bg-white shadow-md flex items-center justify-center text-gray-600 hover:text-[#5A31F4] transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            </div>
+          </Link>
+        ) : null}
+
+        <article className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <header className="mb-8">
+            <h1 className="text-3xl font-bold text-[var(--dark)] mb-4">{recipe.title}</h1>
+            
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6">
+              <div className="flex items-center">
+                <span className="font-medium">By</span>
+                <span className="ml-1">{recipe.author.name || recipe.author.username || 'Anonymous'}</span>
+              </div>
+              
+              <div>
+                <time dateTime={recipe.createdAt.toISOString()}>
+                  {new Date(recipe.createdAt).toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </time>
+              </div>
+
+              {/* Tags */}
+              {recipe.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {recipe.tags.map((tag) => (
+                    <TagPill
+                      key={tag.id}
+                      tag={tag.name}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
             
-            <div>
-              <time dateTime={recipe.createdAt.toISOString()}>
-                {new Date(recipe.createdAt).toLocaleDateString('en-US', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
-              </time>
+            <p className="text-gray-700 text-lg">{recipe.description}</p>
+          </header>
+
+          {/* Interactions (Voting, Bookmark, Tried) */}
+          <Suspense fallback={<div>Loading interactions...</div>}>
+            <RecipeInteractionsClient
+              recipeId={recipe.id}
+              voteCount={totalVotes}
+              triedCount={totalTried}
+              initialVoteValue={userInteractions?.voteValue || null}
+              initialBookmarked={userInteractions?.isBookmarked || false}
+              initialTried={userInteractions?.hasTried || false}
+            />
+          </Suspense>
+
+          {/* Recipe instructions */}
+          <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: recipe.instructions }} />
+
+          {/* Author actions */}
+          {isAuthor && (
+            <div className="flex items-center space-x-4 mt-8 pt-4 border-t">
+              <Link 
+                href={`/recipes/${params.slug}/edit`}
+                className="text-[var(--primary)] hover:underline"
+              >
+                Edit Recipe
+              </Link>
+              <Link 
+                href="/recipes/new" 
+                className="text-[#F4A261] hover:underline"
+              >
+                Create Another
+              </Link>
+              <DeleteRecipeButton recipeId={recipe.id} />
             </div>
+          )}
+        </article>
 
-            {/* Tags */}
-            {recipe.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {recipe.tags.map((tag) => (
-                  <span
-                    key={tag.id}
-                    className="px-2 py-1 rounded-full bg-gray-100 text-xs"
-                  >
-                    {tag.name}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-          
-          <p className="text-gray-700 text-lg">{recipe.description}</p>
-        </header>
-
-        {/* Interactions (Voting, Bookmark, Tried) */}
-        <Suspense fallback={<div>Loading interactions...</div>}>
-          <RecipeInteractionsClient
-            recipeId={recipe.id}
-            voteCount={totalVotes}
-            triedCount={totalTried}
-            initialVoteValue={userInteractions?.voteValue || null}
-            initialBookmarked={userInteractions?.isBookmarked || false}
-            initialTried={userInteractions?.hasTried || false}
-          />
-        </Suspense>
-
-        {/* Recipe instructions */}
-        <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: recipe.instructions }} />
-
-        {/* Author actions */}
-        {isAuthor && (
-          <div className="flex items-center space-x-4 mt-8 pt-4 border-t">
-            <Link 
-              href={`/recipes/${recipe.id}/edit`}
-              className="text-[var(--primary)] hover:underline"
-            >
-              Edit Recipe
-            </Link>
-            <DeleteRecipeButton recipeId={recipe.id} />
-          </div>
-        )}
-      </article>
+        {/* Next Recipe Arrow */}
+        {navigation.next ? (
+          <Link href={`/recipes/${navigation.next}`} className="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-12 lg:-mr-16 hidden md:block">
+            <div className="w-10 h-10 rounded-full bg-white/70 hover:bg-white shadow-md flex items-center justify-center text-gray-600 hover:text-[#5A31F4] transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </div>
+          </Link>
+        ) : null}
+      </div>
     </div>
   );
 } 

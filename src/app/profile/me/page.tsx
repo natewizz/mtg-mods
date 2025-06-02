@@ -17,12 +17,16 @@ export default function MeProfilePage() {
       return;
     }
 
-    if (session?.user?.username) {
-      // Redirect to the user's profile with username
-      router.push(`/profile/${session.user.username}`);
-    } else {
-      // Redirect to username setup if no username
-      router.push("/auth/setup-username");
+    // Make sure we have user data from the session
+    if (session?.user) {
+      // Check if the user has a username
+      if (session.user.username) {
+        // Redirect to the user's profile with username
+        router.push(`/profile/${session.user.username}`);
+      } else {
+        // Only redirect to username setup if username is actually missing
+        router.push("/auth/setup-username");
+      }
     }
   }, [session, status, router]);
 

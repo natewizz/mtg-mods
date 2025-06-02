@@ -1,12 +1,45 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { SessionUser } from "@/lib/auth/types";
+import RandomRecipeButton from '@/components/ui/RandomRecipeButton';
+import { getLatestRecipes } from '@/lib/recipe-actions';
+import { Recipe } from '@prisma/client';
+import TagPill from '@/components/ui/TagPill';
+import { slugify } from '@/lib/utils';
+
+// Types for latest recipes with related data
+interface RecipeWithRelations extends Recipe {
+  author: { name: string; id: string };
+  tags: { id: string; name: string }[];
+  _count: {
+    votes: number;
+    tried: number;
+  };
+}
 
 export default function Home() {
   const { data: session, status } = useSession();
+  const [latestRecipes, setLatestRecipes] = useState<RecipeWithRelations[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch latest recipes on component mount
+  useEffect(() => {
+    const fetchLatestRecipes = async () => {
+      try {
+        const recipes = await getLatestRecipes(4);
+        setLatestRecipes(recipes as RecipeWithRelations[]);
+      } catch (error) {
+        console.error('Error fetching latest recipes:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLatestRecipes();
+  }, []);
 
   if (status === "loading") {
     return (
@@ -33,11 +66,11 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           <div className="text-center">
             <h1 className="text-5xl md:text-7xl font-extrabold mb-6 text-white">
-              <span className="block">MTG Mods</span>
-              <span className="block text-3xl md:text-4xl mt-2 text-[var(--accent)]/90">Reimagine Your Collection</span>
+              <span className="block">MTG MODS</span>
+              <span className="block text-3xl md:text-4xl mt-2 text-[var(--accent)]/90">Reimagine the game</span>
             </h1>
             <p className="text-xl md:text-2xl max-w-3xl mx-auto mb-12 text-white/80">
-              Share your Magic: The Gathering card modifications and discover unique recipes from the community
+              Discover innovative game and rule modifications for Magic: The Gathering that transform how you play
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
@@ -52,34 +85,76 @@ export default function Home() {
         </div>
       </div>
       
-      {/* Stats section */}
-      <div className="bg-white py-12">
+      {/* Latest Recipes Section */}
+      <div className="pt-16 pb-6 bg-[#F1F3FA]">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div className="p-4">
-              <p className="text-4xl font-bold text-[var(--primary)]">500+</p>
-              <p className="text-gray-500">Recipes</p>
-            </div>
-            <div className="p-4">
-              <p className="text-4xl font-bold text-[var(--primary)]">10k+</p>
-              <p className="text-gray-500">Community Members</p>
-            </div>
-            <div className="p-4">
-              <p className="text-4xl font-bold text-[var(--primary)]">30k+</p>
-              <p className="text-gray-500">Card Modifications</p>
-            </div>
-            <div className="p-4">
-              <p className="text-4xl font-bold text-[var(--primary)]">4.8</p>
-              <p className="text-gray-500">Average Rating</p>
-            </div>
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-bold text-[#2C2E3A]">Latest Recipes</h2>
+            <Link href="/recipes" className="text-[#5A31F4] hover:underline font-semibold">
+              View All →
+            </Link>
           </div>
+          
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5A31F4]"></div>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                {latestRecipes.map((recipe) => (
+                  <div key={recipe.id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all overflow-hidden">
+                    <div className="p-5">
+                      <h3 className="font-bold text-xl mb-2 line-clamp-1">
+                        <Link href={`/recipes/${slugify(recipe.title)}`} className="hover:text-[#5A31F4] transition">
+                          {recipe.title}
+                        </Link>
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">{recipe.description}</p>
+                      
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {recipe.tags.slice(0, 3).map((tag) => (
+                          <TagPill key={tag.id} tag={tag.name} size="sm" />
+                        ))}
+                        {recipe.tags.length > 3 && (
+                          <span className="text-xs text-gray-500 self-center">+{recipe.tags.length - 3} more</span>
+                        )}
+                      </div>
+                      
+                      <div className="flex justify-between text-sm text-gray-500">
+                        <span>By {recipe.author.name}</span>
+                        <div className="flex items-center">
+                          <span className="flex items-center mr-3">
+                            <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                            </svg>
+                            {recipe._count.votes}
+                          </span>
+                          <span className="flex items-center">
+                            <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            {recipe._count.tried}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex justify-center">
+                <RandomRecipeButton />
+              </div>
+            </>
+          )}
         </div>
       </div>
       
       {/* Features section */}
-      <div className="py-24 bg-[var(--background)]">
+      <div className="pt-0 pb-12 bg-[var(--background)]">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-16">Transform Your <span className="text-[var(--primary)]">Magic</span> Experience</h2>
+          <h2 className="text-4xl font-bold text-center mb-10 mt-4">Transform Your <span className="text-[var(--primary)]">Magic</span> Experience</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             <div className="card-3d p-8 flex flex-col items-center text-center">
@@ -89,9 +164,9 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-[var(--primary)]">Discover Techniques</h3>
-              <p className="text-gray-600 mb-6">Explore a vast library of card modification techniques from the community.</p>
-              <Link href="/recipes" className="hover-underline text-[var(--primary)] font-semibold">Browse Techniques →</Link>
+              <h3 className="text-2xl font-bold mb-4 text-[var(--primary)]">Discover New Ways to Play</h3>
+              <p className="text-gray-600 mb-6">Explore a library of rule modifications and game variants from the community.</p>
+              <Link href="/recipes" className="hover-underline text-[var(--primary)] font-semibold">Browse Recipes →</Link>
             </div>
             
             <div className="card-3d p-8 flex flex-col items-center text-center">
@@ -100,8 +175,8 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-[var(--accent)]">Create Recipes</h3>
-              <p className="text-gray-600 mb-6">Share your own unique modification recipes with the MTG modding community.</p>
+              <h3 className="text-2xl font-bold mb-4 text-[var(--accent)]">Create Your Rules</h3>
+              <p className="text-gray-600 mb-6">Share your own unique game modifications with the MTG community.</p>
               <Link href="/recipes/new" className="hover-underline text-[var(--accent)] font-semibold">Create a Recipe →</Link>
             </div>
             
@@ -112,7 +187,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className="text-2xl font-bold mb-4 text-[var(--supporting)]">Join Community</h3>
-              <p className="text-gray-600 mb-6">Connect with other modders, share feedback, and collaborate on projects.</p>
+              <p className="text-gray-600 mb-6">Connect with other players, share feedback, and collaborate on variants.</p>
               <Link href="/community" className="hover-underline text-[var(--supporting)] font-semibold">Connect Now →</Link>
             </div>
             
@@ -123,7 +198,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className="text-2xl font-bold mb-4 text-[var(--contrast)]">Learn & Grow</h3>
-              <p className="text-gray-600 mb-6">Access tutorials, guides, and resources to improve your modding skills.</p>
+              <p className="text-gray-600 mb-6">Access rule guides and resources to enhance your game variants.</p>
               <Link href="/learn" className="hover-underline text-[var(--contrast)] font-semibold">Start Learning →</Link>
             </div>
           </div>
@@ -133,8 +208,8 @@ export default function Home() {
       {/* CTA section */}
       <div className="py-16 bg-[var(--primary)]">
         <div className="max-w-5xl mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Start Your Modding Journey?</h2>
-          <p className="text-white/80 text-xl mb-8 max-w-3xl mx-auto">Join thousands of MTG enthusiasts sharing and discovering card modifications daily.</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Transform Your Magic Experience?</h2>
+          <p className="text-white/80 text-xl mb-8 max-w-3xl mx-auto">Join fellow MTG enthusiasts sharing and discovering exciting new ways to play.</p>
           <Link href="/auth/signup" className="inline-block bg-white text-[var(--primary)] font-bold py-3 px-8 rounded-full hover:bg-opacity-90 transition-all">
             Create Free Account
           </Link>
