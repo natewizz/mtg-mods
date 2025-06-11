@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 
 interface TagCount {
   name: string;
-  count: number; // Or BigInt, depending on what Prisma $queryRaw returns for COUNT
+  count: number | bigint;
 }
 
 /**

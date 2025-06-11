@@ -18,7 +18,7 @@ export default function Header() {
   
   // Safely access user properties with type safety
   const user = session?.user as SessionUser | undefined;
-  const userName = user?.name;
+  const userName = user?.username ? `@${user.username}` : 'Anonymous';
   const userImage = user?.image;
   
   // Update profile image when session changes
@@ -101,6 +101,11 @@ export default function Header() {
             <Link href="/contact" className="hover-underline font-medium text-dark hover:text-primary transition-colors">
               Contact
             </Link>
+            {user?.role === 'ADMIN' && (
+              <Link href="/dashboard" className="hover-underline font-medium text-[#5A31F4] hover:text-[#4A21E4] transition-colors">
+                Stats
+              </Link>
+            )}
             
             {status === "loading" ? (
               <div className="h-8 w-8 rounded-full border-2 border-t-primary border-r-transparent animate-spin"></div>
@@ -148,9 +153,6 @@ export default function Header() {
                         <Link href="/recipes/new" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                           Create Recipe
                         </Link>
-                        <Link href="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          Settings
-                        </Link>
                         <button onClick={handleSignOut} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
                           Sign Out
                         </button>
@@ -196,6 +198,11 @@ export default function Header() {
             <Link href="/contact" className="hover:text-primary transition-colors">
               Contact
             </Link>
+            {user?.role === 'ADMIN' && (
+              <Link href="/dashboard" className="hover:text-[#5A31F4] transition-colors">
+                Stats
+              </Link>
+            )}
             
             {session ? (
               <>

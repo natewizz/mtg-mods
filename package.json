@@ -14,17 +14,20 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.9.0",
+    "@auth/prisma-adapter": "^2.9.1",
     "@hookform/resolvers": "^5.0.1",
     "@prisma/client": "^6.7.0",
     "@tinymce/tinymce-react": "^6.1.0",
     "@types/uuid": "^10.0.0",
     "bcrypt": "^5.1.1",
+    "date-fns": "^4.1.0",
     "next": "^15.3.1",
     "next-auth": "^4.24.11",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.56.2",
+    "react-markdown": "^10.1.0",
+    "recharts": "^2.15.3",
     "uuid": "^11.1.0",
     "zod": "^3.24.3"
   },

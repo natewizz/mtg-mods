@@ -26,6 +26,7 @@ model User {
   credentials    UserCredential?
   usernameChange UsernameChange?
   votes          Vote[]
+  role           String          @default("USER")
 }
 
 model UserCredential {
