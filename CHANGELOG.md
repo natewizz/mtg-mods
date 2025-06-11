@@ -263,6 +263,9 @@ All notable changes to the mtg-mods project will be documented in this file.
 - Modular dashboard chart components using Recharts and Tailwind
 - Markdown support for user bio (with react-markdown)
 - Profile tab counts for Recipes, Bookmarks, Tried
+- Markdown Help link/tooltip next to bio editor (edit and view modes)
+- Copy Link button for recipes (copies current URL, shows confirmation)
+- Copy Link button for profiles (copies current URL, shows confirmation)
 
 ### Changed
 - Profile card now hides full name and displays only username (or 'Anonymous')
@@ -270,6 +273,7 @@ All notable changes to the mtg-mods project will be documented in this file.
 - Removed duplicate username display on profile card
 - Removed 'Settings' nav item (all account management via profile)
 - Improved profile and dashboard UI for clarity and privacy
+- Minor UI polish for markdown and sharing features
 
 ### Fixed
 - Cleaned up unused variables in dashboard code by prefixing with underscore (for future use)
@@ -281,3 +285,30 @@ All notable changes to the mtg-mods project will be documented in this file.
 
 ### Documentation
 - Updated changelog with all recent admin, privacy, and UI/UX changes 
+
+## [2024-06-11] - User Timestamps and Profile Metadata
+
+### Added
+- Added `createdAt` and `updatedAt` fields to the User model via Prisma migration
+- Profile card now displays 'Joined' (from emailVerified or createdAt) and 'Last active' (from updatedAt) in the bottom right corner
+
+### Changed
+- Updated user API to return new timestamp fields for profile display
+- Modernized profile card layout for subtle metadata display
+
+### Migration
+- Manual SQL migration to backfill timestamps for existing users 
+
+## [2024-06-12] - Trending Recipes Feed
+
+### Added
+- Trending Recipes feed on the /recipes page
+  - Backend: `getTrendingRecipes` server function aggregates most upvoted, bookmarked, and tried recipes in the last 7 days
+  - UI: New `TrendingFeed` server component displays trending recipes in a responsive grid using Shadcn UI, Radix, and Tailwind
+  - Integrated trending feed at the top of the /recipes page with Suspense loading state
+
+### Changed
+- RecipeCard and trending grid now enforce consistent card heights for a uniform layout
+
+### Fixed
+- Linter error for RecipeCard import in TrendingFeed 

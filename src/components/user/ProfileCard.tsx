@@ -6,11 +6,14 @@ import { useState, useRef } from 'react';
 import { useSession } from "next-auth/react";
 import { signIn } from "next-auth/react";
 import ReactMarkdown from 'react-markdown';
+import { formatDistanceToNow } from 'date-fns';
 
 // Extended interface to include new fields during transition
 interface ExtendedUser extends User {
   linkUrl: string | null;
   linkText: string | null;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 
 type ProfileCardProps = {
@@ -144,7 +147,7 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden relative">
       <div className="bg-gradient-to-r from-[#5A31F4]/10 to-[#3DA1C4]/10 p-6">
         <div className="flex flex-col md:flex-row items-center gap-6">
           <div className="relative w-24 h-24 rounded-full overflow-hidden group border-4 border-white shadow-md">
@@ -215,7 +218,17 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
                     <div className="flex items-center mb-2 gap-2">
                       <h3 className="text-lg font-semibold text-[#2C2E3A]">Bio</h3>
                       {isCurrentUser && (
-                        <span className="text-xs text-gray-400 font-normal">(supports markdown)</span>
+                        <span className="text-xs text-gray-400 font-normal flex items-center gap-1">
+                          (supports markdown)
+                          <a
+                            href="https://www.markdownguide.org/cheat-sheet/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="ml-1 underline hover:text-[#5A31F4]"
+                          >
+                            Markdown Help
+                          </a>
+                        </span>
                       )}
                     </div>
                     <div className="prose prose-sm max-w-none text-gray-700">
@@ -264,7 +277,17 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
                   <label htmlFor="bio" className="block text-sm font-medium text-[#2C2E3A] flex items-center gap-2">
                     Bio
                     {isCurrentUser && (
-                      <span className="text-xs text-gray-400 font-normal">(supports markdown)</span>
+                      <span className="text-xs text-gray-400 font-normal flex items-center gap-1">
+                        (supports markdown)
+                        <a
+                          href="https://www.markdownguide.org/cheat-sheet/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="ml-1 underline hover:text-[#5A31F4]"
+                        >
+                          Markdown Help
+                        </a>
+                      </span>
                     )}
                   </label>
                   <textarea
@@ -335,6 +358,14 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
                 </div>
               </form>
             )}
+          </div>
+        </div>
+        <div className="absolute bottom-3 right-6 text-xs text-gray-400 text-right pointer-events-none select-none">
+          <div>
+            Joined: {user.emailVerified ? new Date(user.emailVerified).toLocaleDateString() : user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Unknown'}
+          </div>
+          <div>
+            Last active: {user.updatedAt ? formatDistanceToNow(new Date(user.updatedAt), { addSuffix: true }) : 'Unknown'}
           </div>
         </div>
       </div>

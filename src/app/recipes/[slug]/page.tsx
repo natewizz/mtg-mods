@@ -7,6 +7,7 @@ import { slugify } from '@/lib/utils';
 import DeleteRecipeButton from '@/components/recipes/DeleteRecipeButton';
 import RecipeInteractionsClient from '@/components/recipes/RecipeInteractionsClient';
 import TagPill from '@/components/ui/TagPill';
+import { CopyLinkButton } from '@/components/CopyLinkButton';
 
 async function getRecipeWithInteractions(slug: string, userId?: string) {
   try {
@@ -164,7 +165,10 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
 
         <article className="bg-white rounded-lg shadow-md p-6 mb-8">
           <header className="mb-8">
-            <h1 className="text-3xl font-bold text-[var(--dark)] mb-4">{recipe.title}</h1>
+            <h1 className="text-3xl font-bold text-[var(--dark)] mb-4 flex items-center">
+              {recipe.title}
+              <CopyLinkButton />
+            </h1>
             
             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6">
               <div className="flex items-center">

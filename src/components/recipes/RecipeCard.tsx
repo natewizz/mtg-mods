@@ -32,7 +32,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
 
   return (
     <Link href={recipeUrl}>
-      <div className="card hover:shadow-lg transition-shadow">
+      <div className="card hover:shadow-lg transition-shadow min-h-[320px] h-full flex flex-col">
         <h2 className="text-xl font-bold mb-2 text-[var(--dark)]">{recipe.title}</h2>
         
         <p className="text-gray-600 mb-4 line-clamp-2">{recipe.description}</p>

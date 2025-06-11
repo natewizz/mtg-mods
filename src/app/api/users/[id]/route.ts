@@ -26,6 +26,9 @@ interface ExtendedUser {
   bio: string | null;
   linkUrl: string | null;
   linkText: string | null;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  emailVerified: string | Date | null;
 }
 
 // Define the context type for route handlers
@@ -53,7 +56,10 @@ export async function GET(
         bio: true,
         linkUrl: true,
         linkText: true,
-      },
+        createdAt: true,
+        updatedAt: true,
+        emailVerified: true,
+      } as any,
     });
 
     // If user not found by ID, try to find by username
@@ -68,7 +74,10 @@ export async function GET(
           bio: true,
           linkUrl: true,
           linkText: true,
-        },
+          createdAt: true,
+          updatedAt: true,
+          emailVerified: true,
+        } as any,
       });
     }
 
