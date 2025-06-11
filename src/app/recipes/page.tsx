@@ -4,6 +4,7 @@ import RecipeCard from '@/components/recipes/RecipeCard';
 import RecipeFiltersWrapper from './RecipeFiltersWrapper';
 import { getFilteredRecipes, getPopularTags } from '@/lib/recipe-actions';
 import { SortOption } from '@/components/recipes/RecipeFilters';
+import { TrendingFeed, TrendingFeedFallback } from '@/components/recipes/TrendingFeed';
 
 export default async function RecipesPage({ searchParams }: { searchParams: Promise<{ tags?: string; sort?: SortOption }> }) {
   const resolvedSearchParams = await searchParams;
@@ -19,6 +20,11 @@ export default async function RecipesPage({ searchParams }: { searchParams: Prom
   
   return (
     <div className="space-y-6">
+      {/* Trending Feed Section */}
+      <Suspense fallback={<TrendingFeedFallback />}>
+        <TrendingFeed />
+      </Suspense>
+
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-[var(--dark)]">All Recipes</h1>
         

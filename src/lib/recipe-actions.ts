@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { FilterTag } from '@/components/recipes/RecipeFilters';
+import { subDays } from 'date-fns';
 
 export type SortOption = 'newest' | 'oldest' | 'most-upvoted' | 'most-tried';
 
@@ -206,5 +207,66 @@ export async function getRandomRecipe() {
   } catch (error) {
     console.error('Error fetching random recipe:', error);
     return null;
+  }
+}
+
+// Get trending recipes based on recent upvotes, bookmarks, and tried (last 7 days)
+export async function getTrendingRecipes({
+  days = 7,
+  take = 8,
+  skip = 0,
+}: { days?: number; take?: number; skip?: number } = {}) {
+  try {
+    const since = subDays(new Date(), days);
+    // Find recipes with most recent interactions
+    const recipes = await prisma.recipe.findMany({
+      include: {
+        author: true,
+        tags: true,
+        votes: {
+          where: { createdAt: { gte: since } },
+        },
+        bookmarks: {
+          where: { createdAt: { gte: since } },
+        },
+        tried: {
+          where: { createdAt: { gte: since } },
+        },
+        _count: {
+          select: {
+            votes: true,
+            bookmarks: true,
+            tried: true,
+          },
+        },
+      },
+      orderBy: [
+        // Sort by trending score: sum of recent votes, bookmarks, tried
+        {
+          votes: {
+            _count: 'desc',
+          },
+        },
+        {
+          bookmarks: {
+            _count: 'desc',
+          },
+        },
+        {
+          tried: {
+            _count: 'desc',
+          },
+        },
+        { createdAt: 'desc' },
+      ],
+      take,
+      skip,
+    });
+    // Optionally, you can compute a trending score in JS if Prisma can't sort by sum
+    // For now, return as-is for UI to display
+    return recipes;
+  } catch (error) {
+    console.error('Error fetching trending recipes:', error);
+    return [];
   }
 } 
