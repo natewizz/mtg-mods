@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState, useRef } from 'react';
 import { useSession } from "next-auth/react";
 import { signIn } from "next-auth/react";
+import ReactMarkdown from 'react-markdown';
 
 // Extended interface to include new fields during transition
 interface ExtendedUser extends User {
@@ -30,7 +31,6 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
   const [formError, setFormError] = useState('');
   const [urlError, setUrlError] = useState('');
   const [isUploadingImage, setIsUploadingImage] = useState(false);
-  const [uploadError, setUploadError] = useState('');
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { update } = useSession();
@@ -89,14 +89,12 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
     
     // Validate file type
     if (!['image/jpeg', 'image/png'].includes(file.type)) {
-      setUploadError('Only JPG and PNG images are allowed');
       return;
     }
     
     // Validate file size (2MB max)
     const maxSize = 2 * 1024 * 1024; // 2MB
     if (file.size > maxSize) {
-      setUploadError('Image size must be less than 2MB');
       return;
     }
     
@@ -108,7 +106,6 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
     formData.append('image', file);
     
     setIsUploadingImage(true);
-    setUploadError('');
     
     try {
       const response = await fetch(`/api/users/${user.id}/profile-image`, {
@@ -134,8 +131,7 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
         // fallback for older next-auth: force signIn to refresh session
         await signIn(undefined, { redirect: false });
       }
-    } catch (err) {
-      setUploadError(err instanceof Error ? err.message : 'Failed to upload image');
+    } catch {
       // Reset preview on error
       setPreviewImage(null);
     } finally {
@@ -190,14 +186,6 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
           </div>
           
           <div className="flex-1 text-center md:text-left">
-            <h1 className="text-2xl font-bold text-[#2C2E3A]">{user.name}</h1>
-            
-            {uploadError && (
-              <div className="mt-2 p-2 bg-red-100 border border-red-300 text-red-700 rounded text-sm">
-                {uploadError}
-              </div>
-            )}
-            
             {!isEditing ? (
               <div className="mt-4 space-y-4">
                 {user.username && (
@@ -223,9 +211,16 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
                 )}
                 
                 {user.bio && (
-                  <div className="mt-4 border border-gray-200 rounded-md p-4 bg-white shadow-sm">
-                    <h3 className="text-lg font-semibold text-[#2C2E3A] mb-2">Bio</h3>
-                    <p className="text-gray-600">{user.bio}</p>
+                  <div className="mt-4 border border-gray-200 rounded-md p-4 bg-gradient-to-br from-white via-[#f6f7fb] to-[#f3f0ff] shadow-sm">
+                    <div className="flex items-center mb-2 gap-2">
+                      <h3 className="text-lg font-semibold text-[#2C2E3A]">Bio</h3>
+                      {isCurrentUser && (
+                        <span className="text-xs text-gray-400 font-normal">(supports markdown)</span>
+                      )}
+                    </div>
+                    <div className="prose prose-sm max-w-none text-gray-700">
+                      <ReactMarkdown>{user.bio}</ReactMarkdown>
+                    </div>
                   </div>
                 )}
                 
@@ -266,8 +261,11 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
                 </div>
                 
                 <div>
-                  <label htmlFor="bio" className="block text-sm font-medium text-[#2C2E3A]">
+                  <label htmlFor="bio" className="block text-sm font-medium text-[#2C2E3A] flex items-center gap-2">
                     Bio
+                    {isCurrentUser && (
+                      <span className="text-xs text-gray-400 font-normal">(supports markdown)</span>
+                    )}
                   </label>
                   <textarea
                     id="bio"

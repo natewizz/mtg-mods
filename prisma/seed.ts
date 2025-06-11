@@ -30,6 +30,31 @@ async function main() {
     });
   }
 
+  // Create superuser (ADMIN) if it doesn't exist
+  let adminUser = await prisma.user.findUnique({
+    where: { email: 'admin@example.com' },
+  });
+
+  if (!adminUser) {
+    console.log('Creating superuser (ADMIN)...');
+    adminUser = await prisma.user.create({
+      data: {
+        name: 'Super Admin',
+        username: 'admin',
+        email: 'admin@example.com',
+        emailVerified: new Date(),
+        role: 'ADMIN',
+      },
+    });
+
+    await prisma.userCredential.create({
+      data: {
+        userId: adminUser.id,
+        hashedPassword: await hash('admin123', 12),
+      },
+    });
+  }
+
   // Create test users for votes and interactions
   const testUserEmails = [
     'test1@example.com', 

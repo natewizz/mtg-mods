@@ -30,9 +30,9 @@ export default function ProfileTabs({
   const [activeTab, setActiveTab] = useState<TabType>('recipes');
 
   const tabs = [
-    { id: 'recipes' as TabType, label: 'Recipes' },
-    { id: 'bookmarks' as TabType, label: 'Bookmarks' },
-    { id: 'tried' as TabType, label: 'Tried' },
+    { id: 'recipes' as TabType, label: 'Recipes', count: recipes.length },
+    { id: 'bookmarks' as TabType, label: 'Bookmarks', count: bookmarkedRecipes.length },
+    { id: 'tried' as TabType, label: 'Tried', count: triedRecipes.length },
   ];
 
   return (
@@ -52,6 +52,7 @@ export default function ProfileTabs({
               aria-current={activeTab === tab.id ? 'page' : undefined}
             >
               {tab.label}
+              <span className="ml-1 inline-block min-w-[1.5em] text-xs font-semibold text-gray-400 align-middle">({tab.count})</span>
             </button>
           ))}
         </nav>

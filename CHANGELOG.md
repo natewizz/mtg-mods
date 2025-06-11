@@ -255,3 +255,29 @@ All notable changes to the mtg-mods project will be documented in this file.
 - Updated CHANGELOG.md with new project details
 - Added component documentation
 - Database schema documentation 
+
+## [2024-06-07] - Admin Dashboard, Profile Privacy, and UI/UX Improvements
+
+### Added
+- Admin dashboard with advanced metrics, charts, and analytics (user, recipe, interaction stats)
+- Modular dashboard chart components using Recharts and Tailwind
+- Markdown support for user bio (with react-markdown)
+- Profile tab counts for Recipes, Bookmarks, Tried
+
+### Changed
+- Profile card now hides full name and displays only username (or 'Anonymous')
+- Nav bar now shows username instead of full name
+- Removed duplicate username display on profile card
+- Removed 'Settings' nav item (all account management via profile)
+- Improved profile and dashboard UI for clarity and privacy
+
+### Fixed
+- Cleaned up unused variables in dashboard code by prefixing with underscore (for future use)
+- Removed unused variable in ProfileCard to resolve linter errors
+- Linter passes for Vercel deploy (except known NextAuth adapter warning)
+
+### Security
+- User full name is no longer exposed in any public or private profile views
+
+### Documentation
+- Updated changelog with all recent admin, privacy, and UI/UX changes 

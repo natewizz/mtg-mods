@@ -93,7 +93,7 @@ export const authOptions = {
     })
   ],
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
   },
   pages: {
     signIn: "/auth/signin",
@@ -116,17 +116,16 @@ export const authOptions = {
       // Add the user ID from token to the session
       if (session.user && token.sub) {
         session.user.id = token.sub;
-        
-        // Fetch the username from the database and add it to the session
+        // Fetch the username, image, and role from the database and add to the session
         try {
           const user = await prisma.user.findUnique({
             where: { id: token.sub },
-            select: { username: true, image: true }
+            select: { username: true, image: true, role: true }
           });
-          
           if (user) {
             session.user.username = user.username;
             session.user.image = user.image;
+            session.user.role = user.role;
           }
         } catch (error) {
           console.error("Error fetching user data for session:", error);
@@ -138,12 +137,13 @@ export const authOptions = {
       // When signing in, add the user's ID to the token
       if (user) {
         token.sub = user.id;
-        
-        // Include username if available
+        // Include username and role if available
         if ('username' in user) {
           token.username = user.username;
         }
-        
+        if ('role' in user) {
+          token.role = user.role;
+        }
         // Set a flag to check if username should be set up
         token.needsUsernameSetup = !user.username;
       }
