@@ -32,7 +32,13 @@ export default function ProfilePage() {
             throw new Error('Failed to fetch profile');
           }
           const data = await response.json();
-          setProfile(data.user);
+          // Convert createdAt/updatedAt to Date objects
+          const user = {
+            ...data.user,
+            createdAt: data.user.createdAt ? new Date(data.user.createdAt) : undefined,
+            updatedAt: data.user.updatedAt ? new Date(data.user.updatedAt) : undefined,
+          };
+          setProfile(user);
           setRecipes(data.recipes);
           setBookmarkedRecipes(data.bookmarkedRecipes);
           setTriedRecipes(data.triedRecipes);

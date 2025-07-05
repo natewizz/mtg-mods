@@ -12,8 +12,8 @@ import { formatDistanceToNow } from 'date-fns';
 interface ExtendedUser extends User {
   linkUrl: string | null;
   linkText: string | null;
-  createdAt: Date | string;
-  updatedAt: Date | string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 type ProfileCardProps = {
