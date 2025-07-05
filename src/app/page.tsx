@@ -31,7 +31,6 @@ function toRecipeWithRelations(recipe: Partial<RecipeWithRelations>): RecipeWith
     tried: recipe.tried || [],
     id: recipe.id!,
     title: recipe.title!,
-    description: recipe.description!,
     createdAt: recipe.createdAt!,
     updatedAt: recipe.updatedAt!,
     authorId: recipe.authorId!,
@@ -39,10 +38,75 @@ function toRecipeWithRelations(recipe: Partial<RecipeWithRelations>): RecipeWith
   };
 }
 
+function WaitlistSignupModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle"|"success"|"error"|"duplicate">("idle");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (status === "success") {
+      const timer = setTimeout(() => {
+        onClose();
+        setStatus("idle");
+        setEmail("");
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [status, onClose]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("idle");
+    setLoading(true);
+    const res = await fetch("/api/waitlist", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, source: "homepage-modal" }),
+    });
+    setLoading(false);
+    if (res.ok) setStatus("success");
+    else if (res.status === 409) setStatus("duplicate");
+    else setStatus("error");
+  }
+
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 animate-fade-in">
+      <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full relative animate-pop-in">
+        <button onClick={onClose} className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
+        <h2 className="text-2xl font-bold mb-4 text-center">Join the Waitlist</h2>
+        <p className="mb-4 text-gray-600 text-center">Get notified about our Kickstarter and early access!</p>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            className="input-field border px-3 py-2 rounded"
+            disabled={loading || status === "success"}
+          />
+          <button
+            type="submit"
+            className={`transition-all duration-200 bg-gradient-to-r from-[#5A31F4] to-[#FF8661] text-white font-bold py-3 rounded shadow-lg text-lg tracking-wide hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#5A31F4] focus:ring-offset-2 ${loading || status === "success" ? "opacity-60 cursor-not-allowed" : ""}`}
+            disabled={loading || status === "success"}
+          >
+            {loading ? "Joining..." : "Join Kickstarter Waitlist"}
+          </button>
+        </form>
+        {status === "success" && <p className="text-green-600 mt-3 text-center animate-fade-in">Thanks! You're on the list.</p>}
+        {status === "duplicate" && <p className="text-yellow-600 mt-3 text-center">You're already signed up!</p>}
+        {status === "error" && <p className="text-red-600 mt-3 text-center">Something went wrong. Try again.</p>}
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const { status } = useSession();
   const [latestRecipes, setLatestRecipes] = useState<RecipeWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
 
   // Fetch latest recipes on component mount
   useEffect(() => {
@@ -70,6 +134,7 @@ export default function Home() {
   
   return (
     <main className="min-h-screen">
+      <WaitlistSignupModal open={waitlistOpen} onClose={() => setWaitlistOpen(false)} />
       {/* Hero section with animated gradient background */}
       <div className="gradient-bg py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-[rgba(0,0,0,0.2)]"></div>
@@ -85,7 +150,14 @@ export default function Home() {
             <p className="text-xl md:text-2xl max-w-3xl mx-auto mb-12 text-white/80">
               Discover innovative game and rule modifications for Magic: The Gathering that transform how you play
             </p>
-            
+            <div className="flex flex-col sm:flex-row justify-center gap-4 mb-6">
+              <button
+                className="transition-all duration-200 bg-gradient-to-r from-[#FF8661] to-[#5A31F4] text-white font-extrabold py-4 px-8 rounded-full shadow-xl text-xl tracking-wider border-4 border-white hover:scale-110 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-[#5A31F4] focus:ring-offset-2 animate-bounce-slow"
+                onClick={() => setWaitlistOpen(true)}
+              >
+                Join Kickstarter Waitlist
+              </button>
+            </div>
             <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
               <Link href="/recipes" className="btn-primary btn-shine rounded-full text-center">
                 Explore Recipes
@@ -123,7 +195,6 @@ export default function Home() {
                           {recipe.title}
                         </Link>
                       </h3>
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">{recipe.description}</p>
                       
                       <div className="flex flex-wrap gap-2 mb-4">
                         {recipe.tags.slice(0, 3).map((tag) => (

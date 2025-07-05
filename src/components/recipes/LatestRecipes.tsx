@@ -25,7 +25,6 @@ function toRecipeWithRelations(recipe: Partial<RecipeWithRelations>): RecipeWith
     tried: recipe.tried || [],
     id: recipe.id!,
     title: recipe.title!,
-    description: recipe.description!,
     createdAt: recipe.createdAt!,
     updatedAt: recipe.updatedAt!,
     authorId: recipe.authorId!,

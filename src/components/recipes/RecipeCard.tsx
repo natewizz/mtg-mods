@@ -35,8 +35,6 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
       <div className="card hover:shadow-lg transition-shadow min-h-[320px] h-full flex flex-col">
         <h2 className="text-xl font-bold mb-2 text-[var(--dark)]">{recipe.title}</h2>
         
-        <p className="text-gray-600 mb-4 line-clamp-2">{recipe.description}</p>
-        
         {/* Display tags if available */}
         {recipe.tags && recipe.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-3">

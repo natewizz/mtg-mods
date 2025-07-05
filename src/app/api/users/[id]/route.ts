@@ -59,7 +59,7 @@ export async function GET(
         createdAt: true,
         updatedAt: true,
         emailVerified: true,
-      } as any,
+      },
     });
 
     // If user not found by ID, try to find by username
@@ -77,7 +77,7 @@ export async function GET(
           createdAt: true,
           updatedAt: true,
           emailVerified: true,
-        } as any,
+        },
       });
     }
 

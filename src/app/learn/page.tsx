@@ -4,6 +4,31 @@ import Link from 'next/link';
 export const metadata = {
   title: 'Learn About MTG Game Modifications | MTG Mods',
   description: 'Discover how to create, share, and play with game rule modifications for Magic: The Gathering. Learn about recipe complexity, dependencies, and unleash your creativity.',
+  keywords: [
+    'Magic the Gathering', 'MTG', 'learn', 'how to', 'game mods', 'rule variants', 'custom rules', 'community', 'tutorial', 'guide'
+  ],
+  openGraph: {
+    title: 'Learn About MTG Game Modifications | MTG Mods',
+    description: 'Discover how to create, share, and play with game rule modifications for Magic: The Gathering. Learn about recipe complexity, dependencies, and unleash your creativity.',
+    url: 'https://mtgmods.xyz/learn',
+    siteName: 'MTG Mods',
+    images: [
+      {
+        url: '/logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'MTG Mods Logo'
+      }
+    ],
+    locale: 'en_US',
+    type: 'article'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Learn About MTG Game Modifications | MTG Mods',
+    description: 'Discover how to create, share, and play with game rule modifications for Magic: The Gathering. Learn about recipe complexity, dependencies, and unleash your creativity.',
+    images: ['/logo.png']
+  }
 };
 
 export default function LearnPage() {

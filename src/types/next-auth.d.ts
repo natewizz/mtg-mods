@@ -4,6 +4,7 @@
 
 import "next-auth";
 import { User as PrismaUser } from "@prisma/client";
+import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
 
 // Augment the built-in session types
 declare module "next-auth" {
@@ -11,17 +12,21 @@ declare module "next-auth" {
      * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
      */
     interface Session {
-        user: {
-            id: string;
-            name?: string | null;
-            email?: string | null;
-            image?: string | null;
-            username?: string | null;
-            role?: string | null;
-        };
+        user: User;
     }
 
-    interface User extends Omit<PrismaUser, "emailVerified"> {
+    interface User extends DefaultUser {
+        id: string;
+        name?: string | null;
+        username?: string | null;
+        email?: string | null;
+        image?: string | null;
+        bio?: string | null;
+        linkUrl?: string | null;
+        linkText?: string | null;
+        role?: string;
+        createdAt?: Date;
+        updatedAt?: Date;
         emailVerified?: Date | null;
     }
 }
