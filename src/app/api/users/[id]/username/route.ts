@@ -10,7 +10,7 @@ interface RouteContext {
 
 export async function PUT(
   request: NextRequest,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   context: RouteContext
 ) {
   try {

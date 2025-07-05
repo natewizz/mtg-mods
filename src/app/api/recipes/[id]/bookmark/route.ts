@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 
 // Add a bookmark
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export async function POST(
   request: NextRequest,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,7 +64,7 @@ export async function POST(
 }
 
 // Remove a bookmark
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export async function DELETE(
   request: NextRequest,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

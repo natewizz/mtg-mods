@@ -170,7 +170,7 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
     },
     datePublished: recipe.createdAt.toISOString(),
     recipeInstructions: stripHtml(recipe.instructions),
-    keywords: recipe.tags.map((tag: any) => tag.name).join(', '),
+    keywords: recipe.tags.map((tag: { id: string; name: string }) => tag.name).join(', '),
   };
 
   return (

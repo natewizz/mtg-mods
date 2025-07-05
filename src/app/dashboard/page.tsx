@@ -9,6 +9,7 @@ import { ActiveUsersChart } from './components/ActiveUsersChart';
 import { InteractionsChart } from './components/InteractionsChart';
 import { TagPieChart } from './components/TagPieChart';
 import { SignupsByProviderChart } from './components/SignupsByProviderChart';
+import Image from 'next/image';
 
 // User type for dashboard tables
 interface DashboardUser {
@@ -16,7 +17,7 @@ interface DashboardUser {
   name?: string | null;
   username?: string | null;
   image?: string | null;
-  recipes?: { id: string; votes?: { value: number }[]; bookmarks?: { id: string }[] }[];
+  recipes?: { id?: string; votes?: { value: number }[]; bookmarks?: { id: string }[] }[];
   votes?: { id: string }[];
   bookmarks?: { id: string }[];
   tried?: { id: string }[];
@@ -533,7 +534,15 @@ function TableCard({ title, columns, rows }: { title: string; columns: string[];
 function UserCell({ user }: { user: DashboardUser }) {
   return (
     <div className="flex items-center gap-2">
-      {user.image && <img src={user.image} alt={user.name || user.username} className="w-6 h-6 rounded-full object-cover" />}
+      {user.image && (
+        <Image
+          src={user.image}
+          alt={user.name || user.username || 'User'}
+          width={24}
+          height={24}
+          className="w-6 h-6 rounded-full object-cover"
+        />
+      )}
       <span>{user.name || user.username}</span>
     </div>
   );
