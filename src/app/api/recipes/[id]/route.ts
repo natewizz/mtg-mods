@@ -13,11 +13,12 @@ const updateRecipeSchema = z.object({
 // Get a single recipe
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context?: { params: { id: string } }
 ) {
   try {
+    const id = context?.params.id;
     const recipe = await prisma.recipe.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         author: {
           select: {
@@ -57,9 +58,10 @@ export async function GET(
 // Update a recipe
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context?: { params: { id: string } }
 ) {
   try {
+    const id = context?.params.id;
     const session = await getSession();
     
     // Check if user is authenticated
@@ -71,7 +73,7 @@ export async function PUT(
     }
 
     const recipe = await prisma.recipe.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         tags: true,
       },
@@ -119,12 +121,12 @@ export async function PUT(
     const updatedRecipe = await prisma.$transaction(async (tx) => {
       // Delete existing tags
       await tx.recipeTag.deleteMany({
-        where: { recipeId: params.id },
+        where: { recipeId: id },
       });
 
       // Update the recipe
       return tx.recipe.update({
-        where: { id: params.id },
+        where: { id },
         data: {
           title,
           instructions,
@@ -161,9 +163,10 @@ export async function PUT(
 // Delete a recipe
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context?: { params: { id: string } }
 ) {
   try {
+    const id = context?.params.id;
     const session = await getSession();
     
     // Check if user is authenticated
@@ -175,7 +178,7 @@ export async function DELETE(
     }
 
     const recipe = await prisma.recipe.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!recipe) {
@@ -203,38 +206,35 @@ export async function DELETE(
       );
     }
 
-    // Delete the recipe
+    // Delete the recipe and related data in a transaction
     await prisma.$transaction(async (tx) => {
       // Delete all tags associated with the recipe
       await tx.recipeTag.deleteMany({
-        where: { recipeId: params.id },
+        where: { recipeId: id },
       });
 
       // Delete all votes associated with the recipe
       await tx.vote.deleteMany({
-        where: { recipeId: params.id },
+        where: { recipeId: id },
       });
 
       // Delete all bookmarks associated with the recipe
       await tx.bookmark.deleteMany({
-        where: { recipeId: params.id },
+        where: { recipeId: id },
       });
 
       // Delete all tried records associated with the recipe
       await tx.tried.deleteMany({
-        where: { recipeId: params.id },
+        where: { recipeId: id },
       });
 
       // Delete the recipe
       await tx.recipe.delete({
-        where: { id: params.id },
+        where: { id },
       });
     });
 
-    return NextResponse.json(
-      { message: 'Recipe deleted successfully' },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: 'Recipe deleted successfully' });
   } catch (error) {
     console.error('Error deleting recipe:', error);
     return NextResponse.json(
