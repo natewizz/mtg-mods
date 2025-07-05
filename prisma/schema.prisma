@@ -70,7 +70,6 @@ model Session {
 model Recipe {
   id           String      @id @default(cuid())
   title        String
-  description  String      @db.Text
   instructions String      @db.Text
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
@@ -158,4 +157,12 @@ model UsernameChange {
   newValue      String
   changedAt     DateTime @default(now())
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model WaitlistSignup {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  source    String?
+  notes     String?
 }

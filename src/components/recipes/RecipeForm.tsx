@@ -18,7 +18,6 @@ const Editor = dynamic(() => import('@tinymce/tinymce-react').then(mod => mod.Ed
 // Form validation schema
 const recipeSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters').max(100, 'Title must be less than 100 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters').max(500, 'Description must be less than 500 characters'),
   instructions: z.string().min(20, 'Instructions must be at least 20 characters'),
   tags: z.string().optional(),
 });
@@ -94,7 +93,6 @@ export default function RecipeForm({ recipe, isEditing = false }: RecipeFormProp
     resolver: zodResolver(recipeSchema),
     defaultValues: {
       title: recipe?.title || '',
-      description: recipe?.description || '',
       instructions: recipe?.instructions || '',
       tags: '',
     },
@@ -252,22 +250,6 @@ export default function RecipeForm({ recipe, isEditing = false }: RecipeFormProp
         />
         {errors.title && (
           <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
-        )}
-      </div>
-
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-          Short Description <span className="text-red-500">*</span>
-        </label>
-        <textarea
-          id="description"
-          rows={3}
-          {...register('description')}
-          className="input-field resize-none"
-          placeholder="Briefly describe what this recipe does and why it's interesting"
-        />
-        {errors.description && (
-          <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
         )}
       </div>
 

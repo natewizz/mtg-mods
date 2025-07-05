@@ -69,3 +69,33 @@ export default async function RecipesPage({ searchParams }: { searchParams: Prom
     </div>
   );
 }
+
+export const metadata = {
+  title: "All MTG Mods Recipes – Magic: The Gathering Rule Variants",
+  description: "Browse all Magic: The Gathering rule modifications, custom formats, and community-created game variants. Filter by tags and discover trending recipes.",
+  keywords: [
+    "Magic the Gathering", "MTG", "recipes", "rule variants", "custom rules", "game mods", "community", "trending", "deck building"
+  ],
+  openGraph: {
+    title: "All MTG Mods Recipes – Magic: The Gathering Rule Variants",
+    description: "Browse all Magic: The Gathering rule modifications, custom formats, and community-created game variants. Filter by tags and discover trending recipes.",
+    url: "https://mtgmods.xyz/recipes",
+    siteName: "MTG Mods",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "MTG Mods Logo"
+      }
+    ],
+    locale: "en_US",
+    type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "All MTG Mods Recipes – Magic: The Gathering Rule Variants",
+    description: "Browse all Magic: The Gathering rule modifications, custom formats, and community-created game variants. Filter by tags and discover trending recipes.",
+    images: ["/logo.png"]
+  }
+};

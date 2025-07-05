@@ -10,6 +10,29 @@ import { InteractionsChart } from './components/InteractionsChart';
 import { TagPieChart } from './components/TagPieChart';
 import { SignupsByProviderChart } from './components/SignupsByProviderChart';
 
+// User type for dashboard tables
+interface DashboardUser {
+  id: string;
+  name?: string | null;
+  username?: string | null;
+  image?: string | null;
+  recipes?: { id: string; votes?: { value: number }[]; bookmarks?: { id: string }[] }[];
+  votes?: { id: string }[];
+  bookmarks?: { id: string }[];
+  tried?: { id: string }[];
+}
+
+// Recipe type for dashboard tables
+interface DashboardRecipe {
+  id: string;
+  title: string;
+  votes?: { id: string; value?: number }[];
+  bookmarks?: { id: string }[];
+  tried?: { id: string }[];
+  author?: { name?: string | null; username?: string | null; image?: string | null };
+  updatedAt?: string | Date;
+}
+
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user || session.user.role !== 'ADMIN') redirect('/');
@@ -17,7 +40,9 @@ export default async function DashboardPage() {
   // Date helpers
   const now = new Date();
   const last30Days = subDays(now, 30);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _last7Days = subDays(now, 7);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _last1Day = subDays(now, 1);
   const months = Array.from({ length: 12 }, (_, i) => format(addMonths(startOfMonth(subMonths(now, 11 - i)), 0), 'yyyy-MM'));
   const days = Array.from({ length: 30 }, (_, i) => format(addDays(last30Days, i), 'yyyy-MM-dd'));
@@ -41,12 +66,18 @@ export default async function DashboardPage() {
     topRecipesByBookmarks,
     topRecipesByTried,
     dailyActiveUsers,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _weeklyActiveUsers,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _retention1d,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _retention7d,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _retention30d,
     mostActiveUsers,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _recipesPerDay,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _recipesPerWeek,
     recipesMostContributors,
     interactionsPerDay,
@@ -56,6 +87,7 @@ export default async function DashboardPage() {
     churnedUsers,
     newVsReturning,
     recipesMostEdits,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _mostCommentedRecipes
   ] = await Promise.all([
     prisma.user.count(),
@@ -472,7 +504,7 @@ function ChartCard({ title, children }: { title: string; children: React.ReactNo
   );
 }
 
-function TableCard({ title, columns, rows }: { title: string; columns: string[]; rows: any[][] }) {
+function TableCard({ title, columns, rows }: { title: string; columns: string[]; rows: (React.ReactNode | string | number)[][] }) {
   return (
     <div className="bg-white rounded-lg shadow p-4 overflow-x-auto">
       <h2 className="text-lg font-semibold mb-2 text-[#2C2E3A]">{title}</h2>
@@ -498,7 +530,7 @@ function TableCard({ title, columns, rows }: { title: string; columns: string[];
   );
 }
 
-function UserCell({ user }: { user: any }) {
+function UserCell({ user }: { user: DashboardUser }) {
   return (
     <div className="flex items-center gap-2">
       {user.image && <img src={user.image} alt={user.name || user.username} className="w-6 h-6 rounded-full object-cover" />}
@@ -507,7 +539,7 @@ function UserCell({ user }: { user: any }) {
   );
 }
 
-function RecipeCell({ recipe }: { recipe: any }) {
+function RecipeCell({ recipe }: { recipe: DashboardRecipe }) {
   return (
     <div>
       <span className="font-medium">{recipe.title}</span>

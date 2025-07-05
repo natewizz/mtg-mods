@@ -6,7 +6,6 @@ import { z } from 'zod';
 // Validation schema for updating a recipe
 const updateRecipeSchema = z.object({
   title: z.string().min(5).max(100),
-  description: z.string().min(10).max(500),
   instructions: z.string().min(20),
   tags: z.array(z.string()).optional(),
 });
@@ -119,7 +118,7 @@ export async function PUT(
       );
     }
 
-    const { title, description, instructions, tags = [] } = validationResult.data;
+    const { title, instructions, tags = [] } = validationResult.data;
 
     // Update the recipe with a transaction to handle tags
     const updatedRecipe = await prisma.$transaction(async (tx) => {
@@ -133,7 +132,6 @@ export async function PUT(
         where: { id: context.params.id },
         data: {
           title,
-          description,
           instructions,
           tags: {
             create: tags.map(tagName => ({

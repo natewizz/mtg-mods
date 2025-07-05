@@ -35,7 +35,6 @@ export default function RecipeList({ recipes, title, emptyMessage }: RecipeListP
               <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="p-4">
                   <h3 className="font-bold text-[#2C2E3A] text-lg">{recipe.title}</h3>
-                  <p className="text-gray-600 mt-2 line-clamp-2">{recipe.description}</p>
                   
                   <div className="mt-4 flex justify-between text-sm text-gray-500">
                     <div className="flex items-center gap-1">

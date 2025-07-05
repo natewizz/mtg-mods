@@ -6,7 +6,6 @@ import { z } from 'zod';
 // Validation schema for creating a recipe
 const createRecipeSchema = z.object({
   title: z.string().min(5).max(100),
-  description: z.string().min(10).max(500),
   instructions: z.string().min(20),
   tags: z.array(z.string()).optional(),
 });
@@ -35,7 +34,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { title, description, instructions, tags = [] } = validationResult.data;
+    const { title, instructions, tags = [] } = validationResult.data;
 
     // Get the user ID using the helper function
     const userId = await getCurrentUserId();
@@ -51,7 +50,6 @@ export async function POST(request: NextRequest) {
     const recipe = await prisma.recipe.create({
       data: {
         title,
-        description,
         instructions,
         author: {
           connect: { id: userId },

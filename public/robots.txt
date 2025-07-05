@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://mtgmods.xyz/sitemap.xml 
