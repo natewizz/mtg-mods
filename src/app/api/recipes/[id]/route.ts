@@ -10,19 +10,14 @@ const updateRecipeSchema = z.object({
   tags: z.array(z.string()).optional(),
 });
 
-// Define the context type for route handlers
-interface RouteContext {
-  params: { id: string };
-}
-
 // Get a single recipe
 export async function GET(
   request: NextRequest,
-  context: RouteContext
+  { params }: { params: { id: string } }
 ) {
   try {
     const recipe = await prisma.recipe.findUnique({
-      where: { id: context.params.id },
+      where: { id: params.id },
       include: {
         author: {
           select: {
@@ -62,7 +57,7 @@ export async function GET(
 // Update a recipe
 export async function PUT(
   request: NextRequest,
-  context: RouteContext
+  { params }: { params: { id: string } }
 ) {
   try {
     const session = await getSession();
@@ -76,7 +71,7 @@ export async function PUT(
     }
 
     const recipe = await prisma.recipe.findUnique({
-      where: { id: context.params.id },
+      where: { id: params.id },
       include: {
         tags: true,
       },
@@ -124,12 +119,12 @@ export async function PUT(
     const updatedRecipe = await prisma.$transaction(async (tx) => {
       // Delete existing tags
       await tx.recipeTag.deleteMany({
-        where: { recipeId: context.params.id },
+        where: { recipeId: params.id },
       });
 
       // Update the recipe
       return tx.recipe.update({
-        where: { id: context.params.id },
+        where: { id: params.id },
         data: {
           title,
           instructions,
@@ -166,7 +161,7 @@ export async function PUT(
 // Delete a recipe
 export async function DELETE(
   request: NextRequest,
-  context: RouteContext
+  { params }: { params: { id: string } }
 ) {
   try {
     const session = await getSession();
@@ -180,7 +175,7 @@ export async function DELETE(
     }
 
     const recipe = await prisma.recipe.findUnique({
-      where: { id: context.params.id },
+      where: { id: params.id },
     });
 
     if (!recipe) {
@@ -212,27 +207,27 @@ export async function DELETE(
     await prisma.$transaction(async (tx) => {
       // Delete all tags associated with the recipe
       await tx.recipeTag.deleteMany({
-        where: { recipeId: context.params.id },
+        where: { recipeId: params.id },
       });
 
       // Delete all votes associated with the recipe
       await tx.vote.deleteMany({
-        where: { recipeId: context.params.id },
+        where: { recipeId: params.id },
       });
 
       // Delete all bookmarks associated with the recipe
       await tx.bookmark.deleteMany({
-        where: { recipeId: context.params.id },
+        where: { recipeId: params.id },
       });
 
       // Delete all tried records associated with the recipe
       await tx.tried.deleteMany({
-        where: { recipeId: context.params.id },
+        where: { recipeId: params.id },
       });
 
       // Delete the recipe
       await tx.recipe.delete({
-        where: { id: context.params.id },
+        where: { id: params.id },
       });
     });
 
