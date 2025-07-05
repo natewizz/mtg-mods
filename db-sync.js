@@ -1,7 +1,5 @@
 // Script to sync Prisma schema with database
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import { execSync } from 'child_process';
 
 // Function to run command and log output
 function runCommand(command) {

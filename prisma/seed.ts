@@ -259,7 +259,7 @@ async function main() {
               value: 1,
             },
           });
-        } catch (error) {
+        } catch {
           console.log(`Vote already exists for user ${userIndex} and recipe ${title}`);
         }
       }
@@ -275,7 +275,7 @@ async function main() {
               recipeId: recipe.id,
             },
           });
-        } catch (error) {
+        } catch {
           console.log(`Tried record already exists for user ${userIndex} and recipe ${title}`);
         }
       }

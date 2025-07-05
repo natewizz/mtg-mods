@@ -94,8 +94,8 @@ function WaitlistSignupModal({ open, onClose }: { open: boolean; onClose: () => 
             {loading ? "Joining..." : "Join Kickstarter Waitlist"}
           </button>
         </form>
-        {status === "success" && <p className="text-green-600 mt-3 text-center animate-fade-in">Thanks! You're on the list.</p>}
-        {status === "duplicate" && <p className="text-yellow-600 mt-3 text-center">You're already signed up!</p>}
+        {status === "success" && <p className="text-green-600 mt-3 text-center animate-fade-in">Thanks! You&apos;re on the list.</p>}
+        {status === "duplicate" && <p className="text-yellow-600 mt-3 text-center">You&apos;re already signed up!</p>}
         {status === "error" && <p className="text-red-600 mt-3 text-center">Something went wrong. Try again.</p>}
       </div>
     </div>

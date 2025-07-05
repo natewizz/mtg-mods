@@ -8,7 +8,7 @@ export default function NotFoundPage() {
       <Image src="/images/logo.png" alt="MTG Mods Logo" width={120} height={120} className="mb-6" />
       <h1 className="text-5xl font-extrabold text-[var(--primary)] mb-4 drop-shadow-lg">404: Card Not Found</h1>
       <p className="text-lg text-gray-700 mb-8 text-center max-w-xl">
-        Looks like you tried to cast a spell that doesn't exist.<br />
+        Looks like you tried to cast a spell that doesn&apos;t exist.<br />
         Return to the battlefield or try a different deck!
       </p>
       <div className="flex gap-4">

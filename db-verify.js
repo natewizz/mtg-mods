@@ -1,6 +1,6 @@
 // Database verification script
 
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 
 async function main() {
   console.log('Starting database verification...');

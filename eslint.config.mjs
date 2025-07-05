@@ -27,7 +27,14 @@ const eslintConfig = [
       "@typescript-eslint/no-implicit-any-catch": "off",
       "@typescript-eslint/no-unsafe-argument": "off",
     }
-  }
+  },
+  {
+    ignores: [
+      '**/.next/**',
+      '**/node_modules/**',
+      // add any other generated folders you want to ignore
+    ],
+  },
 ];
 
 export default eslintConfig;
