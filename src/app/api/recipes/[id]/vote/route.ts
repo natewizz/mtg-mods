@@ -8,15 +8,11 @@ const voteSchema = z.object({
   value: z.number().min(-1).max(1),
 });
 
-// Define the context type for route handlers
-interface RouteContext {
-  params: { id: string };
-}
-
 // Add or update a vote
 export async function POST(
   request: NextRequest,
-  context: RouteContext
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  { params }: any
 ) {
   try {
     const session = await auth();
@@ -34,7 +30,7 @@ export async function POST(
     }
     // Check if recipe exists
     const recipe = await prisma.recipe.findUnique({
-      where: { id: context.params.id },
+      where: { id: params.id },
     });
     if (!recipe) {
       return NextResponse.json(
@@ -57,7 +53,7 @@ export async function POST(
       where: {
         userId_recipeId: {
           userId: session.user.id,
-          recipeId: context.params.id,
+          recipeId: params.id,
         },
       },
       update: {
@@ -65,7 +61,7 @@ export async function POST(
       },
       create: {
         userId: session.user.id,
-        recipeId: context.params.id,
+        recipeId: params.id,
         value,
       },
     });
@@ -82,7 +78,8 @@ export async function POST(
 // Remove a vote
 export async function DELETE(
   request: NextRequest,
-  context: RouteContext
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  { params }: any
 ) {
   try {
     const session = await auth();
@@ -103,7 +100,7 @@ export async function DELETE(
       where: {
         userId_recipeId: {
           userId: session.user.id,
-          recipeId: context.params.id,
+          recipeId: params.id,
         },
       },
     }).catch(() => null); // Catch the error if the vote doesn't exist

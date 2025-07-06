@@ -2,15 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 
-// Define the context type for route handlers
-interface RouteContext {
-  params: { id: string };
-}
-
 // Mark a recipe as tried
 export async function POST(
   request: NextRequest,
-  context: RouteContext
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  { params }: any
 ) {
   try {
     const session = await auth();
@@ -28,7 +24,7 @@ export async function POST(
     }
     // Check if recipe exists
     const recipe = await prisma.recipe.findUnique({
-      where: { id: context.params.id },
+      where: { id: params.id },
     });
     if (!recipe) {
       return NextResponse.json(
@@ -41,13 +37,13 @@ export async function POST(
       where: {
         userId_recipeId: {
           userId: session.user.id,
-          recipeId: context.params.id,
+          recipeId: params.id,
         },
       },
       update: {}, // No update needed
       create: {
         userId: session.user.id,
-        recipeId: context.params.id,
+        recipeId: params.id,
       },
     });
     return NextResponse.json(tried, { status: 200 });
@@ -63,7 +59,8 @@ export async function POST(
 // Remove tried status
 export async function DELETE(
   request: NextRequest,
-  context: RouteContext
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  { params }: any
 ) {
   try {
     const session = await auth();
@@ -84,7 +81,7 @@ export async function DELETE(
       where: {
         userId_recipeId: {
           userId: session.user.id,
-          recipeId: context.params.id,
+          recipeId: params.id,
         },
       },
     }).catch(() => null); // Catch the error if the record doesn't exist
