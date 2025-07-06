@@ -27,8 +27,8 @@ export const authOptions = {
       }
     }),
     DiscordProvider({
-      clientId: "1371192484943892611",
-      clientSecret: "NsUMNKJ5XB1mJ-7w43IPX8s8cfsksHfD",
+      clientId: process.env.DISCORD_CLIENT_ID,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET,
       allowDangerousEmailAccountLinking: true,
       authorization: {
         params: {
