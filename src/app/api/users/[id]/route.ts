@@ -31,19 +31,15 @@ interface ExtendedUser {
   emailVerified: string | Date | null;
 }
 
-// Define the context type for route handlers
-interface RouteContext {
-  params: { id: string };
-}
-
 // GET /api/users/[id] - Get a user's profile
 export async function GET(
   request: NextRequest,
-  context: RouteContext
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  { params }: any
 ) {
   try {
     // Await the params promise
-    const { id: userIdOrUsername } = context.params;
+    const { id: userIdOrUsername } = params;
     
     // Try to find user by ID first
     let user = await prisma.user.findUnique({
@@ -196,7 +192,8 @@ export async function GET(
 // PATCH /api/users/[id] - Update user profile
 export async function PATCH(
   request: NextRequest,
-  context: RouteContext
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  { params }: any
 ) {
   try {
     const session = await auth();
@@ -206,7 +203,7 @@ export async function PATCH(
     }
     
     // Await the params promise
-    const { id: userIdOrUsername } = context.params;
+    const { id: userIdOrUsername } = params;
     
     // Find the user by ID or username
     let userToUpdate = await prisma.user.findUnique({
