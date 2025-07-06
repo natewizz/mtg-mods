@@ -13,7 +13,8 @@ const updateRecipeSchema = z.object({
 // Get a single recipe
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  { params }: any
 ) {
   try {
     const { id } = params;
@@ -58,7 +59,8 @@ export async function GET(
 // Update a recipe
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  { params }: any
 ) {
   try {
     const { id } = params;
@@ -163,7 +165,8 @@ export async function PUT(
 // Delete a recipe
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  { params }: any
 ) {
   try {
     const { id } = params;
