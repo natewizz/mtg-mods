@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -35,7 +35,7 @@ model UserCredential {
   id             String @id @default(cuid())
   userId         String @unique
   hashedPassword String
-  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "UserCredential_userId_User_fkey")
 }
 
 model Account {
@@ -51,10 +51,10 @@ model Account {
   scope             String?
   id_token          String? @db.Text
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Account_userId_User_fkey")
 
-  @@unique([provider, providerAccountId])
-  @@index([userId], map: "Account_userId_fkey")
+  @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_unique")
+  @@index([userId], map: "Account_userId_idx")
 }
 
 model Session {
@@ -62,9 +62,9 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Session_userId_User_fkey")
 
-  @@index([userId], map: "Session_userId_fkey")
+  @@index([userId], map: "Session_userId_idx")
 }
 
 model Recipe {
@@ -75,12 +75,12 @@ model Recipe {
   updatedAt    DateTime    @updatedAt
   authorId     String
   bookmarks    Bookmark[]
-  author       User        @relation(fields: [authorId], references: [id])
+  author       User        @relation(fields: [authorId], references: [id], map: "Recipe_authorId_User_fkey")
   tags         RecipeTag[]
   tried        Tried[]
   votes        Vote[]
 
-  @@index([authorId], map: "Recipe_authorId_fkey")
+  @@index([authorId], map: "Recipe_authorId_idx")
 }
 
 model Tag {
@@ -95,12 +95,12 @@ model RecipeTag {
   name     String
   recipeId String
   tagId    String?
-  recipe   Recipe  @relation(fields: [recipeId], references: [id])
-  Tag      Tag?    @relation(fields: [tagId], references: [id])
+  recipe   Recipe  @relation(fields: [recipeId], references: [id], map: "RecipeTag_recipeId_Recipe_fkey")
+  Tag      Tag?    @relation(fields: [tagId], references: [id], map: "RecipeTag_tagId_Tag_fkey")
 
-  @@unique([name, recipeId])
-  @@index([recipeId], map: "RecipeTag_recipeId_fkey")
-  @@index([tagId], map: "RecipeTag_tagId_fkey")
+  @@unique([name, recipeId], map: "RecipeTag_name_recipeId_unique")
+  @@index([recipeId], map: "RecipeTag_recipeId_idx")
+  @@index([tagId], map: "RecipeTag_tagId_idx")
 }
 
 model Vote {
@@ -109,11 +109,11 @@ model Vote {
   recipeId  String
   value     Int
   createdAt DateTime @default(now())
-  recipe    Recipe   @relation(fields: [recipeId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], map: "Vote_recipeId_Recipe_fkey")
+  user      User     @relation(fields: [userId], references: [id], map: "Vote_userId_User_fkey")
 
-  @@unique([userId, recipeId])
-  @@index([recipeId], map: "Vote_recipeId_fkey")
+  @@unique([userId, recipeId], map: "Vote_userId_recipeId_unique")
+  @@index([recipeId], map: "Vote_recipeId_idx")
 }
 
 model Bookmark {
@@ -121,11 +121,11 @@ model Bookmark {
   userId    String
   recipeId  String
   createdAt DateTime @default(now())
-  recipe    Recipe   @relation(fields: [recipeId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], map: "Bookmark_recipeId_Recipe_fkey")
+  user      User     @relation(fields: [userId], references: [id], map: "Bookmark_userId_User_fkey")
 
-  @@unique([userId, recipeId])
-  @@index([recipeId], map: "Bookmark_recipeId_fkey")
+  @@unique([userId, recipeId], map: "Bookmark_userId_recipeId_unique")
+  @@index([recipeId], map: "Bookmark_recipeId_idx")
 }
 
 model Tried {
@@ -133,11 +133,11 @@ model Tried {
   userId    String
   recipeId  String
   createdAt DateTime @default(now())
-  recipe    Recipe   @relation(fields: [recipeId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], map: "Tried_recipeId_Recipe_fkey")
+  user      User     @relation(fields: [userId], references: [id], map: "Tried_userId_User_fkey")
 
-  @@unique([userId, recipeId])
-  @@index([recipeId], map: "Tried_recipeId_fkey")
+  @@unique([userId, recipeId], map: "Tried_userId_recipeId_unique")
+  @@index([recipeId], map: "Tried_recipeId_idx")
 }
 
 model PasswordReset {
@@ -156,7 +156,7 @@ model UsernameChange {
   previousValue String?
   newValue      String
   changedAt     DateTime @default(now())
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "UsernameChange_userId_User_fkey")
 }
 
 model WaitlistSignup {
