@@ -112,7 +112,7 @@ export default function Home() {
 
   useEffect(() => {
     if (status === "authenticated") {
-      // @ts-ignore
+      // @ts-expect-error -- session.user is extended in next-auth.d.ts
       if (session?.user?.needsUsernameSetup) {
         router.push("/auth/setup-username");
       }
