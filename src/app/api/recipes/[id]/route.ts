@@ -13,10 +13,10 @@ const updateRecipeSchema = z.object({
 // Get a single recipe
 export async function GET(
   request: NextRequest,
-  context?: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const id = context?.params.id;
+    const { id } = params;
     const recipe = await prisma.recipe.findUnique({
       where: { id },
       include: {
@@ -58,10 +58,10 @@ export async function GET(
 // Update a recipe
 export async function PUT(
   request: NextRequest,
-  context?: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const id = context?.params.id;
+    const { id } = params;
     const session = await getSession();
     
     // Check if user is authenticated
@@ -163,10 +163,10 @@ export async function PUT(
 // Delete a recipe
 export async function DELETE(
   request: NextRequest,
-  context?: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const id = context?.params.id;
+    const { id } = params;
     const session = await getSession();
     
     // Check if user is authenticated
