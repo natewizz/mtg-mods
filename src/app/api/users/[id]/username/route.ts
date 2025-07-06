@@ -1,17 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { v4 as uuidv4 } from 'uuid';
 
-// Define the context type for route handlers
-interface RouteContext {
-  params: { id: string };
-}
-
 export async function PUT(
   request: NextRequest,
-   
-  context: RouteContext
+  context: any
 ) {
   try {
     const session = await auth();
@@ -80,12 +75,12 @@ export async function PUT(
       
       // Update or insert UsernameChange record
       await prisma.$executeRaw`
-        INSERT INTO UsernameChange (id, userId, previousValue, newValue, changedAt) 
+        INSERT INTO "UsernameChange" (id, "userId", "previousValue", "newValue", "changedAt") 
         VALUES (${uuidv4()}, ${userToUpdate.id}, ${previousUsername}, ${username}, NOW())
-        ON DUPLICATE KEY UPDATE 
-          previousValue = ${previousUsername},
-          newValue = ${username},
-          changedAt = NOW()
+        ON CONFLICT ("userId") DO UPDATE SET
+          "previousValue" = ${previousUsername},
+          "newValue" = ${username},
+          "changedAt" = NOW()
       `;
       
       // Get the updated user data
