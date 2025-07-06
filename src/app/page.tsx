@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import RandomRecipeButton from '@/components/ui/RandomRecipeButton';
 import { getLatestRecipes } from '@/lib/recipe-actions';
 import { Recipe, User, Vote, Tried, RecipeTag } from '@prisma/client';
@@ -103,10 +104,20 @@ function WaitlistSignupModal({ open, onClose }: { open: boolean; onClose: () => 
 }
 
 export default function Home() {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [latestRecipes, setLatestRecipes] = useState<RecipeWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
   const [waitlistOpen, setWaitlistOpen] = useState(false);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      // @ts-ignore
+      if (session?.user?.needsUsernameSetup) {
+        router.push("/auth/setup-username");
+      }
+    }
+  }, [status, session, router]);
 
   // Fetch latest recipes on component mount
   useEffect(() => {
