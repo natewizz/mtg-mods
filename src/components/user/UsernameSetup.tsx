@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { generateMtgUsername, isUsernameAvailable } from "@/lib/username-generator";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type UsernameSetupProps = {
   userId: string;
@@ -11,6 +12,7 @@ type UsernameSetupProps = {
 
 export default function UsernameSetup({ userId, onComplete }: UsernameSetupProps) {
   const router = useRouter();
+  const { update } = useSession();
   const [username, setUsername] = useState("");
   const [usernameOptions, setUsernameOptions] = useState<string[]>([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -153,6 +155,9 @@ export default function UsernameSetup({ userId, onComplete }: UsernameSetupProps
         throw new Error(data.error || "Failed to update username");
       }
       
+      // Update the session to reflect the new username
+      await update();
+
       // Callback if provided
       if (onComplete) {
         onComplete(username);

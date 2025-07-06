@@ -113,9 +113,15 @@ export const authOptions = {
       return baseUrl;
     },
     async session({ session, token }) {
-      // Add the user ID from token to the session
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
+      if (session.user) {
+        if (token.sub) {
+          session.user.id = token.sub;
+        }
+        if (token.needsUsernameSetup) {
+          // @ts-ignore
+          session.user.needsUsernameSetup = token.needsUsernameSetup;
+        }
+
         // Fetch the username, image, and role from the database and add to the session
         try {
           const user = await prisma.user.findUnique({
