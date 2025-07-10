@@ -2,6 +2,10 @@
 const nextConfig = {
   /* config options here */
   images: {
+    domains: [
+      'nxhtbvcyoznsjtwjaexc.supabase.co',
+      // add other domains as needed
+    ],
     remotePatterns: [
       {
         protocol: 'https',
