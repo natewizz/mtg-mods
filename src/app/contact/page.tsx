@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+// @ts-expect-error -- if types are missing for react-google-recaptcha
+import ReCAPTCHA from 'react-google-recaptcha';
 
 type ContactFormData = {
   name: string;
@@ -10,35 +12,42 @@ type ContactFormData = {
   message: string;
 };
 
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
+
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   
   const { register, handleSubmit, reset, formState: { errors } } = useForm<ContactFormData>();
   
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
     setSubmitError(null);
-    
+    if (!recaptchaToken) {
+      setSubmitError('Please complete the CAPTCHA.');
+      setIsSubmitting(false);
+      return;
+    }
     try {
-      // For now, we'll simulate sending an email
-      console.log("Form data to be sent:", data);
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Show success message
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...data, recaptchaToken }),
+      });
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({}));
+        setSubmitError(error.message || 'There was a problem sending your message. Please try again later.');
+        setIsSubmitting(false);
+        return;
+      }
       setSubmitSuccess(true);
-      reset(); // Clear the form
-      
-      // Hide success message after 5 seconds
-      setTimeout(() => {
-        setSubmitSuccess(false);
-      }, 5000);
-    } catch (error) {
-      console.error("Error sending contact form:", error);
-      setSubmitError("There was a problem sending your message. Please try again later.");
+      reset();
+      setRecaptchaToken(null);
+      setTimeout(() => setSubmitSuccess(false), 5000);
+    } catch {
+      setSubmitError('There was a problem sending your message. Please try again later.');
     } finally {
       setIsSubmitting(false);
     }
@@ -56,8 +65,8 @@ export default function ContactPage() {
             <div>
               <h3 className="font-semibold text-[#FF8661]">Email</h3>
               <p className="mt-1">
-                <a href="mailto:support@mtgmods.xyz" className="text-[#5A31F4] hover:underline">
-                  support@mtgmods.xyz
+                <a href="mailto:mtgmodsofficial@gmail.com" className="text-[#5A31F4] hover:underline">
+                  mtgmodsofficial@gmail.com
                 </a>
               </p>
             </div>
@@ -174,6 +183,13 @@ export default function ContactPage() {
               )}
             </div>
             
+            <div className="flex justify-center">
+              <ReCAPTCHA
+                sitekey={RECAPTCHA_SITE_KEY}
+                onChange={(token: string | null) => setRecaptchaToken(token)}
+                onExpired={() => setRecaptchaToken(null)}
+              />
+            </div>
             <button
               type="submit"
               disabled={isSubmitting}
