@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { createClient } from '@supabase/supabase-js';
+
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_STORAGE_BUCKET = process.env.SUPABASE_STORAGE_BUCKET || 'profile-images';
 
 // POST /api/users/[id]/profile-image - Upload profile image
 export async function POST(
@@ -12,72 +14,59 @@ export async function POST(
 ) {
   try {
     const session = await auth();
-    
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    
-    // Await the params promise
     const { id: userIdOrUsername } = await params;
-    
-    // Find the user by ID or username
-    let userToUpdate = await prisma.user.findUnique({
-      where: { id: userIdOrUsername },
-    });
-
-    // If not found by ID, try username
+    let userToUpdate = await prisma.user.findUnique({ where: { id: userIdOrUsername } });
     if (!userToUpdate) {
-      userToUpdate = await prisma.user.findUnique({
-        where: { username: userIdOrUsername },
-      });
+      userToUpdate = await prisma.user.findUnique({ where: { username: userIdOrUsername } });
     }
-
     if (!userToUpdate) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
-    
-    // User can only update their own profile image
     if (session.user.id !== userToUpdate.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
-    
     const formData = await req.formData();
     const file = formData.get('image') as File;
-    
     if (!file) {
       return NextResponse.json({ error: 'No image provided' }, { status: 400 });
     }
-    
-    // Validate file type
     const fileType = file.type;
     if (!['image/jpeg', 'image/png'].includes(fileType)) {
       return NextResponse.json({ error: 'Only JPG and PNG images are allowed' }, { status: 400 });
     }
-    
-    // Validate file size (2MB max)
     const maxSize = 2 * 1024 * 1024; // 2MB
     if (file.size > maxSize) {
       return NextResponse.json({ error: 'Image size must be less than 2MB' }, { status: 400 });
     }
-    
-    // Generate a unique filename
-    const fileExtension = fileType === 'image/jpeg' ? '.jpg' : '.png';
-    const fileName = `${uuidv4()}${fileExtension}`;
-    
-    // Create directory if it doesn't exist
-    const publicDir = join(process.cwd(), 'public');
-    const uploadsDir = join(publicDir, 'uploads');
-    const profileImagesDir = join(uploadsDir, 'profile-images');
-    
-    try {
-      await writeFile(join(profileImagesDir, fileName), Buffer.from(await file.arrayBuffer()));
-    } catch (error) {
-      console.error('Error writing file:', error);
-      return NextResponse.json({ error: 'Failed to save image' }, { status: 500 });
+    if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+      return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
     }
-    
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const fileExtension = fileType === 'image/jpeg' ? '.jpg' : '.png';
+    const fileName = `${userToUpdate.id}-${Date.now()}${fileExtension}`;
+    // Upload to Supabase Storage
+    const { error } = await supabase.storage
+      .from(SUPABASE_STORAGE_BUCKET)
+      .upload(fileName, await file.arrayBuffer(), {
+        contentType: fileType,
+        upsert: true,
+      });
+    if (error) {
+      console.error('Supabase upload error:', error);
+      return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
+    }
+    // Get public URL
+    const { data: publicUrlData } = supabase.storage
+      .from(SUPABASE_STORAGE_BUCKET)
+      .getPublicUrl(fileName);
+    const imageUrl = publicUrlData?.publicUrl;
+    if (!imageUrl) {
+      return NextResponse.json({ error: 'Failed to get public URL' }, { status: 500 });
+    }
     // Update the user's profile with the new image URL
-    const imageUrl = `/uploads/profile-images/${fileName}`;
     const updatedUser = await prisma.user.update({
       where: { id: userToUpdate.id },
       data: { image: imageUrl },
@@ -89,7 +78,6 @@ export async function POST(
         bio: true,
       },
     });
-    
     return NextResponse.json({ 
       message: 'Profile image updated successfully',
       user: updatedUser
