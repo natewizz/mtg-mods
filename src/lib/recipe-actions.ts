@@ -163,7 +163,14 @@ export async function getRandomRecipeId(): Promise<string | null> {
 export async function getLatestRecipes(count = 4) {
   try {
     const recipes = await prisma.recipe.findMany({
-      include: {
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        instructions: true,
+        createdAt: true,
+        updatedAt: true,
+        authorId: true,
         author: true,
         tags: true,
         _count: {
@@ -179,7 +186,7 @@ export async function getLatestRecipes(count = 4) {
       take: count,
     });
 
-    return recipes;
+    return recipes.filter(r => r.slug !== undefined && r.slug !== null);
   } catch (error) {
     console.error('Error fetching latest recipes:', error);
     return [];

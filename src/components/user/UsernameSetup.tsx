@@ -162,8 +162,8 @@ export default function UsernameSetup({ userId, onComplete }: UsernameSetupProps
       if (onComplete) {
         onComplete(username);
       } else {
-        // Redirect to profile page otherwise
-        router.push(`/profile/${username}`);
+        // Redirect to homepage for better onboarding experience
+        router.push("/");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");

@@ -29,6 +29,7 @@ function toRecipeWithRelations(recipe: Partial<RecipeWithRelations>): RecipeWith
     updatedAt: recipe.updatedAt!,
     authorId: recipe.authorId!,
     instructions: recipe.instructions!,
+    slug: recipe.slug ?? '', // Ensure slug is always present
   };
 }
 

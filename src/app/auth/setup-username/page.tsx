@@ -17,10 +17,10 @@ export default function SetupUsernamePage() {
       return;
     }
     
-    // If the user already has a username, redirect to their profile
+    // If the user already has a username, redirect to homepage
     if (status === "authenticated" && session?.user?.username) {
       console.log("User already has a username:", session.user.username);
-      router.push(`/profile/${session.user.username}`);
+      router.push("/");
       return;
     }
     

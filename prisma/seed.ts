@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { hash } from 'bcrypt';
+import { slugify } from '../src/lib/utils';
 
 const prisma = new PrismaClient();
 
@@ -218,6 +219,7 @@ async function main() {
       recipe = await prisma.recipe.create({
         data: {
           title,
+          slug: slugify(title),
           instructions,
           authorId: testUser.id,
         },

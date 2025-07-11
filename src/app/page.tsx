@@ -6,38 +6,26 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import RandomRecipeButton from '@/components/ui/RandomRecipeButton';
 import { getLatestRecipes } from '@/lib/recipe-actions';
-import { Recipe, User, Vote, Tried, RecipeTag } from '@prisma/client';
+import { User, RecipeTag } from '@prisma/client';
 import TagPill from '@/components/ui/TagPill';
 import { slugify } from '@/lib/utils';
 
 // Types for latest recipes with related data
-type RecipeWithRelations = Recipe & {
+type RecipeWithRelations = {
+  id: string;
+  title: string;
+  slug: string;
+  instructions: string;
+  createdAt: Date;
+  updatedAt: Date;
+  authorId: string;
   author: User;
-  votes: Vote[];
-  tried: Tried[];
   tags: RecipeTag[];
-  _count?: {
+  _count: {
     votes: number;
     tried: number;
   };
 };
-
-function toRecipeWithRelations(recipe: Partial<RecipeWithRelations>): RecipeWithRelations {
-  return {
-    ...recipe,
-    author: recipe.author as User,
-    tags: recipe.tags || [],
-    _count: recipe._count || { votes: 0, tried: 0 },
-    votes: recipe.votes || [],
-    tried: recipe.tried || [],
-    id: recipe.id!,
-    title: recipe.title!,
-    createdAt: recipe.createdAt!,
-    updatedAt: recipe.updatedAt!,
-    authorId: recipe.authorId!,
-    instructions: recipe.instructions!,
-  };
-}
 
 function WaitlistSignupModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [email, setEmail] = useState("");
@@ -124,7 +112,7 @@ export default function Home() {
     const fetchLatestRecipes = async () => {
       try {
         const recipes = await getLatestRecipes(4);
-        setLatestRecipes(recipes.map(toRecipeWithRelations));
+        setLatestRecipes(recipes);
       } catch (error) {
         console.error('Error fetching latest recipes:', error);
       } finally {
