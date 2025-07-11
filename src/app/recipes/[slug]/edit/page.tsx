@@ -2,25 +2,17 @@ import { Suspense } from 'react';
 import { notFound, redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
-import { slugify } from '@/lib/utils';
 import RecipeForm from '@/components/recipes/RecipeForm';
 
 async function getRecipeBySlug(slug: string) {
   try {
-    // Use a more efficient query instead of fetching all recipes
-    const recipes = await prisma.recipe.findMany({
-      where: {
-        title: {
-          contains: slug.replace(/-/g, ' '), // Simple optimization to narrow down results
-        },
-      },
+    const recipe = await prisma.recipe.findUnique({
+      where: { slug },
       include: {
         tags: true,
       },
     });
-
-    // Find the recipe with the matching slug
-    return recipes.find(r => slugify(r.title) === slug) || null;
+    return recipe;
   } catch (error) {
     console.error('Error fetching recipe for editing:', error);
     return null;

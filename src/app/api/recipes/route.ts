@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSession, getCurrentUserId } from '@/lib/auth/get-session';
 import { z } from 'zod';
+import { slugify } from '@/lib/utils';
 
 // Validation schema for creating a recipe
 const createRecipeSchema = z.object({
@@ -50,6 +51,7 @@ export async function POST(request: NextRequest) {
     const recipe = await prisma.recipe.create({
       data: {
         title,
+        slug: slugify(title),
         instructions,
         author: {
           connect: { id: userId },

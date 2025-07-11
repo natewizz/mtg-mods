@@ -12,13 +12,8 @@ import Head from 'next/head';
 
 async function getRecipeWithInteractions(slug: string, userId?: string) {
   try {
-    // Use a more efficient query instead of fetching all recipes
-    const recipes = await prisma.recipe.findMany({
-      where: {
-        title: {
-          contains: slug.replace(/-/g, ' '), // Simple optimization to narrow down results
-        },
-      },
+    const recipe = await prisma.recipe.findUnique({
+      where: { slug },
       include: {
         author: true,
         tags: true,
@@ -30,10 +25,6 @@ async function getRecipeWithInteractions(slug: string, userId?: string) {
         },
       },
     });
-
-    // Find the recipe with the matching slug
-    const recipe = recipes.find(r => slugify(r.title) === slug);
-
     if (!recipe) {
       return null;
     }

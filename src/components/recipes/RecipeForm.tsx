@@ -210,17 +210,11 @@ export default function RecipeForm({ recipe, isEditing = false }: RecipeFormProp
         throw new Error(errorData.message || 'Something went wrong');
       }
 
-      // Create a URL-friendly slug from the title
-      const slugifiedTitle = data.title
-        .toLowerCase()
-        .replace(/[^\w\s-]/g, '') // Remove special characters
-        .replace(/\s+/g, '-')     // Replace spaces with hyphens
-        .replace(/-+/g, '-')      // Replace multiple hyphens with single hyphen
-        .trim();
-      
-      // Redirect to the recipe page using the slug-based URL
-      router.push(`/recipes/${slugifiedTitle}`);
-      router.refresh(); // Refresh to update the page with new data
+      const createdRecipe = await response.json();
+      const slug = createdRecipe.slug || (createdRecipe.recipe && createdRecipe.recipe.slug);
+      if (!slug) throw new Error('No slug returned from server');
+      router.push(`/recipes/${slug}`);
+      router.refresh();
     } catch (err) {
       console.error('Error submitting recipe:', err);
       setError(err instanceof Error ? err.message : 'An unexpected error occurred');

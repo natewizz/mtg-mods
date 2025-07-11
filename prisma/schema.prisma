@@ -70,6 +70,7 @@ model Session {
 model Recipe {
   id           String      @id @default(cuid())
   title        String
+  slug         String      @unique
   instructions String      @db.Text
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
