@@ -14,9 +14,9 @@ export async function TrendingFeed() {
   return (
     <section className="w-full max-w-5xl mx-auto px-2 md:px-0">
       <h2 className="text-2xl font-bold mb-4 tracking-tight">Trending Recipes</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {recipes.map(recipe => (
-          <RecipeCard key={recipe.id} recipe={recipe} />
+          <RecipeCard key={recipe.id} recipe={recipe} compact={true} />
         ))}
       </div>
     </section>

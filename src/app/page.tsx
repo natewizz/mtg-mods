@@ -6,12 +6,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import RandomRecipeButton from '@/components/ui/RandomRecipeButton';
 import { getLatestRecipes } from '@/lib/recipe-actions';
-import { User, RecipeTag } from '@prisma/client';
-import TagPill from '@/components/ui/TagPill';
-import { slugify } from '@/lib/utils';
+import { User, RecipeTag, Vote, Tried } from '@prisma/client';
+import RecipeCard from '@/components/recipes/RecipeCard';
 
 // Types for latest recipes with related data
-type RecipeWithRelations = {
+type HomeRecipeWithRelations = {
   id: string;
   title: string;
   slug: string;
@@ -26,6 +25,15 @@ type RecipeWithRelations = {
     tried: number;
   };
 };
+
+// Convert homepage recipe data to RecipeCard format
+function toRecipeCardFormat(recipe: HomeRecipeWithRelations) {
+  return {
+    ...recipe,
+    votes: [] as Vote[],
+    tried: [] as Tried[],
+  };
+}
 
 function WaitlistSignupModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [email, setEmail] = useState("");
@@ -94,7 +102,7 @@ function WaitlistSignupModal({ open, onClose }: { open: boolean; onClose: () => 
 export default function Home() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [latestRecipes, setLatestRecipes] = useState<RecipeWithRelations[]>([]);
+  const [latestRecipes, setLatestRecipes] = useState<HomeRecipeWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
   const [waitlistOpen, setWaitlistOpen] = useState(false);
 
@@ -187,42 +195,7 @@ export default function Home() {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                 {latestRecipes.map((recipe) => (
-                  <div key={recipe.id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all overflow-hidden">
-                    <div className="p-5">
-                      <h3 className="font-bold text-xl mb-2 line-clamp-1">
-                        <Link href={`/recipes/${slugify(recipe.title)}`} className="hover:text-[#5A31F4] transition">
-                          {recipe.title}
-                        </Link>
-                      </h3>
-                      
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {recipe.tags.slice(0, 3).map((tag) => (
-                          <TagPill key={tag.id} tag={tag.name} size="sm" />
-                        ))}
-                        {recipe.tags.length > 3 && (
-                          <span className="text-xs text-gray-500 self-center">+{recipe.tags.length - 3} more</span>
-                        )}
-                      </div>
-                      
-                      <div className="flex justify-between text-sm text-gray-500">
-                        <span>By {recipe.author.name}</span>
-                        <div className="flex items-center">
-                          <span className="flex items-center mr-3">
-                            <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-                            </svg>
-                            {recipe._count?.votes ?? 0}
-                          </span>
-                          <span className="flex items-center">
-                            <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                            </svg>
-                            {recipe._count?.tried ?? 0}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <RecipeCard key={recipe.id} recipe={toRecipeCardFormat(recipe)} />
                 ))}
               </div>
               
