@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import RecipeCard from '@/components/recipes/RecipeCard';
 import RecipeFiltersWrapper from './RecipeFiltersWrapper';
-import { getFilteredRecipes, getPopularTags } from '@/lib/recipe-actions';
+import { getFilteredRecipes, getPopularTags, preloadFilteredRecipes, preloadPopularTags } from '@/lib/recipe-actions';
 import { SortOption } from '@/components/recipes/RecipeFilters';
 import { TrendingFeed, TrendingFeedFallback } from '@/components/recipes/TrendingFeed';
 
@@ -12,7 +12,11 @@ export default async function RecipesPage({ searchParams }: { searchParams: Prom
   const tagFilters = resolvedSearchParams.tags ? resolvedSearchParams.tags.split(',') : [];
   const sortBy = (resolvedSearchParams.sort as SortOption) || 'newest';
   
-  // Fetch filtered recipes and popular tags
+  // Preload data for better performance
+  preloadFilteredRecipes({ tagFilters, sortBy });
+  preloadPopularTags(2);
+  
+  // Fetch filtered recipes and popular tags in parallel
   const [recipes, popularTags] = await Promise.all([
     getFilteredRecipes({ tagFilters, sortBy }),
     getPopularTags(2) // Tags that appear in at least 2 recipes
@@ -20,10 +24,12 @@ export default async function RecipesPage({ searchParams }: { searchParams: Prom
   
   return (
     <div className="space-y-6">
-      {/* Trending Feed Section */}
-      <Suspense fallback={<TrendingFeedFallback />}>
-        <TrendingFeed />
-      </Suspense>
+      {/* Trending Feed Section - Only show on first page with no filters */}
+      {tagFilters.length === 0 && sortBy === 'newest' && (
+        <Suspense fallback={<TrendingFeedFallback />}>
+          <TrendingFeed />
+        </Suspense>
+      )}
 
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-[var(--dark)]">All Recipes</h1>

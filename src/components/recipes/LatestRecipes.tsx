@@ -2,40 +2,9 @@ import Link from 'next/link';
 import { getLatestRecipes } from '@/lib/recipe-actions';
 import RecipeCard from './RecipeCard';
 import DiceRollButton from '@/components/ui/DiceRollButton';
-import { Recipe, User, Vote, Tried, RecipeTag } from '@prisma/client';
-
-type RecipeWithRelations = Recipe & {
-  author: User;
-  votes: Vote[];
-  tried: Tried[];
-  tags: RecipeTag[];
-  _count?: {
-    votes: number;
-    tried: number;
-  };
-};
-
-function toRecipeWithRelations(recipe: Partial<RecipeWithRelations>): RecipeWithRelations {
-  return {
-    ...recipe,
-    author: recipe.author as User,
-    tags: recipe.tags || [],
-    _count: recipe._count || { votes: 0, tried: 0 },
-    votes: recipe.votes || [],
-    tried: recipe.tried || [],
-    id: recipe.id!,
-    title: recipe.title!,
-    createdAt: recipe.createdAt!,
-    updatedAt: recipe.updatedAt!,
-    authorId: recipe.authorId!,
-    instructions: recipe.instructions!,
-    slug: recipe.slug ?? '', // Ensure slug is always present
-  };
-}
 
 export default async function LatestRecipes() {
   const recipes = await getLatestRecipes(4);
-  const safeRecipes = recipes.map(toRecipeWithRelations);
   
   return (
     <div className="bg-[var(--background)] py-16">
@@ -57,9 +26,9 @@ export default async function LatestRecipes() {
           </div>
         </div>
         
-        {safeRecipes.length > 0 ? (
+        {recipes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {safeRecipes.map((recipe) => (
+            {recipes.map((recipe) => (
               <RecipeCard key={recipe.id} recipe={recipe} compact={true} />
             ))}
           </div>
