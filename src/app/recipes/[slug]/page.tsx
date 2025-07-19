@@ -10,10 +10,42 @@ import TagPill from '@/components/ui/TagPill';
 import { CopyLinkButton } from '@/components/CopyLinkButton';
 import Head from 'next/head';
 
+interface RecipeWithRelations {
+  id: string;
+  title: string;
+  slug: string;
+  instructions: string;
+  createdAt: Date;
+  updatedAt: Date;
+  authorId: string;
+  author: {
+    id: string;
+    name: string | null;
+    username: string | null;
+    image: string | null;
+  };
+  tags: Array<{ id: string; name: string }>;
+  _count: {
+    votes: number;
+    tried: number;
+  };
+}
+
+interface UserInteractions {
+  voteValue: number | null;
+  isBookmarked: boolean;
+  hasTried: boolean;
+}
+
+interface Navigation {
+  next: string | null;
+  prev: string | null;
+}
+
 type RecipeData = {
-  recipe: any;
-  userInteractions: any;
-  navigation: any;
+  recipe: RecipeWithRelations;
+  userInteractions: UserInteractions | null;
+  navigation: Navigation;
 } | {
   redirect: string;
 } | null;
