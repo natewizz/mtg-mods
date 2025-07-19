@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getRandomRecipeId } from '@/lib/recipe-actions';
-import { getRecipeUrl } from '@/lib/utils';
+import { getRandomRecipe } from '@/lib/recipe-actions';
 
 export default function DiceRollButton() {
   const router = useRouter();
@@ -22,7 +21,7 @@ export default function DiceRollButton() {
     
     try {
       // Fetch a random recipe in parallel with the animation
-      const randomRecipeTitle = await getRandomRecipeId();
+      const randomRecipe = await getRandomRecipe();
       
       // Let the animation play for a bit
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -31,9 +30,8 @@ export default function DiceRollButton() {
       clearInterval(rollInterval);
       setIsRolling(false);
       
-      if (randomRecipeTitle) {
-        const recipeUrl = getRecipeUrl(randomRecipeTitle);
-        router.push(recipeUrl);
+      if (randomRecipe && randomRecipe.slug) {
+        router.push(`/recipes/${randomRecipe.slug}`);
       } else {
         console.error('No recipes found');
         setIsRolling(false);

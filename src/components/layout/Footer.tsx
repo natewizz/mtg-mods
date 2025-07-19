@@ -86,7 +86,7 @@ export default function Footer() {
               <li><Link href="/recipes" className="text-gray-300 hover:text-white transition">Browse Mods</Link></li>
               <li><Link href="/contact" className="text-gray-300 hover:text-white transition">Contact Us</Link></li>
               <li><Link href="/recipes/new" className="text-gray-300 hover:text-white transition">Submit a Mod</Link></li>
-              <li><Link href="/community" className="text-gray-300 hover:text-white transition">Community</Link></li>
+              <li><Link href="/policies/community" className="text-gray-300 hover:text-white transition">Community</Link></li>
             </ul>
           </div>
           

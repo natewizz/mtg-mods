@@ -92,7 +92,7 @@ export default function Header() {
             <Link href="/recipes" className="hover-underline font-medium text-dark hover:text-primary transition-colors">
               Recipes
             </Link>
-            <Link href="/community" className="hover-underline font-medium text-dark hover:text-primary transition-colors">
+            <Link href="/policies/community" className="hover-underline font-medium text-dark hover:text-primary transition-colors">
               Community
             </Link>
             <Link href="/learn" className="hover-underline font-medium text-dark hover:text-primary transition-colors">
@@ -189,7 +189,7 @@ export default function Header() {
             <Link href="/recipes" className="hover:text-primary transition-colors">
               Recipes
             </Link>
-            <Link href="/community" className="hover:text-primary transition-colors">
+            <Link href="/policies/community" className="hover:text-primary transition-colors">
               Community
             </Link>
             <Link href="/learn" className="hover:text-primary transition-colors">

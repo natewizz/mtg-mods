@@ -5,8 +5,6 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import RandomRecipeButton from '@/components/ui/RandomRecipeButton';
-import { getLatestRecipes } from '@/lib/recipe-actions';
-import { User, RecipeTag, Vote, Tried } from '@prisma/client';
 import RecipeCard from '@/components/recipes/RecipeCard';
 
 // Types for latest recipes with related data
@@ -18,82 +16,100 @@ type HomeRecipeWithRelations = {
   createdAt: Date;
   updatedAt: Date;
   authorId: string;
-  author: User;
-  tags: RecipeTag[];
+  author: {
+    id: string;
+    name: string | null;
+    username: string | null;
+    image: string | null;
+  };
+  tags: {
+    id: string;
+    name: string;
+  }[];
   _count: {
     votes: number;
     tried: number;
   };
 };
 
-// Convert homepage recipe data to RecipeCard format
-function toRecipeCardFormat(recipe: HomeRecipeWithRelations) {
+function toRecipeWithRelations(recipe: HomeRecipeWithRelations): HomeRecipeWithRelations {
   return {
     ...recipe,
-    votes: [] as Vote[],
-    tried: [] as Tried[],
+    author: recipe.author,
+    tags: recipe.tags || [],
+    _count: recipe._count || { votes: 0, tried: 0 },
   };
 }
 
-function WaitlistSignupModal({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle"|"success"|"error"|"duplicate">("idle");
-  const [loading, setLoading] = useState(false);
+function WaitlistModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    if (status === "success") {
-      const timer = setTimeout(() => {
-        onClose();
-        setStatus("idle");
-        setEmail("");
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [status, onClose]);
+  if (!isOpen) return null;
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus("idle");
-    setLoading(true);
-    const res = await fetch("/api/waitlist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, source: "homepage-modal" }),
-    });
-    setLoading(false);
-    if (res.ok) setStatus("success");
-    else if (res.status === 409) setStatus("duplicate");
-    else setStatus("error");
-  }
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      
+      if (response.ok) {
+        setMessage('Thanks for joining! We\'ll be in touch soon.');
+        setEmail('');
+        setTimeout(() => {
+          onClose();
+          setMessage('');
+        }, 2000);
+      } else {
+        setMessage('Something went wrong. Please try again.');
+      }
+    } catch {
+      setMessage('Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-  if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 animate-fade-in">
-      <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full relative animate-pop-in">
-        <button onClick={onClose} className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
-        <h2 className="text-2xl font-bold mb-4 text-center">Join the Waitlist</h2>
-        <p className="mb-4 text-gray-600 text-center">Get notified about our Kickstarter and early access!</p>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            className="input-field border px-3 py-2 rounded"
-            disabled={loading || status === "success"}
-          />
-          <button
-            type="submit"
-            className={`transition-all duration-200 bg-gradient-to-r from-[#5A31F4] to-[#FF8661] text-white font-bold py-3 rounded shadow-lg text-lg tracking-wide hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#5A31F4] focus:ring-offset-2 ${loading || status === "success" ? "opacity-60 cursor-not-allowed" : ""}`}
-            disabled={loading || status === "success"}
-          >
-            {loading ? "Joining..." : "Join Kickstarter Waitlist"}
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">Join the Waitlist</h3>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+            ✕
           </button>
-        </form>
-        {status === "success" && <p className="text-green-600 mt-3 text-center animate-fade-in">Thanks! You&apos;re on the list.</p>}
-        {status === "duplicate" && <p className="text-yellow-600 mt-3 text-center">You&apos;re already signed up!</p>}
-        {status === "error" && <p className="text-red-600 mt-3 text-center">Something went wrong. Try again.</p>}
+        </div>
+        
+        {message ? (
+          <p className="text-center py-4 text-green-600">{message}</p>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <p className="text-gray-600 mb-4">
+              Be the first to know when we launch new features!
+            </p>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Your email address"
+              className="w-full p-3 border border-gray-300 rounded-lg mb-4"
+              required
+            />
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-[var(--primary)] text-white py-3 rounded-lg font-semibold hover:bg-opacity-90 disabled:opacity-50"
+            >
+              {isSubmitting ? 'Joining...' : 'Join Waitlist'}
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );
@@ -115,12 +131,14 @@ export default function Home() {
     }
   }, [status, session, router]);
 
-  // Fetch latest recipes on component mount
+  // Fetch latest recipes via API route to avoid server-only issues
   useEffect(() => {
     const fetchLatestRecipes = async () => {
       try {
-        const recipes = await getLatestRecipes(4);
-        setLatestRecipes(recipes);
+        const response = await fetch('/api/recipes?latest=4');
+        const recipes = await response.json();
+        const processedRecipes = recipes.map(toRecipeWithRelations);
+        setLatestRecipes(processedRecipes);
       } catch (error) {
         console.error('Error fetching latest recipes:', error);
       } finally {
@@ -141,7 +159,7 @@ export default function Home() {
   
   return (
     <main className="min-h-screen">
-      <WaitlistSignupModal open={waitlistOpen} onClose={() => setWaitlistOpen(false)} />
+      <WaitlistModal isOpen={waitlistOpen} onClose={() => setWaitlistOpen(false)} />
       {/* Hero section with animated gradient background */}
       <div className="gradient-bg py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-[rgba(0,0,0,0.2)]"></div>
@@ -195,7 +213,7 @@ export default function Home() {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                 {latestRecipes.map((recipe) => (
-                  <RecipeCard key={recipe.id} recipe={toRecipeCardFormat(recipe)} />
+                  <RecipeCard key={recipe.id} recipe={toRecipeWithRelations(recipe)} />
                 ))}
               </div>
               

@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getSession, getCurrentUserId } from '@/lib/auth/get-session';
 import { z } from 'zod';
 import { slugify } from '@/lib/utils';
+import { getLatestRecipes } from '@/lib/recipe-actions';
 
 // Validation schema for creating a recipe
 const createRecipeSchema = z.object({
@@ -74,8 +75,19 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const latest = searchParams.get('latest');
+    
+    // If latest parameter is provided, return latest recipes
+    if (latest) {
+      const count = parseInt(latest, 10) || 4;
+      const recipes = await getLatestRecipes(count);
+      return NextResponse.json(recipes);
+    }
+    
+    // Default behavior - return all recipes
     const recipes = await prisma.recipe.findMany({
       include: {
         author: {

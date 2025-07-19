@@ -1,19 +1,25 @@
-'use client';
-
 import Link from 'next/link';
-import { Recipe, User, Vote, Tried, RecipeTag } from '@prisma/client';
-import { getRecipeUrl } from '@/lib/utils';
+import { Recipe, Vote, Tried } from '@prisma/client';
 import TagPill from '@/components/ui/TagPill';
 
 type RecipeWithRelations = Recipe & {
-  author: User;
-  votes: Vote[];
-  tried: Tried[];
-  tags: RecipeTag[];
-  _count?: {
+  author: {
+    id: string;
+    name: string | null;
+    username: string | null;
+    image: string | null;
+  };
+  tags: {
+    id: string;
+    name: string;
+  }[];
+  _count: {
     votes: number;
     tried: number;
   };
+  // For compatibility with older components that might still use these
+  votes?: Vote[];
+  tried?: Tried[];
 };
 
 interface RecipeCardProps {
@@ -22,28 +28,34 @@ interface RecipeCardProps {
 }
 
 export default function RecipeCard({ recipe, compact = false }: RecipeCardProps) {
-  // Calculate vote count (upvotes - downvotes)
-  const voteCount = recipe._count?.votes || recipe.votes.reduce((sum, vote) => sum + vote.value, 0);
+  // Calculate vote count (use _count if available, fallback to array length)
+  const voteCount = recipe._count?.votes || recipe.votes?.reduce((sum, vote) => sum + vote.value, 0) || 0;
   
-  // Count of people who tried the recipe
-  const triedCount = recipe._count?.tried || recipe.tried.length;
+  // Count of people who tried the recipe (use _count if available, fallback to array length)
+  const triedCount = recipe._count?.tried || recipe.tried?.length || 0;
 
-  // Generate the recipe URL with only the title for SEO
-  const recipeUrl = getRecipeUrl(recipe.title);
+  // Generate the recipe URL using the slug
+  const recipeUrl = `/recipes/${recipe.slug}`;
 
-  // Strip HTML tags from instructions for preview
+  // Strip HTML tags from instructions for preview (server-side only)
   const stripHtml = (html: string): string => {
     if (!html) return '';
     
-    // Create a temporary div to decode HTML entities
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
-    
-    // Get text content (this automatically decodes HTML entities)
-    const textContent = tempDiv.textContent || tempDiv.innerText || '';
-    
-    // Clean up whitespace
-    return textContent.replace(/\s+/g, ' ').trim();
+    // Server-side HTML processing - consistent between server and client
+    return html
+      .replace(/<[^>]+>/g, '') // Remove HTML tags
+      .replace(/&nbsp;/g, ' ') // Replace common entities
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&ldquo;/g, '"')
+      .replace(/&rdquo;/g, '"')
+      .replace(/&lsquo;/g, "'")
+      .replace(/&rsquo;/g, "'")
+      .replace(/\s+/g, ' ') // Clean up whitespace
+      .trim();
   };
 
   // Get preview text (first 140 characters)
