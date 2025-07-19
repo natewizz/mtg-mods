@@ -175,7 +175,7 @@ export { handler as GET, handler as POST };
 // Implementation of auth function for server components and API routes
 export async function auth() {
   // Access cookies and find auth session token
-  const cookiesList = cookies();
+  const cookiesList = await cookies();
   
   // Try both secure and non-secure cookie names (for dev and prod environments)
   const isDev = process.env.NODE_ENV === 'development';

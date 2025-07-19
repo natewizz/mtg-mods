@@ -62,9 +62,17 @@ export default function RecipeFilters({
     } else {
       params.delete('tags');
     }
-    params.set('sort', sortOption);
+    
+    // Only set sort param if it's not the default
+    if (sortOption !== 'newest') {
+      params.set('sort', sortOption);
+    } else {
+      params.delete('sort');
+    }
+    
     // Update URL without reloading
-    router.push(`/recipes?${params.toString()}`, { scroll: false });
+    const newUrl = params.toString() ? `/recipes?${params.toString()}` : '/recipes';
+    router.push(newUrl, { scroll: false });
     // Notify parent component
     onFiltersChange(selectedTags, sortOption);
   }, [selectedTags, sortOption, searchParams, router, onFiltersChange]);

@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
-import { slugify } from '@/lib/utils';
 import DeleteRecipeButton from '@/components/recipes/DeleteRecipeButton';
 import RecipeInteractionsClient from '@/components/recipes/RecipeInteractionsClient';
 import TagPill from '@/components/ui/TagPill';
@@ -99,47 +98,13 @@ async function getRecipeWithInteractions(slug: string, userId?: string): Promise
       return null;
     }
 
-    // Get interaction data for the current user
+    // Get interaction data for the current user AND navigation in single transaction
     let userInteractions = null;
-    if (userId) {
-      const [vote, bookmark, tried] = await Promise.all([
-        prisma.vote.findUnique({
-          where: {
-            userId_recipeId: {
-              userId,
-              recipeId: recipe.id,
-            },
-          },
-        }),
-        prisma.bookmark.findUnique({
-          where: {
-            userId_recipeId: {
-              userId,
-              recipeId: recipe.id,
-            },
-          },
-        }),
-        prisma.tried.findUnique({
-          where: {
-            userId_recipeId: {
-              userId,
-              recipeId: recipe.id,
-            },
-          },
-        }),
-      ]);
 
-      userInteractions = {
-        voteValue: vote?.value || null,
-        isBookmarked: Boolean(bookmark),
-        hasTried: Boolean(tried),
-      };
-    }
-
-    // Get next and previous recipes by creation date
-    const [nextRecipe, prevRecipe] = await Promise.all([
-      // Next recipe (newer than current)
-      prisma.recipe.findFirst({
+    // Use Prisma transaction to run all secondary queries in single DB transaction
+    const transactionResult = await prisma.$transaction(async (tx) => {
+      // Navigation queries (always run)
+      const nextRecipe = await tx.recipe.findFirst({
         where: {
           createdAt: {
             gt: recipe.createdAt
@@ -149,11 +114,12 @@ async function getRecipeWithInteractions(slug: string, userId?: string): Promise
           createdAt: 'asc'
         },
         select: {
+          slug: true,
           title: true
         }
-      }),
-      // Previous recipe (older than current)
-      prisma.recipe.findFirst({
+      });
+
+      const prevRecipe = await tx.recipe.findFirst({
         where: {
           createdAt: {
             lt: recipe.createdAt
@@ -163,14 +129,65 @@ async function getRecipeWithInteractions(slug: string, userId?: string): Promise
           createdAt: 'desc'
         },
         select: {
+          slug: true,
           title: true
         }
-      })
-    ]);
+      });
 
-    // Generate slugs for navigation
-    const nextSlug = nextRecipe ? slugify(nextRecipe.title) : null;
-    const prevSlug = prevRecipe ? slugify(prevRecipe.title) : null;
+      // User interaction queries (conditional)
+      let userQueries = null;
+      if (userId) {
+        userQueries = await Promise.all([
+          tx.vote.findUnique({
+            where: {
+              userId_recipeId: {
+                userId,
+                recipeId: recipe.id,
+              },
+            },
+          }),
+          tx.bookmark.findUnique({
+            where: {
+              userId_recipeId: {
+                userId,
+                recipeId: recipe.id,
+              },
+            },
+          }),
+          tx.tried.findUnique({
+            where: {
+              userId_recipeId: {
+                userId,
+                recipeId: recipe.id,
+              },
+            },
+          })
+        ]);
+      }
+
+      return {
+        nextRecipe,
+        prevRecipe,
+        userQueries
+      };
+    });
+    
+    // Extract results
+    const { nextRecipe, prevRecipe, userQueries } = transactionResult;
+    
+    // Process user interaction results if user is logged in
+    if (userId && userQueries) {
+      const [vote, bookmark, tried] = userQueries;
+      userInteractions = {
+        voteValue: vote?.value || null,
+        isBookmarked: Boolean(bookmark),
+        hasTried: Boolean(tried),
+      };
+    }
+
+    // Use actual slugs from database instead of generating them
+    const nextSlug = nextRecipe?.slug || null;
+    const prevSlug = prevRecipe?.slug || null;
 
     return {
       recipe,

@@ -2,9 +2,8 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import RecipeCard from '@/components/recipes/RecipeCard';
 import RecipeFiltersWrapper from './RecipeFiltersWrapper';
-import { getFilteredRecipes, getPopularTags, preloadFilteredRecipes, preloadPopularTags } from '@/lib/recipe-actions';
+import { getFilteredRecipes, getPopularTags, getTrendingRecipes, preloadFilteredRecipes, preloadPopularTags, preloadTrendingRecipes } from '@/lib/recipe-actions';
 import { SortOption } from '@/components/recipes/RecipeFilters';
-import { TrendingFeed, TrendingFeedFallback } from '@/components/recipes/TrendingFeed';
 
 export default async function RecipesPage({ searchParams }: { searchParams: Promise<{ tags?: string; sort?: SortOption }> }) {
   const resolvedSearchParams = await searchParams;
@@ -12,23 +11,37 @@ export default async function RecipesPage({ searchParams }: { searchParams: Prom
   const tagFilters = resolvedSearchParams.tags ? resolvedSearchParams.tags.split(',') : [];
   const sortBy = (resolvedSearchParams.sort as SortOption) || 'newest';
   
+  // Show trending feed only on first page with no filters
+  const showTrending = tagFilters.length === 0 && sortBy === 'newest';
+  
   // Preload data for better performance
   preloadFilteredRecipes({ tagFilters, sortBy });
   preloadPopularTags(2);
+  if (showTrending) {
+    preloadTrendingRecipes({ take: 8 });
+  }
   
-  // Fetch filtered recipes and popular tags in parallel
+  // Fetch data in parallel - always fetch recipes and tags
   const [recipes, popularTags] = await Promise.all([
     getFilteredRecipes({ tagFilters, sortBy }),
-    getPopularTags(2) // Tags that appear in at least 2 recipes
+    getPopularTags(2),
   ]);
+  
+  // Fetch trending recipes separately if needed
+  const trendingRecipes = showTrending ? await getTrendingRecipes({ take: 8 }) : [];
   
   return (
     <div className="space-y-6">
       {/* Trending Feed Section - Only show on first page with no filters */}
-      {tagFilters.length === 0 && sortBy === 'newest' && (
-        <Suspense fallback={<TrendingFeedFallback />}>
-          <TrendingFeed />
-        </Suspense>
+      {showTrending && trendingRecipes.length > 0 && (
+        <section className="w-full max-w-5xl mx-auto px-2 md:px-0">
+          <h2 className="text-2xl font-bold mb-4 tracking-tight">Trending Recipes</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {trendingRecipes.map(recipe => (
+              <RecipeCard key={recipe.id} recipe={recipe} compact={true} />
+            ))}
+          </div>
+        </section>
       )}
 
       <div className="flex justify-between items-center">
