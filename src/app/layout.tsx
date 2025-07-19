@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import { NextAuthProvider } from "./providers";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import PWAManager from "@/components/PWAManager";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -60,6 +61,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <PWAManager />
         </NextAuthProvider>
       </body>
     </html>
