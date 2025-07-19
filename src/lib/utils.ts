@@ -8,11 +8,16 @@
  * @returns A URL-friendly slug
  */
 export function slugify(text: string): string {
+  if (!text || typeof text !== 'string') {
+    return '';
+  }
+  
   return text
     .toLowerCase()
     .replace(/[^\w\s-]/g, '') // Remove special characters
     .replace(/\s+/g, '-') // Replace spaces with hyphens
     .replace(/-+/g, '-') // Replace multiple hyphens with a single hyphen
+    .replace(/^-+|-+$/g, '') // Remove leading and trailing hyphens
     .trim();
 }
 

@@ -211,8 +211,11 @@ export default function RecipeForm({ recipe, isEditing = false }: RecipeFormProp
       }
 
       const createdRecipe = await response.json();
-      const slug = createdRecipe.slug || (createdRecipe.recipe && createdRecipe.recipe.slug);
+      
+      // For both create and update, use the slug from the response
+      const slug = createdRecipe.slug;
       if (!slug) throw new Error('No slug returned from server');
+      
       router.push(`/recipes/${slug}`);
       router.refresh();
     } catch (err) {

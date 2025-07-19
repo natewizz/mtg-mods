@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSession, getCurrentUserId } from '@/lib/auth/get-session';
 import { z } from 'zod';
+import { slugify } from '@/lib/utils';
 
 // Validation schema for updating a recipe
 const updateRecipeSchema = z.object({
@@ -119,6 +120,30 @@ export async function PUT(
 
     const { title, instructions, tags = [] } = validationResult.data;
 
+    // Generate new slug if title has changed
+    let newSlug = recipe.slug;
+    if (title !== recipe.title) {
+      newSlug = slugify(title);
+      
+      // Check if the new slug already exists (excluding the current recipe)
+      const existingRecipe = await prisma.recipe.findUnique({
+        where: { slug: newSlug },
+      });
+      
+      if (existingRecipe && existingRecipe.id !== id) {
+        // If slug exists, append a number to make it unique
+        let counter = 1;
+        let uniqueSlug = `${newSlug}-${counter}`;
+        
+        while (await prisma.recipe.findUnique({ where: { slug: uniqueSlug } })) {
+          counter++;
+          uniqueSlug = `${newSlug}-${counter}`;
+        }
+        
+        newSlug = uniqueSlug;
+      }
+    }
+
     // Update the recipe with a transaction to handle tags
     const updatedRecipe = await prisma.$transaction(async (tx) => {
       // Delete existing tags
@@ -131,6 +156,7 @@ export async function PUT(
         where: { id },
         data: {
           title,
+          slug: newSlug,
           instructions,
           tags: {
             create: tags.map(tagName => ({
