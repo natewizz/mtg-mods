@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 import { slugify } from '@/lib/utils';
@@ -10,7 +10,15 @@ import TagPill from '@/components/ui/TagPill';
 import { CopyLinkButton } from '@/components/CopyLinkButton';
 import Head from 'next/head';
 
-async function getRecipeWithInteractions(slug: string, userId?: string) {
+type RecipeData = {
+  recipe: any;
+  userInteractions: any;
+  navigation: any;
+} | {
+  redirect: string;
+} | null;
+
+async function getRecipeWithInteractions(slug: string, userId?: string): Promise<RecipeData> {
   try {
     const recipe = await prisma.recipe.findUnique({
       where: { slug },
@@ -25,7 +33,37 @@ async function getRecipeWithInteractions(slug: string, userId?: string) {
         },
       },
     });
+    
     if (!recipe) {
+      // Try to find a recipe with a similar title that might have been renamed
+      // This handles cases where the slug changed but the title is similar
+      const possibleRecipes = await prisma.recipe.findMany({
+        where: {
+          OR: [
+            { title: { contains: slug.replace(/-/g, ' '), mode: 'insensitive' } },
+            { title: { contains: slug.replace(/-/g, ''), mode: 'insensitive' } },
+          ]
+        },
+        include: {
+          author: true,
+          tags: true,
+          _count: {
+            select: {
+              votes: true,
+              tried: true,
+            },
+          },
+        },
+        take: 1,
+      });
+      
+      if (possibleRecipes.length > 0) {
+        // Redirect to the found recipe
+        const foundRecipe = possibleRecipes[0];
+        console.log(`Redirecting from old slug "${slug}" to "${foundRecipe.slug}" for recipe "${foundRecipe.title}"`);
+        return { redirect: `/recipes/${foundRecipe.slug}` };
+      }
+      
       return null;
     }
 
@@ -126,6 +164,11 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
 
   if (!recipeData) {
     notFound();
+  }
+
+  // Handle redirect case
+  if ('redirect' in recipeData) {
+    redirect(recipeData.redirect);
   }
 
   const { recipe, userInteractions, navigation } = recipeData;
@@ -234,7 +277,7 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
                 {/* Tags */}
                 {recipe.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2">
-                    {recipe.tags.map((tag) => (
+                    {recipe.tags.map((tag: { id: string; name: string }) => (
                       <TagPill
                         key={tag.id}
                         tag={tag.name}
