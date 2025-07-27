@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { getRecipeUrl } from '@/lib/utils';
 
 interface DiceRollProps {
   isRolling: boolean;
@@ -10,6 +9,7 @@ interface DiceRollProps {
   targetRecipe?: {
     id: string;
     title: string;
+    slug: string;
   } | null;
 }
 
@@ -39,7 +39,7 @@ export default function DiceRoll({ isRolling, onRollComplete, targetRecipe }: Di
       // Start redirect around 2/3 through the animation
       if (rollCount > maxRolls * 0.6 && targetRecipe && !redirectInProgress) {
         setRedirectInProgress(true);
-        const recipeUrl = getRecipeUrl(targetRecipe.title);
+        const recipeUrl = `/recipes/${targetRecipe.slug}`;
         router.push(recipeUrl);
       }
       
@@ -49,7 +49,7 @@ export default function DiceRoll({ isRolling, onRollComplete, targetRecipe }: Di
         
         // Final redirect attempt if it hasn't happened yet
         if (targetRecipe && !redirectInProgress) {
-          const recipeUrl = getRecipeUrl(targetRecipe.title);
+          const recipeUrl = `/recipes/${targetRecipe.slug}`;
           router.push(recipeUrl);
         }
         

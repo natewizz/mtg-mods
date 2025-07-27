@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useTransition } from 'react';
+import { useTransition, useCallback } from 'react';
 import RecipeFilters, { FilterTag, SortOption } from '@/components/recipes/RecipeFilters';
 
 interface RecipeFiltersWrapperProps {
@@ -18,8 +18,8 @@ export default function RecipeFiltersWrapper({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   
-  // Handle filters change
-  const handleFiltersChange = (tags: string[], sort: SortOption) => {
+  // Memoized filter change handler to prevent infinite re-renders
+  const handleFiltersChange = useCallback((tags: string[], sort: SortOption) => {
     // Construct URL params
     const params = new URLSearchParams();
     
@@ -37,7 +37,7 @@ export default function RecipeFiltersWrapper({
       const url = queryString ? `/recipes?${queryString}` : '/recipes';
       router.push(url, { scroll: false });
     });
-  };
+  }, [router]); // Only depend on router, which is stable
   
   return (
     <div className={isPending ? 'opacity-70 pointer-events-none' : ''}>

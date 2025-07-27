@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useCallback } from 'react';
 import TagPill from '@/components/ui/TagPill';
 
 export type SortOption = 'newest' | 'oldest' | 'most-upvoted' | 'most-tried';
@@ -24,16 +23,18 @@ export default function RecipeFilters({
   initialTags = [],
   initialSort = 'newest'
 }: RecipeFiltersProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  
-  // Parse initial state from URL if available
+  // Parse initial state from props
   const [selectedTags, setSelectedTags] = useState<string[]>(initialTags);
   const [sortOption, setSortOption] = useState<SortOption>(initialSort);
   const [showAllTags, setShowAllTags] = useState(false);
   
   // Get top 10 most popular tags
   const topTags = availableTags.slice(0, 10);
+  
+  // Memoized callback to notify parent - called only when user actually changes something
+  const notifyParent = useCallback((newTags: string[], newSort: SortOption) => {
+    onFiltersChange(newTags, newSort);
+  }, [onFiltersChange]);
   
   // Toggle a tag selection
   const toggleTag = (tagName: string) => {
@@ -42,7 +43,9 @@ export default function RecipeFilters({
       const newTags = isSelected
         ? prev.filter(tag => tag !== tagName)
         : [...prev, tagName];
-        
+      
+      // Notify parent immediately when user changes tags
+      notifyParent(newTags, sortOption);
       return newTags;
     });
   };
@@ -50,41 +53,20 @@ export default function RecipeFilters({
   // Update sort option
   const handleSortChange = (option: SortOption) => {
     setSortOption(option);
+    // Notify parent immediately when user changes sort
+    notifyParent(selectedTags, option);
   };
-  
-  // Apply filters when selections change
-  useEffect(() => {
-    // Move applyFilters logic here to avoid dependency warning
-    // Create URL params
-    const params = new URLSearchParams(searchParams);
-    if (selectedTags.length > 0) {
-      params.set('tags', selectedTags.join(','));
-    } else {
-      params.delete('tags');
-    }
-    
-    // Only set sort param if it's not the default
-    if (sortOption !== 'newest') {
-      params.set('sort', sortOption);
-    } else {
-      params.delete('sort');
-    }
-    
-    // Update URL without reloading
-    const newUrl = params.toString() ? `/recipes?${params.toString()}` : '/recipes';
-    router.push(newUrl, { scroll: false });
-    // Notify parent component
-    onFiltersChange(selectedTags, sortOption);
-  }, [selectedTags, sortOption, searchParams, router, onFiltersChange]);
   
   // Clear tag filters only
   const clearTagFilters = () => {
     setSelectedTags([]);
+    notifyParent([], sortOption);
   };
   
   // Clear sort option only
   const clearSortOption = () => {
     setSortOption('newest');
+    notifyParent(selectedTags, 'newest');
   };
   
   // Toggle between showing top tags and all tags

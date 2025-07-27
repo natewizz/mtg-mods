@@ -31,7 +31,7 @@ export default function NewRecipePage() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold text-[var(--dark)] mb-6">Share a New Recipe</h1>
+              <h1 className="text-3xl font-bold text-[var(--dark)] mb-6">Create a New Recipe</h1>
       <RecipeForm />
     </div>
   );

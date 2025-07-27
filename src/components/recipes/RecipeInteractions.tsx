@@ -44,28 +44,28 @@ export default function RecipeInteractions({
     return true;
   };
 
-  // Handle vote
-  const handleVote = async (value: number) => {
+  // Handle vote (only upvote now)
+  const handleVote = async () => {
     if (!checkAuth()) return;
     
     setIsUpdating(true);
     
     try {
-      // If user already voted with this value, remove the vote
-      if (userVote === value) {
+      // If user already voted, remove the vote
+      if (userVote === 1) {
         // Optimistic update
         setUserVote(null);
-        setTotalVotes(prev => prev - value);
+        setTotalVotes(prev => prev - 1);
         
         await fetch(`/api/recipes/${recipeId}/vote`, {
           method: 'DELETE',
         });
       } else {
-        // Calculate vote difference
-        const voteChange = userVote === null ? value : value - userVote;
+        // Add upvote
+        const voteChange = userVote === null ? 1 : 1 - userVote;
         
         // Optimistic update
-        setUserVote(value);
+        setUserVote(1);
         setTotalVotes(prev => prev + voteChange);
         
         await fetch(`/api/recipes/${recipeId}/vote`, {
@@ -73,7 +73,7 @@ export default function RecipeInteractions({
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ value }),
+          body: JSON.stringify({ value: 1 }),
         });
       }
       
@@ -155,28 +155,17 @@ export default function RecipeInteractions({
       {/* Voting */}
       <div className="flex items-center">
         <button 
-          onClick={() => handleVote(1)}
+          onClick={handleVote}
           disabled={isUpdating}
           className={`p-2 rounded-full transition-colors ${userVote === 1 ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100'}`}
-          aria-label="Upvote"
+          aria-label="Like"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+          <svg className="w-6 h-6" fill={userVote === 1 ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
           </svg>
         </button>
         
         <span className="mx-2 font-medium text-lg">{totalVotes}</span>
-        
-        <button 
-          onClick={() => handleVote(-1)}
-          disabled={isUpdating}
-          className={`p-2 rounded-full transition-colors ${userVote === -1 ? 'bg-red-100 text-red-700' : 'hover:bg-gray-100'}`}
-          aria-label="Downvote"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
       </div>
 
       {/* Bookmark button */}

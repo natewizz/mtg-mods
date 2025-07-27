@@ -316,22 +316,15 @@ export const getLatestRecipes = cache(
   )
 );
 
-export const getRandomRecipe = cache(
-  unstable_cache(
-    async () => {
-      try {
-        return await _getRandomRecipe();
-      } catch (error) {
-        console.error('Error fetching random recipe:', error);
-        return null;
-      }
-    },
-    ['random-recipe'],
-    {
-      revalidate: false, // Don't cache random recipes - they should be random!
-    }
-  )
-);
+// Random recipe - NO CACHING (should always be different)
+export const getRandomRecipe = async () => {
+  try {
+    return await _getRandomRecipe();
+  } catch (error) {
+    console.error('Error fetching random recipe:', error);
+    return null;
+  }
+};
 
 // Preload function for filtered recipes
 export const preloadFilteredRecipes = (options: GetRecipesOptions = {}) => {

@@ -65,34 +65,34 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
     // Compact version for trending recipes
     return (
       <Link href={recipeUrl}>
-        <div className="card hover:shadow-lg transition-shadow min-h-[200px] h-full flex flex-col">
-          <h2 className="text-lg font-bold mb-2 text-[var(--dark)] line-clamp-2">{recipe.title}</h2>
+        <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-3 min-h-[140px] h-full flex flex-col">
+          <h2 className="text-sm font-semibold mb-2 text-[var(--dark)] line-clamp-2 leading-tight">{recipe.title}</h2>
           
           {/* Display tags if available */}
           {recipe.tags && recipe.tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mb-2">
               {recipe.tags.slice(0, 2).map((tag) => (
-                <TagPill 
+                <span 
                   key={tag.id} 
-                  tag={tag.name} 
-                  className="text-xs"
-                />
+                  className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full"
+                >
+                  {tag.name}
+                </span>
               ))}
               {recipe.tags.length > 2 && (
-                <span className="text-xs text-gray-500">+{recipe.tags.length - 2}</span>
+                <span className="text-xs text-gray-400">+{recipe.tags.length - 2}</span>
               )}
             </div>
           )}
           
-          <div className="flex justify-between items-center text-sm text-gray-500 mt-auto">
-            <div className="flex items-center">
-              <span className="font-medium mr-1">By</span>
-              <span className="truncate">{recipe.author.name || recipe.author.username || 'Anonymous'}</span>
-            </div>
+          <div className="flex justify-between items-center text-xs text-gray-500 mt-auto pt-2 border-t border-gray-100">
+            <span className="truncate">{recipe.author.username || recipe.author.name || 'Anonymous'}</span>
             
             <div className="flex items-center space-x-3">
               <div className="flex items-center">
-                <span className="mr-1">🔼</span>
+                <svg className="w-3 h-3 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                </svg>
                 <span>{voteCount}</span>
               </div>
               
@@ -110,12 +110,12 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
   // Full version for regular recipes with preview
   return (
     <Link href={recipeUrl}>
-      <div className="card hover:shadow-lg transition-shadow min-h-[280px] h-full flex flex-col">
-        <h2 className="text-xl font-bold mb-2 text-[var(--dark)]">{recipe.title}</h2>
+      <div className="card hover:shadow-lg transition-shadow min-h-[240px] h-full flex flex-col">
+        <h2 className="text-lg font-bold mb-2 text-[var(--dark)]">{recipe.title}</h2>
         
         {/* Recipe preview */}
         {previewText && (
-          <p className="text-gray-600 text-sm mb-3 line-clamp-3">
+          <p className="text-gray-600 text-sm mb-2 line-clamp-2">
             {previewText}
             {previewText.length === 140 && '...'}
           </p>
@@ -123,7 +123,7 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
         
         {/* Display tags if available */}
         {recipe.tags && recipe.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-3">
+          <div className="flex flex-wrap gap-1 mb-2">
             {recipe.tags.slice(0, 3).map((tag) => (
               <TagPill 
                 key={tag.id} 
@@ -140,12 +140,14 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
         <div className="flex justify-between items-center text-sm text-gray-500 mt-auto">
           <div className="flex items-center">
             <span className="font-medium mr-1">By</span>
-            <span>{recipe.author.name || recipe.author.username || 'Anonymous'}</span>
+            <span>{recipe.author.username || recipe.author.name || 'Anonymous'}</span>
           </div>
           
           <div className="flex items-center space-x-4">
             <div className="flex items-center">
-              <span className="mr-1">🔼</span>
+              <svg className="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+              </svg>
               <span>{voteCount}</span>
             </div>
             

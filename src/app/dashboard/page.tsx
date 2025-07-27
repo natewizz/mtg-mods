@@ -553,7 +553,7 @@ function RecipeCell({ recipe }: { recipe: DashboardRecipe }) {
     <div>
       <span className="font-medium">{recipe.title}</span>
       {recipe.author && (
-        <span className="ml-2 text-xs text-gray-500">by {recipe.author.name || recipe.author.username}</span>
+        <span className="ml-2 text-xs text-gray-500">by {recipe.author.username || recipe.author.name}</span>
       )}
     </div>
   );
