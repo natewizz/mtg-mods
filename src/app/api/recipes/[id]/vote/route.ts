@@ -3,12 +3,12 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 import { z } from 'zod';
 
-// Validation schema for voting
+// Validation schema for voting (only positive votes allowed)
 const voteSchema = z.object({
-  value: z.number().min(-1).max(1),
+  value: z.number().min(1).max(1),
 });
 
-// Add or update a vote
+// Add or update a vote (only positive votes allowed)
 export async function POST(
   request: NextRequest,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

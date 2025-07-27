@@ -35,12 +35,12 @@ export default async function LatestRecipes() {
         ) : (
           <div className="text-center p-12 bg-white rounded-xl shadow-sm">
             <h3 className="text-xl font-semibold mb-2">No recipes yet</h3>
-            <p className="text-gray-500 mb-4">Be the first to share your MTG mod recipe!</p>
+            <p className="text-gray-500 mb-4">Be the first to create your MTG mod recipe!</p>
             <Link 
               href="/recipes/new" 
               className="inline-block bg-[var(--primary)] text-white font-bold py-2 px-6 rounded-lg"
             >
-              Share a Recipe
+              Create Recipe
             </Link>
           </div>
         )}

@@ -51,30 +51,11 @@ type RecipeData = {
 
 async function getRecipeWithInteractions(slug: string, userId?: string): Promise<RecipeData> {
   try {
-    const recipe = await prisma.recipe.findUnique({
-      where: { slug },
-      include: {
-        author: true,
-        tags: true,
-        _count: {
-          select: {
-            votes: true,
-            tried: true,
-          },
-        },
-      },
-    });
-    
-    if (!recipe) {
-      // Try to find a recipe with a similar title that might have been renamed
-      // This handles cases where the slug changed but the title is similar
-      const possibleRecipes = await prisma.recipe.findMany({
-        where: {
-          OR: [
-            { title: { contains: slug.replace(/-/g, ' '), mode: 'insensitive' } },
-            { title: { contains: slug.replace(/-/g, ''), mode: 'insensitive' } },
-          ]
-        },
+    // Use a single transaction for all queries to reduce round trips
+    const result = await prisma.$transaction(async (tx) => {
+      // Main recipe query
+      const recipe = await tx.recipe.findUnique({
+        where: { slug },
         include: {
           author: true,
           tags: true,
@@ -85,118 +66,89 @@ async function getRecipeWithInteractions(slug: string, userId?: string): Promise
             },
           },
         },
-        take: 1,
       });
       
-      if (possibleRecipes.length > 0) {
-        // Redirect to the found recipe
-        const foundRecipe = possibleRecipes[0];
-        console.log(`Redirecting from old slug "${slug}" to "${foundRecipe.slug}" for recipe "${foundRecipe.title}"`);
-        return { redirect: `/recipes/${foundRecipe.slug}` };
-      }
-      
-      return null;
-    }
-
-    // Get interaction data for the current user AND navigation in single transaction
-    let userInteractions = null;
-
-    // Use Prisma transaction to run all secondary queries in single DB transaction
-    const transactionResult = await prisma.$transaction(async (tx) => {
-      // Navigation queries (always run)
-      const nextRecipe = await tx.recipe.findFirst({
-        where: {
-          createdAt: {
-            gt: recipe.createdAt
-          }
-        },
-        orderBy: {
-          createdAt: 'asc'
-        },
-        select: {
-          slug: true,
-          title: true
+      if (!recipe) {
+        // Try to find a recipe with a similar title that might have been renamed
+        const possibleRecipes = await tx.recipe.findMany({
+          where: {
+            OR: [
+              { title: { contains: slug.replace(/-/g, ' '), mode: 'insensitive' } },
+              { title: { contains: slug.replace(/-/g, ''), mode: 'insensitive' } },
+            ]
+          },
+          include: {
+            author: true,
+            tags: true,
+            _count: {
+              select: {
+                votes: true,
+                tried: true,
+              },
+            },
+          },
+          take: 1,
+        });
+        
+        if (possibleRecipes.length > 0) {
+          const foundRecipe = possibleRecipes[0];
+          console.log(`Redirecting from old slug "${slug}" to "${foundRecipe.slug}" for recipe "${foundRecipe.title}"`);
+          return { redirect: `/recipes/${foundRecipe.slug}` };
         }
-      });
-
-      const prevRecipe = await tx.recipe.findFirst({
-        where: {
-          createdAt: {
-            lt: recipe.createdAt
-          }
-        },
-        orderBy: {
-          createdAt: 'desc'
-        },
-        select: {
-          slug: true,
-          title: true
-        }
-      });
-
-      // User interaction queries (conditional)
-      let userQueries = null;
-      if (userId) {
-        userQueries = await Promise.all([
-          tx.vote.findUnique({
-            where: {
-              userId_recipeId: {
-                userId,
-                recipeId: recipe.id,
-              },
-            },
-          }),
-          tx.bookmark.findUnique({
-            where: {
-              userId_recipeId: {
-                userId,
-                recipeId: recipe.id,
-              },
-            },
-          }),
-          tx.tried.findUnique({
-            where: {
-              userId_recipeId: {
-                userId,
-                recipeId: recipe.id,
-              },
-            },
-          })
-        ]);
+        
+        return null;
       }
+
+      // Run all secondary queries in parallel for better performance
+      const [nextRecipe, prevRecipe, ...userQueries] = await Promise.all([
+        // Navigation queries
+        tx.recipe.findFirst({
+          where: { createdAt: { gt: recipe.createdAt } },
+          orderBy: { createdAt: 'asc' },
+          select: { slug: true, title: true }
+        }),
+        tx.recipe.findFirst({
+          where: { createdAt: { lt: recipe.createdAt } },
+          orderBy: { createdAt: 'desc' },
+          select: { slug: true, title: true }
+        }),
+                 // User interaction queries (only if user is logged in)
+         ...(userId ? [
+           tx.vote.findUnique({
+             where: { userId_recipeId: { userId, recipeId: recipe.id } },
+             select: { value: true }
+           }),
+           tx.bookmark.findUnique({
+             where: { userId_recipeId: { userId, recipeId: recipe.id } },
+           }),
+           tx.tried.findUnique({
+             where: { userId_recipeId: { userId, recipeId: recipe.id } },
+           })
+         ] : [])
+      ]);
+
+             // Process user interaction results
+       let userInteractions = null;
+       if (userId && userQueries.length === 3) {
+         const [vote, bookmark, tried] = userQueries;
+         userInteractions = {
+           voteValue: (vote as { value: number } | null)?.value || null,
+           isBookmarked: Boolean(bookmark),
+           hasTried: Boolean(tried),
+         };
+       }
 
       return {
-        nextRecipe,
-        prevRecipe,
-        userQueries
+        recipe,
+        userInteractions,
+        navigation: {
+          next: nextRecipe?.slug || null,
+          prev: prevRecipe?.slug || null
+        }
       };
     });
-    
-    // Extract results
-    const { nextRecipe, prevRecipe, userQueries } = transactionResult;
-    
-    // Process user interaction results if user is logged in
-    if (userId && userQueries) {
-      const [vote, bookmark, tried] = userQueries;
-      userInteractions = {
-        voteValue: vote?.value || null,
-        isBookmarked: Boolean(bookmark),
-        hasTried: Boolean(tried),
-      };
-    }
 
-    // Use actual slugs from database instead of generating them
-    const nextSlug = nextRecipe?.slug || null;
-    const prevSlug = prevRecipe?.slug || null;
-
-    return {
-      recipe,
-      userInteractions,
-      navigation: {
-        next: nextSlug,
-        prev: prevSlug
-      }
-    };
+    return result;
   } catch (error) {
     console.error('Error fetching recipe:', error);
     return null;
@@ -249,7 +201,7 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
     name: recipe.title,
     author: {
       '@type': 'Person',
-      name: recipe.author.name || recipe.author.username || 'Anonymous',
+      name: recipe.author.username || recipe.author.name || 'Anonymous',
     },
     datePublished: recipe.createdAt.toISOString(),
     recipeInstructions: stripHtml(recipe.instructions),
@@ -310,7 +262,7 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6">
                 <div className="flex items-center">
                   <span className="font-medium">By</span>
-                  <span className="ml-1">{recipe.author.name || recipe.author.username || 'Anonymous'}</span>
+                  <span className="ml-1">{recipe.author.username || recipe.author.name || 'Anonymous'}</span>
                 </div>
                 
                 <div>

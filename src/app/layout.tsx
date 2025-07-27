@@ -9,6 +9,7 @@ import Footer from "@/components/layout/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
   title: "MTG Mods – Magic: The Gathering Rule Variants & Community",
   description: "Discover, create, and share innovative Magic: The Gathering rule modifications and game variants. Join the Kickstarter waitlist for early access!",
   keywords: [
