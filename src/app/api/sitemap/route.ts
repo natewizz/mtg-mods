@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   console.log('Sitemap API route called')
   try {
@@ -95,7 +97,9 @@ export async function GET() {
     const allPages = [...staticPages, ...recipePages]
 
     // Generate XML manually to ensure proper formatting
+    const timestamp = new Date().toISOString()
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated at ${timestamp} -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${allPages.map(page => `  <url>
     <loc>${page.url}</loc>
@@ -118,7 +122,9 @@ ${allPages.map(page => `  <url>
     
     // Fallback to basic sitemap if database fails
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://mtgmods.xyz'
+    const timestamp = new Date().toISOString()
     const fallbackXml = `<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated at ${timestamp} (fallback) -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>${baseUrl}</loc>
