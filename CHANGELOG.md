@@ -2,6 +2,49 @@
 
 All notable changes to the mtg-mods project will be documented in this file.
 
+## [2024-12-28] - Content Reporting System and User Strikes Fix
+
+### Added
+- Comprehensive content reporting and moderation system
+  - Content reporting API endpoints for recipes
+  - Admin dashboard for managing content reports and user strikes
+  - User strike system with automatic banning after multiple violations
+  - Admin notifications system for content moderation events
+  - User strike warnings and banned user banners
+  - Report content button on recipe pages
+- User strike management
+  - User strikes API endpoints for tracking violations
+  - Strike warning banners for users with 1 violation
+  - Banned user banners for users with 2+ violations
+  - Automatic user banning after multiple content violations
+  - Admin interface for managing user strikes and bans
+
+### Changed
+- Improved session management and authentication flow
+  - Enhanced JWT and session callbacks to properly handle username updates
+  - Fixed session refresh after username setup to prevent redirect loops
+  - Centralized user strikes logic in useUserBanned hook
+  - Updated TypeScript types for better type safety
+
+### Fixed
+- **Critical**: Fixed infinite loop in user strikes system
+  - Resolved infinite API calls to `/api/user/strikes` endpoint
+  - Fixed useUserBanned hook with proper useCallback and dependency management
+  - Eliminated duplicate API calls by centralizing logic in useUserBanned hook
+  - Fixed function recreation issues in useEffect hooks
+- Fixed redirect loops in username setup flow
+  - Added proper state management to prevent multiple redirect checks
+  - Fixed pathname checks to prevent redirecting when already on setup page
+  - Improved session update process after username setup
+- Fixed TypeScript errors
+  - Added proper types for needsUsernameSetup property
+  - Updated next-auth type definitions for better type safety
+
+### Security
+- Enhanced content moderation with automatic user banning
+- Improved session security with proper token management
+- Added admin-only access controls for moderation features
+
 ## [2024-05-25] - Profile Card Enhancements and Cleanup
 
 ### Added

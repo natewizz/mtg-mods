@@ -16,7 +16,7 @@ The sitemap is automatically generated and includes:
 The sitemap is generated dynamically using Next.js 13+ App Router's built-in sitemap generation:
 
 - **File**: `src/app/sitemap.ts`
-- **URL**: `https://mtgmods.xyz/sitemap.xml`
+- **URL**: `https://www.mtgmods.xyz/sitemap.xml`
 - **Generation**: Automatically generated on each build
 
 ### Recipe Inclusion
@@ -123,7 +123,7 @@ jobs:
 ### Check Sitemap Status
 ```bash
 # View sitemap
-curl https://mtgmods.xyz/sitemap.xml
+curl https://www.mtgmods.xyz/sitemap.xml
 
 # Check size and last modified
 ls -la public/sitemap.xml
@@ -162,7 +162,7 @@ If sitemap exceeds 50MB or 50,000 URLs:
 ## Configuration
 
 ### Environment Variables
-- `NEXT_PUBLIC_APP_URL`: Base URL for sitemap (default: https://mtgmods.xyz)
+- `NEXT_PUBLIC_APP_URL`: Base URL for sitemap (default: https://www.mtgmods.xyz)
 - `DATABASE_URL`: Database connection string
 
 ### Customization

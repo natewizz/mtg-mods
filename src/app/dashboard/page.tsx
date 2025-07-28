@@ -9,6 +9,9 @@ import { ActiveUsersChart } from './components/ActiveUsersChart';
 import { InteractionsChart } from './components/InteractionsChart';
 import { TagPieChart } from './components/TagPieChart';
 import { SignupsByProviderChart } from './components/SignupsByProviderChart';
+import ContentReports from '@/components/admin/ContentReports';
+import UserStrikes from '@/components/admin/UserStrikes';
+import AdminNotifications from '@/components/admin/AdminNotifications';
 import Image from 'next/image';
 
 // User type for dashboard tables
@@ -89,7 +92,11 @@ export default async function DashboardPage() {
     newVsReturning,
     recipesMostEdits,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _mostCommentedRecipes
+    _mostCommentedRecipes,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _contentReports,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _contentReportsByStatus
   ] = await Promise.all([
     prisma.user.count(),
     prisma.recipe.count(),
@@ -399,6 +406,10 @@ export default async function DashboardPage() {
     }),
     // Most commented recipes (if comments exist)
     Promise.resolve([]),
+    // Content reports (placeholder for now)
+    Promise.resolve([]),
+    // Content reports count by status (placeholder for now)
+    Promise.resolve([])
   ]);
 
   // Helper for ISO week start
@@ -483,6 +494,13 @@ export default async function DashboardPage() {
         <TableCard title="Churned Users (No Activity 30d)" columns={["User", "Email"]} rows={churnedUsers.map(u => [u.name || u.username, u.email])} />
         <TableCard title="New vs Returning Users (30d)" columns={["Type", "Count"]} rows={[["New", newVsReturning.newUsers], ["Returning", newVsReturning.returningUsers]]} />
       </div>
+
+      {/* Content Reports Section */}
+              <AdminNotifications />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <ContentReports />
+          <UserStrikes />
+        </div>
     </div>
   );
 }

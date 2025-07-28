@@ -4,6 +4,8 @@ import RecipeInteractions from '@/components/recipes/RecipeInteractions';
 
 interface RecipeInteractionsClientProps {
   recipeId: string;
+  recipeTitle: string;
+  recipeSlug: string;
   voteCount: number;
   triedCount: number;
   initialVoteValue: number | null;
@@ -13,6 +15,8 @@ interface RecipeInteractionsClientProps {
 
 export default function RecipeInteractionsClient({
   recipeId,
+  recipeTitle,
+  recipeSlug,
   voteCount,
   triedCount,
   initialVoteValue,
@@ -22,6 +26,8 @@ export default function RecipeInteractionsClient({
   return (
     <RecipeInteractions
       recipeId={recipeId}
+      recipeTitle={recipeTitle}
+      recipeSlug={recipeSlug}
       voteCount={voteCount}
       triedCount={triedCount}
       initialVoteValue={initialVoteValue}

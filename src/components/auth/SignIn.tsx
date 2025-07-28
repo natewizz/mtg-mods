@@ -12,7 +12,6 @@ export function SignIn() {
 
   useEffect(() => {
     if (status === "authenticated" && session) {
-      // @ts-expect-error -- session.user is extended in next-auth.d.ts
       if (session.user?.needsUsernameSetup) {
         router.push("/auth/setup-username");
       } else {

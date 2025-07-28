@@ -1,0 +1,46 @@
+[
+  {
+    "id": "notification_1753731172800_ar1h1nuzu",
+    "type": "RECIPE_REMOVED",
+    "title": "Recipe Permanently Deleted",
+    "message": "Recipe \"tewst recipe for removal\" was permanently deleted due to inappropriate content. User received strike #1.",
+    "recipeId": "cmdni7lxq0000gfyzlagn8le5",
+    "recipeTitle": "tewst recipe for removal",
+    "userId": "cmdnf7hui0000gfuvvfjfak13",
+    "adminId": "cmcxgu6xz0000l3043ksq16rc",
+    "adminName": "MTG MODS",
+    "reason": "Inappropriate content",
+    "read": false,
+    "createdAt": "2025-07-28T19:32:52.801Z"
+  },
+  {
+    "id": "notification_1753721865971_hskar5t3b",
+    "type": "USER_BANNED",
+    "title": "User Banned - Recipe Removed for Content Violation",
+    "message": "Recipe \"Jerk Move\" was removed. User received strike #3 and has been automatically banned.",
+    "recipeId": "cmdn8sb300000gf2xjp2sk64c",
+    "recipeTitle": "Jerk Move",
+    "userId": "cmcrsl55q0000gfwyr8i42db9",
+    "adminId": "cmcxgu6xz0000l3043ksq16rc",
+    "adminName": "MTG MODS",
+    "reason": "Inappropriate content",
+    "read": true,
+    "createdAt": "2025-07-28T16:57:45.971Z",
+    "readAt": "2025-07-28T19:33:20.773Z"
+  },
+  {
+    "id": "notification_1753715924141_n688f36bf",
+    "type": "RECIPE_REMOVED",
+    "title": "Recipe Removed for Content Violation",
+    "message": "Recipe \"secoind chance\" was removed due to inappropriate content. User received a strike.",
+    "recipeId": "cmdn956bk0000gf77v2f2pd8d",
+    "recipeTitle": "secoind chance",
+    "userId": "cmcrsl55q0000gfwyr8i42db9",
+    "adminId": "cmcxgu6xz0000l3043ksq16rc",
+    "adminName": "MTG MODS",
+    "reason": "Inappropriate content",
+    "read": true,
+    "createdAt": "2025-07-28T15:18:44.141Z",
+    "readAt": "2025-07-28T19:33:19.733Z"
+  }
+]

@@ -226,105 +226,53 @@ async function _getRandomRecipe() {
   return recipe;
 }
 
-// Helper function to normalize sort options for consistent caching
-function normalizeGetRecipesOptions(options: GetRecipesOptions = {}): GetRecipesOptions {
-  return {
-    ...options,
-    sortBy: (options.sortBy === 'newest' || !options.sortBy) ? 'newest' as SortOption : options.sortBy,
-    tagFilters: options.tagFilters?.sort(), // Sort tags for consistent cache keys
-    take: options.take || 15,
-    skip: options.skip || 0,
-  };
-}
 
-// Internal cached function
-const _getCachedFilteredRecipes = cache(
-  unstable_cache(
-    async (normalizedOptions: GetRecipesOptions) => {
-      try {
-        return await _getFilteredRecipes(normalizedOptions);
-      } catch (error) {
-        console.error('Error fetching filtered recipes:', error);
-        return [];
-      }
-    },
-    ['filtered-recipes'],
-    {
-      revalidate: 30, // Cache for 30 seconds
-      tags: ['recipes', 'filtered-recipes'],
-    }
-  )
-);
 
-// Public interface that normalizes options before caching
-export const getFilteredRecipes = async (options: GetRecipesOptions = {}) => {
-  const normalizedOptions = normalizeGetRecipesOptions(options);
-  return _getCachedFilteredRecipes(normalizedOptions);
-};
-
-export const getTrendingRecipes = cache(
-  unstable_cache(
-    async (options: { take?: number; skip?: number } = {}) => {
-      try {
-        return await _getTrendingRecipes(options);
-      } catch (error) {
-        console.error('Error fetching trending recipes:', error);
-        return [];
-      }
-    },
-    ['trending-recipes'],
-    {
-      revalidate: 60, // Cache for 1 minute since trending changes less frequently
-      tags: ['recipes']
-    }
-  )
-);
-
-export const getPopularTags = cache(
-  unstable_cache(
-    async (minCount = 2): Promise<FilterTag[]> => {
-      try {
-        return await _getPopularTags(minCount);
-      } catch (error) {
-        console.error('Error fetching popular tags:', error);
-        return [];
-      }
-    },
-    ['popular-tags'],
-    {
-      revalidate: 300, // Cache for 5 minutes since tags change even less frequently
-      tags: ['tags']
-    }
-  )
-);
-
-export const getLatestRecipes = cache(
-  unstable_cache(
-    async (count = 4) => {
-      try {
-        return await _getLatestRecipes(count);
-      } catch (error) {
-        console.error('Error fetching latest recipes:', error);
-        return [];
-      }
-    },
-    ['latest-recipes'],
-    {
-      revalidate: 60, // Cache for 1 minute
-      tags: ['recipes']
-    }
-  )
-);
-
-// Random recipe - NO CACHING (should always be different)
-export const getRandomRecipe = async () => {
-  try {
-    return await _getRandomRecipe();
-  } catch (error) {
-    console.error('Error fetching random recipe:', error);
-    return null;
+// Cached versions with proper cache tags for invalidation
+export const getFilteredRecipes = unstable_cache(
+  _getFilteredRecipes,
+  ['filtered-recipes'],
+  {
+    tags: ['recipes', 'filtered-recipes'],
+    revalidate: 60, // Revalidate every 60 seconds
   }
-};
+);
+
+export const getTrendingRecipes = unstable_cache(
+  _getTrendingRecipes,
+  ['trending-recipes'],
+  {
+    tags: ['recipes', 'trending-recipes'],
+    revalidate: 60,
+  }
+);
+
+export const getPopularTags = unstable_cache(
+  _getPopularTags,
+  ['popular-tags'],
+  {
+    tags: ['tags', 'popular-tags'],
+    revalidate: 300, // Revalidate every 5 minutes
+  }
+);
+
+export const getLatestRecipes = unstable_cache(
+  _getLatestRecipes,
+  ['latest-recipes'],
+  {
+    tags: ['recipes', 'latest-recipes'],
+    revalidate: 60,
+  }
+);
+
+export const getRandomRecipe = unstable_cache(
+  _getRandomRecipe,
+  ['random-recipe'],
+  {
+    tags: ['recipes', 'random-recipe'],
+    revalidate: 300,
+  }
+);
 
 // Preload function for filtered recipes
 export const preloadFilteredRecipes = (options: GetRecipesOptions = {}) => {

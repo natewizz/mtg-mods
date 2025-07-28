@@ -189,10 +189,10 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
   const description = stripHtml(recipe.instructions).slice(0, 160);
 
   // Canonical URL for this recipe
-  const canonicalUrl = `https://mtgmods.xyz/recipes/${slug}`;
+  const canonicalUrl = `https://www.mtgmods.xyz/recipes/${slug}`;
 
   // Default image (update if you add per-recipe images)
-  const imageUrl = 'https://mtgmods.xyz/logo.png';
+  const imageUrl = 'https://www.mtgmods.xyz/logo.png';
 
   // Build JSON-LD structured data
   const jsonLd = {
@@ -293,6 +293,8 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
             <Suspense fallback={<div>Loading interactions...</div>}>
               <RecipeInteractionsClient
                 recipeId={recipe.id}
+                recipeTitle={recipe.title}
+                recipeSlug={recipe.slug}
                 voteCount={totalVotes}
                 triedCount={totalTried}
                 initialVoteValue={userInteractions?.voteValue || null}

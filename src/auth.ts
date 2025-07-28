@@ -117,24 +117,27 @@ export const authOptions = {
         if (token.sub) {
           session.user.id = token.sub;
         }
-        if (token.needsUsernameSetup) {
-          // @ts-ignore
+        if (token.username) {
+          session.user.username = token.username;
+        }
+        if (token.role) {
+          session.user.role = token.role;
+        }
+        if (token.needsUsernameSetup !== undefined) {
           session.user.needsUsernameSetup = token.needsUsernameSetup;
         }
 
-        // Fetch the username, image, and role from the database and add to the session
+        // Fetch the image from the database (username and role are now from token)
         try {
           const user = await prisma.user.findUnique({
             where: { id: token.sub },
-            select: { username: true, image: true, role: true }
+            select: { image: true }
           });
           if (user) {
-            session.user.username = user.username;
             session.user.image = user.image;
-            session.user.role = user.role;
           }
         } catch (error) {
-          console.error("Error fetching user data for session:", error);
+          console.error("Error fetching user image for session:", error);
         }
       }
       return session;
@@ -152,6 +155,24 @@ export const authOptions = {
         }
         // Set a flag to check if username should be set up
         token.needsUsernameSetup = !user.username;
+      } else {
+        // If no user object (token refresh), fetch current user data from database
+        if (token.sub) {
+          try {
+            const currentUser = await prisma.user.findUnique({
+              where: { id: token.sub },
+              select: { username: true, role: true }
+            });
+            if (currentUser) {
+              token.username = currentUser.username;
+              token.role = currentUser.role;
+              // Update needsUsernameSetup flag based on current username
+              token.needsUsernameSetup = !currentUser.username;
+            }
+          } catch (error) {
+            console.error("Error fetching user data in JWT callback:", error);
+          }
+        }
       }
       return token;
     }

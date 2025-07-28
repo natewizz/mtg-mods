@@ -9,8 +9,16 @@ export default function SetupUsernamePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+  const [hasCheckedRedirect, setHasCheckedRedirect] = useState(false);
 
   useEffect(() => {
+    // Only check redirects once when session is loaded
+    if (status === "loading" || hasCheckedRedirect) {
+      return;
+    }
+
+    setHasCheckedRedirect(true);
+
     // If the user is not authenticated, redirect to login
     if (status === "unauthenticated") {
       router.push("/auth/signin");
@@ -24,17 +32,22 @@ export default function SetupUsernamePage() {
       return;
     }
     
-    if (status !== "loading") {
+    // If authenticated but no username, stay on this page
+    if (status === "authenticated") {
       setIsLoading(false);
     }
-  }, [session, status, router]);
+  }, [session, status, router, hasCheckedRedirect]);
 
-  if (isLoading || status === "loading") {
+  if (status === "loading" || isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5A31F4]"></div>
       </div>
     );
+  }
+
+  if (status === "unauthenticated") {
+    return null; // Will redirect in useEffect
   }
 
   if (!session?.user) {

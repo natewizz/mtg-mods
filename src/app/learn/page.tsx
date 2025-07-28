@@ -10,7 +10,7 @@ export const metadata = {
   openGraph: {
     title: 'Learn About MTG Game Modifications | MTG Mods',
     description: 'Discover how to create, share, and play with game rule modifications for Magic: The Gathering. Learn about recipe complexity, dependencies, and unleash your creativity.',
-    url: 'https://mtgmods.xyz/learn',
+            url: 'https://www.mtgmods.xyz/learn',
     siteName: 'MTG Mods',
     images: [
       {

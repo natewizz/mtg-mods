@@ -3,9 +3,13 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import ReportContentButton from './ReportContentButton';
+import { useUserBanned } from '@/hooks/useUserBanned';
 
 interface RecipeInteractionsProps {
   recipeId: string;
+  recipeTitle: string;
+  recipeSlug: string;
   initialVoteValue?: number | null;
   initialBookmarked: boolean;
   initialTried: boolean;
@@ -15,6 +19,8 @@ interface RecipeInteractionsProps {
 
 export default function RecipeInteractions({
   recipeId,
+  recipeTitle,
+  recipeSlug,
   initialVoteValue = null,
   initialBookmarked = false,
   initialTried = false,
@@ -23,6 +29,7 @@ export default function RecipeInteractions({
 }: RecipeInteractionsProps) {
   const { status } = useSession();
   const router = useRouter();
+  const { isBanned } = useUserBanned();
   
   // Local state for optimistic updates
   const [userVote, setUserVote] = useState<number | null>(initialVoteValue);
@@ -39,6 +46,10 @@ export default function RecipeInteractions({
   const checkAuth = () => {
     if (!isLoggedIn) {
       router.push('/auth/signin?callbackUrl=' + encodeURIComponent(window.location.href));
+      return false;
+    }
+    if (isBanned) {
+      alert('Your account has been disabled due to content violations. You cannot interact with content.');
       return false;
     }
     return true;
@@ -196,6 +207,13 @@ export default function RecipeInteractions({
         {tried ? 'Tried' : 'I Tried This'} 
         {totalTried > 0 && <span className="ml-1 text-sm">({totalTried})</span>}
       </button>
+
+      {/* Report Content Button */}
+      <ReportContentButton 
+        recipeId={recipeId}
+        recipeTitle={recipeTitle}
+        recipeSlug={recipeSlug}
+      />
     </div>
   );
 } 

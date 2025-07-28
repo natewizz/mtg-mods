@@ -4,6 +4,7 @@ import { getSession, getCurrentUserId } from '@/lib/auth/get-session';
 import { z } from 'zod';
 import { slugify } from '@/lib/utils';
 import { getLatestRecipes } from '@/lib/recipe-actions';
+import { revalidateTag } from 'next/cache';
 
 // Validation schema for creating a recipe
 const createRecipeSchema = z.object({
@@ -64,6 +65,14 @@ export async function POST(request: NextRequest) {
         },
       },
     });
+
+    // Invalidate cache to ensure fresh data
+    revalidateTag('recipes');
+    revalidateTag('filtered-recipes');
+    revalidateTag('trending-recipes');
+    revalidateTag('latest-recipes');
+    revalidateTag('tags');
+    revalidateTag('popular-tags');
 
     return NextResponse.json(recipe, { status: 201 });
   } catch (error) {

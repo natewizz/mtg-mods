@@ -6,6 +6,7 @@ import Image from "next/image";
 import { SessionUser } from "@/lib/auth/types";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useUserBanned } from "@/hooks/useUserBanned";
 
 export default function Header() {
   const { data: session, status } = useSession();
@@ -15,6 +16,7 @@ export default function Header() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const { isBanned } = useUserBanned();
   
   // Safely access user properties with type safety
   const user = session?.user as SessionUser | undefined;
@@ -102,8 +104,9 @@ export default function Header() {
               Contact
             </Link>
             {user?.role === 'ADMIN' && (
-              <Link href="/dashboard" className="hover-underline font-medium text-[#5A31F4] hover:text-[#4A21E4] transition-colors">
-                Stats
+              <Link href="/dashboard" className="hover-underline font-medium text-[#5A31F4] hover:text-[#4A21E4] transition-colors flex items-center gap-1">
+                <span>Admin</span>
+                <span className="text-xs bg-red-500 text-white rounded-full px-1.5 py-0.5">🚨</span>
               </Link>
             )}
             
@@ -150,9 +153,11 @@ export default function Header() {
                         <Link href="/profile/me" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                           My Profile
                         </Link>
-                        <Link href="/recipes/new" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          Create Recipe
-                        </Link>
+                        {!isBanned && (
+                          <Link href="/recipes/new" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            Create Recipe
+                          </Link>
+                        )}
                         <button onClick={handleSignOut} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
                           Sign Out
                         </button>
@@ -199,8 +204,9 @@ export default function Header() {
               Contact
             </Link>
             {user?.role === 'ADMIN' && (
-              <Link href="/dashboard" className="hover:text-[#5A31F4] transition-colors">
-                Stats
+              <Link href="/dashboard" className="hover:text-[#5A31F4] transition-colors flex items-center gap-1">
+                <span>Admin Dashboard</span>
+                <span className="text-xs">🚨</span>
               </Link>
             )}
             
