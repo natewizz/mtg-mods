@@ -30,7 +30,6 @@ model User {
   strikes        UserStrike[]
   adminStrikes   UserStrike[]    @relation("AdminStrikes")
   role           String          @default("USER")
-  isDisabled     Boolean         @default(false)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }

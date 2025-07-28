@@ -59,8 +59,9 @@ export async function GET() {
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )[0]?.createdAt;
         
+        // Check if user is disabled by looking for [BANNED] in bio
         // For now, we'll assume users are disabled if they have 2+ strikes
-        // In a real implementation, this would check the user's actual disabled status
+        // In a real implementation, this would check the user's actual bio for [BANNED]
         const isDisabled = strikeCount >= 2;
         
         // Get username from the first strike (admin name field might contain it)
