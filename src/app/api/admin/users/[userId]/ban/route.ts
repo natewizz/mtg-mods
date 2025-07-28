@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -13,7 +13,7 @@ export async function POST(
       return NextResponse.json({ message: 'Admin access required' }, { status: 403 });
     }
 
-    const { userId } = params;
+    const { userId } = await params;
     const body = await request.json();
     const { reason } = body;
 

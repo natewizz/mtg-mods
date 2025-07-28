@@ -1,11 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth';
-import { prisma } from '@/lib/prisma';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
-export async function GET(request: NextRequest) {
+interface UserStrike {
+  id: string;
+  userId: string;
+  reason: string;
+  recipeId?: string;
+  recipeTitle?: string;
+  adminId: string;
+  adminName: string;
+  createdAt: string;
+}
+
+interface UserStrikeSummary {
+  userId: string;
+  username: string;
+  strikeCount: number;
+  isDisabled: boolean;
+  strikes: UserStrike[];
+  lastStrike?: string;
+}
+
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'ADMIN') {
@@ -14,55 +33,56 @@ export async function GET(request: NextRequest) {
 
     const strikesFile = join(process.cwd(), 'user-strikes.json');
     if (!existsSync(strikesFile)) {
-      return NextResponse.json({ strikes: [], total: 0 });
+      return NextResponse.json({ strikes: [] });
     }
 
     try {
       const fileContent = readFileSync(strikesFile, 'utf-8');
-      const strikes = JSON.parse(fileContent);
+      const strikes: UserStrike[] = JSON.parse(fileContent);
       
       // Group strikes by user
-      const userStrikes: { [userId: string]: any[] } = {};
-      strikes.forEach((strike: any) => {
-        if (!userStrikes[strike.userId]) {
-          userStrikes[strike.userId] = [];
+      const userStrikesMap = new Map<string, UserStrike[]>();
+      
+      strikes.forEach((strike: UserStrike) => {
+        if (!userStrikesMap.has(strike.userId)) {
+          userStrikesMap.set(strike.userId, []);
         }
-        userStrikes[strike.userId].push(strike);
+        userStrikesMap.get(strike.userId)!.push(strike);
       });
-
-      // Get usernames for all users with strikes
-      const userIds = Object.keys(userStrikes);
-      const users = await prisma.user.findMany({
-        where: { id: { in: userIds } },
-        select: { id: true, username: true, name: true, email: true }
-      });
-
-      const userMap = users.reduce((acc: { [key: string]: any }, user: any) => {
-        acc[user.id] = user;
-        return acc;
-      }, {} as { [key: string]: any });
-
-      // Calculate strike counts and account status
-      const userSummary = Object.entries(userStrikes).map(([userId, userStrikesList]) => {
-        const user = userMap[userId];
-        return {
+      
+      // Convert to summary format
+      const userStrikes: UserStrikeSummary[] = [];
+      
+      for (const [userId, userStrikesList] of userStrikesMap) {
+        const strikeCount = userStrikesList.length;
+        const lastStrike = userStrikesList.sort((a, b) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )[0]?.createdAt;
+        
+        // For now, we'll assume users are disabled if they have 2+ strikes
+        // In a real implementation, this would check the user's actual disabled status
+        const isDisabled = strikeCount >= 2;
+        
+        // Get username from the first strike (admin name field might contain it)
+        const username = userStrikesList[0]?.adminName || `User ${userId.slice(0, 8)}`;
+        
+        userStrikes.push({
           userId,
-          username: user?.username || user?.name || user?.email || 'Unknown User',
-          strikeCount: userStrikesList.length,
-          isDisabled: userStrikesList.length >= 2,
+          username,
+          strikeCount,
+          isDisabled,
           strikes: userStrikesList,
-          lastStrike: userStrikesList[userStrikesList.length - 1]?.createdAt
-        };
-      });
-
-      return NextResponse.json({ 
-        strikes: userSummary, 
-        total: strikes.length,
-        usersWithStrikes: userSummary.length
-      });
+          lastStrike
+        });
+      }
+      
+      // Sort by strike count (highest first)
+      userStrikes.sort((a, b) => b.strikeCount - a.strikeCount);
+      
+      return NextResponse.json({ strikes: userStrikes });
     } catch (error) {
       console.error('Error reading strikes file:', error);
-      return NextResponse.json({ strikes: [], total: 0 });
+      return NextResponse.json({ strikes: [] });
     }
   } catch (error) {
     console.error('Error fetching user strikes:', error);

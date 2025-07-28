@@ -24,7 +24,6 @@ interface UserStrikeSummary {
 export default function UserStrikes() {
   const [userStrikes, setUserStrikes] = useState<UserStrikeSummary[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchUserStrikes();
@@ -53,7 +52,7 @@ export default function UserStrikes() {
       const data = await response.json();
       setUserStrikes(data.strikes || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch user strikes');
+      console.error('Error fetching user strikes:', err);
     } finally {
       setLoading(false);
     }
@@ -77,7 +76,8 @@ export default function UserStrikes() {
         const errorData = await response.json();
         alert(errorData.message || 'Failed to ban user');
       }
-    } catch (error) {
+    } catch (err) {
+      console.error('Error banning user:', err);
       alert('Network error. Please try again.');
     }
   };
@@ -99,23 +99,6 @@ export default function UserStrikes() {
         <div className="text-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#5A31F4] mx-auto"></div>
           <p className="mt-2 text-gray-500">Loading user strikes...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold mb-4 text-[#2C2E3A]">⚠️ User Strikes</h2>
-        <div className="text-center py-8 text-red-500">
-          <p>Error: {error}</p>
-          <button 
-            onClick={fetchUserStrikes}
-            className="mt-2 px-4 py-2 bg-[#5A31F4] text-white rounded hover:bg-[#4A2BE4]"
-          >
-            Retry
-          </button>
         </div>
       </div>
     );

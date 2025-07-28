@@ -36,7 +36,7 @@ export default function StrikeWarningBanner() {
             <div className="bg-yellow-100 rounded p-3 mb-2">
               <p className="text-sm text-yellow-800 font-medium">Recent violation:</p>
               <p className="text-sm text-yellow-700">
-                Recipe: "{strikes[0].recipeTitle || 'Unknown Recipe'}"
+                Recipe: &ldquo;{strikes[0].recipeTitle || 'Unknown Recipe'}&rdquo;
               </p>
               <p className="text-xs text-yellow-600 mt-1">
                 Reason: {strikes[0].reason}

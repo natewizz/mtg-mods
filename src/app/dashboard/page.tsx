@@ -93,8 +93,10 @@ export default async function DashboardPage() {
     recipesMostEdits,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _mostCommentedRecipes,
-    contentReports,
-    contentReportsByStatus
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _contentReports,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _contentReportsByStatus
   ] = await Promise.all([
     prisma.user.count(),
     prisma.recipe.count(),

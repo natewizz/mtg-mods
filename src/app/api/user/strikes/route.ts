@@ -1,10 +1,21 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
-export async function GET(request: NextRequest) {
+interface UserStrike {
+  id: string;
+  userId: string;
+  reason: string;
+  recipeId?: string;
+  recipeTitle?: string;
+  adminId: string;
+  adminName: string;
+  createdAt: string;
+}
+
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -18,10 +29,10 @@ export async function GET(request: NextRequest) {
 
     try {
       const fileContent = readFileSync(strikesFile, 'utf-8');
-      const strikes = JSON.parse(fileContent);
+      const strikes: UserStrike[] = JSON.parse(fileContent);
       
       // Filter strikes for the current user only
-      const userStrikes = strikes.filter((strike: any) => strike.userId === session.user.id);
+      const userStrikes = strikes.filter((strike: UserStrike) => strike.userId === session.user.id);
       
       return NextResponse.json({ 
         strikes: userStrikes,

@@ -35,7 +35,7 @@ export default function BannedUserBanner() {
             {strikes.slice(0, 3).map((strike, index) => (
               <div key={strike.id} className="mb-2 last:mb-0">
                 <p className="text-sm text-red-700">
-                  {index + 1}. Recipe: "{strike.recipeTitle || 'Unknown Recipe'}"
+                  {index + 1}. Recipe: &ldquo;{strike.recipeTitle || 'Unknown Recipe'}&rdquo;
                 </p>
                 <p className="text-xs text-red-600 ml-2">
                   Reason: {strike.reason}
