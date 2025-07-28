@@ -5,6 +5,7 @@ import { authOptions } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { revalidateTag } from 'next/cache';
 
 interface ContentReport {
   id: string;
@@ -70,6 +71,49 @@ export async function PATCH(
 
       if (recipe) {
         const recipeAuthorId = recipe.authorId;
+        
+        // ACTUALLY DELETE THE RECIPE from the database
+        try {
+          await prisma.$transaction(async (tx) => {
+            // Delete all tags associated with the recipe
+            await tx.recipeTag.deleteMany({
+              where: { recipeId: report.recipeId },
+            });
+
+            // Delete all votes associated with the recipe
+            await tx.vote.deleteMany({
+              where: { recipeId: report.recipeId },
+            });
+
+            // Delete all bookmarks associated with the recipe
+            await tx.bookmark.deleteMany({
+              where: { recipeId: report.recipeId },
+            });
+
+            // Delete all tried records associated with the recipe
+            await tx.tried.deleteMany({
+              where: { recipeId: report.recipeId },
+            });
+
+            // Delete the recipe
+            await tx.recipe.delete({
+              where: { id: report.recipeId },
+            });
+          });
+          
+          console.log(`Recipe ${report.recipeId} (${report.recipeTitle}) has been permanently deleted`);
+          
+          // Invalidate cache to ensure fresh data
+          revalidateTag('recipes');
+          revalidateTag('filtered-recipes');
+          revalidateTag('trending-recipes');
+          revalidateTag('latest-recipes');
+          revalidateTag('tags');
+          revalidateTag('popular-tags');
+        } catch (deleteError) {
+          console.error('Error deleting recipe:', deleteError);
+          return NextResponse.json({ message: 'Failed to delete recipe' }, { status: 500 });
+        }
         
         // Read the user strikes file
         const strikesFile = join(process.cwd(), 'user-strikes.json');

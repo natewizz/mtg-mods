@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth';
 import { prisma } from '@/lib/prisma';
+import { revalidateTag } from 'next/cache';
 
 export async function POST(
   request: NextRequest,
@@ -42,6 +43,12 @@ export async function POST(
       where: { id: userId },
       data: { bio: newBio }
     });
+
+    // Invalidate cache to ensure fresh data
+    revalidateTag('recipes');
+    revalidateTag('filtered-recipes');
+    revalidateTag('trending-recipes');
+    revalidateTag('latest-recipes');
 
     console.log(`User ${user.username || user.email} (${userId}) has been banned by admin ${session.user.email}`);
 
