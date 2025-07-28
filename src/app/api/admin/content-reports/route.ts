@@ -30,9 +30,12 @@ export async function GET() {
 
     try {
       const fileContent = readFileSync(reportsFile, 'utf-8');
-      const reports: ContentReport[] = JSON.parse(fileContent);
+      const allReports: ContentReport[] = JSON.parse(fileContent);
       
-      return NextResponse.json({ reports });
+      // Only return pending reports by default
+      const pendingReports = allReports.filter(report => report.status === 'pending');
+      
+      return NextResponse.json({ reports: pendingReports });
     } catch (error) {
       console.error('Error reading reports file:', error);
       return NextResponse.json({ reports: [] });

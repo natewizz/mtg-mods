@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth';
+import { prisma } from '@/lib/prisma';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
@@ -50,6 +51,16 @@ export async function GET() {
         userStrikesMap.get(strike.userId)!.push(strike);
       });
       
+      // Get user data for all users with strikes
+      const userIds = Array.from(userStrikesMap.keys());
+      const users = await prisma.user.findMany({
+        where: { id: { in: userIds } },
+        select: { id: true, username: true, name: true, email: true, bio: true }
+      });
+      
+      // Create a map for quick user lookup
+      const userMap = new Map(users.map(user => [user.id, user]));
+      
       // Convert to summary format
       const userStrikes: UserStrikeSummary[] = [];
       
@@ -59,13 +70,12 @@ export async function GET() {
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )[0]?.createdAt;
         
-        // Check if user is disabled by looking for [BANNED] in bio
-        // For now, we'll assume users are disabled if they have 2+ strikes
-        // In a real implementation, this would check the user's actual bio for [BANNED]
-        const isDisabled = strikeCount >= 2;
+        // Get user data
+        const user = userMap.get(userId);
+        const username = user?.username || user?.name || user?.email || `User ${userId.slice(0, 8)}`;
         
-        // Get username from the first strike (admin name field might contain it)
-        const username = userStrikesList[0]?.adminName || `User ${userId.slice(0, 8)}`;
+        // Check if user is disabled by looking for [BANNED] in bio
+        const isDisabled = user?.bio?.includes('[BANNED]') || strikeCount >= 2;
         
         userStrikes.push({
           userId,

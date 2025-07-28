@@ -11,7 +11,7 @@ interface ContentReport {
   userId: string;
   userEmail: string;
   reason: string;
-  status: 'pending' | 'reviewed' | 'resolved';
+  status: 'pending' | 'resolved';
   createdAt: string;
 }
 
@@ -19,21 +19,8 @@ export default function ContentReports() {
   const [reports, setReports] = useState<ContentReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
-
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      await fetchReports();
-    } catch (err) {
-      console.error('Error fetching data:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const [displayCount, setDisplayCount] = useState(7);
+  const [allReports, setAllReports] = useState<ContentReport[]>([]);
 
   const fetchReports = async () => {
     try {
@@ -44,24 +31,44 @@ export default function ContentReports() {
       }
       
       const data = await response.json();
-      setReports(data.reports || []);
+      const pendingReports = data.reports.filter((report: ContentReport) => report.status === 'pending');
+      setAllReports(pendingReports);
+      setReports(pendingReports.slice(0, displayCount));
     } catch (err) {
       console.error('Error fetching reports:', err);
     }
   };
 
-  const handleReportAction = async (reportId: string, action: 'reviewed' | 'resolved') => {
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      await fetchReports();
+    } catch (err) {
+      console.error('Error fetching data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleReportAction = async (reportId: string, action: 'dismiss' | 'remove') => {
     setUpdating(reportId);
     try {
       const response = await fetch(`/api/admin/content-reports/${reportId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: action })
+        body: JSON.stringify({ 
+          status: 'resolved',
+          action: action // 'dismiss' or 'remove'
+        })
       });
 
       if (response.ok) {
         await fetchReports();
-        alert(`Report ${action} successfully`);
+        alert(`Report ${action === 'dismiss' ? 'dismissed' : 'resolved'} successfully`);
       } else {
         const errorData = await response.json();
         alert(errorData.message || 'Failed to update report');
@@ -72,6 +79,12 @@ export default function ContentReports() {
     } finally {
       setUpdating(null);
     }
+  };
+
+  const loadMore = () => {
+    const newCount = displayCount + 7;
+    setDisplayCount(newCount);
+    setReports(allReports.slice(0, newCount));
   };
 
   const formatDate = (dateString: string) => {
@@ -96,13 +109,13 @@ export default function ContentReports() {
     );
   }
 
-  if (reports.length === 0) {
+  if (allReports.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold mb-4 text-[#2C2E3A]">🚨 Content Reports</h2>
         <div className="text-center py-8 text-gray-500">
-          <p className="text-lg mb-2">No content reports yet</p>
-          <p className="text-sm">Users can report inappropriate content using the &ldquo;Report Content&rdquo; button on recipe cards.</p>
+          <p className="text-lg mb-2">No pending content reports</p>
+          <p className="text-sm">All reports have been reviewed and resolved.</p>
         </div>
       </div>
     );
@@ -111,7 +124,7 @@ export default function ContentReports() {
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-[#2C2E3A]">🚨 Content Reports ({reports.length})</h2>
+        <h2 className="text-xl font-semibold text-[#2C2E3A]">🚨 Content Reports ({allReports.length} pending)</h2>
         <button 
           onClick={fetchData}
           className="px-3 py-1 text-sm bg-[#5A31F4] text-white rounded hover:bg-[#4A2BE4]"
@@ -132,59 +145,43 @@ export default function ContentReports() {
                 </h3>
                 <div className="text-sm text-gray-600">
                   <p><strong>Reported by:</strong> {report.userEmail}</p>
-                  <p><strong>Status:</strong> 
-                    <span className={`ml-1 px-2 py-1 text-xs font-medium rounded-full ${
-                      report.status === 'pending' 
-                        ? 'bg-yellow-100 text-yellow-800' 
-                        : report.status === 'reviewed'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-green-100 text-green-800'
-                    }`}>
-                      {report.status.toUpperCase()}
-                    </span>
-                  </p>
                   <p><strong>Reported:</strong> {formatDate(report.createdAt)}</p>
                 </div>
               </div>
               
               <div className="flex gap-2">
-                {report.status === 'pending' && (
-                  <>
-                    <button
-                      onClick={() => handleReportAction(report.id, 'reviewed')}
-                      disabled={updating === report.id}
-                      className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200 disabled:opacity-50"
-                    >
-                      {updating === report.id ? 'Updating...' : 'Mark Reviewed'}
-                    </button>
-                    <button
-                      onClick={() => handleReportAction(report.id, 'resolved')}
-                      disabled={updating === report.id}
-                      className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 disabled:opacity-50"
-                    >
-                      {updating === report.id ? 'Updating...' : 'Remove Recipe'}
-                    </button>
-                  </>
-                )}
-                {report.status === 'reviewed' && (
-                  <button
-                    onClick={() => handleReportAction(report.id, 'resolved')}
-                    disabled={updating === report.id}
-                    className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 disabled:opacity-50"
-                  >
-                    {updating === report.id ? 'Updating...' : 'Remove Recipe'}
-                  </button>
-                )}
-                {report.status === 'resolved' && (
-                  <span className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded">
-                    Recipe Removed
-                  </span>
-                )}
+                <button
+                  onClick={() => handleReportAction(report.id, 'dismiss')}
+                  disabled={updating === report.id}
+                  className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                  title="Dismiss report without removing recipe"
+                >
+                  {updating === report.id ? 'Updating...' : 'Dismiss'}
+                </button>
+                <button
+                  onClick={() => handleReportAction(report.id, 'remove')}
+                  disabled={updating === report.id}
+                  className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 disabled:opacity-50"
+                  title="Remove recipe and ban user if needed"
+                >
+                  {updating === report.id ? 'Updating...' : 'Remove Recipe'}
+                </button>
               </div>
             </div>
           </div>
         ))}
       </div>
+      
+      {reports.length < allReports.length && (
+        <div className="mt-6 text-center">
+          <button
+            onClick={loadMore}
+            className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
+          >
+            Load More ({allReports.length - reports.length} remaining)
+          </button>
+        </div>
+      )}
     </div>
   );
 } 

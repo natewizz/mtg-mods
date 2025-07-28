@@ -41,7 +41,7 @@ export async function PATCH(
 
     const { reportId } = await params;
     const body = await request.json();
-    const { status, reason } = body;
+    const { status, action } = body; // action: 'dismiss' or 'remove'
 
     // Read the content reports file
     const reportsFile = join(process.cwd(), 'content-reports.json');
@@ -60,8 +60,8 @@ export async function PATCH(
     // Update the report status
     report.status = status;
     
-    // If status is 'resolved' and reason is provided, handle the resolution
-    if (status === 'resolved' && reason) {
+    // If action is 'remove' (not 'dismiss'), handle the recipe removal
+    if (action === 'remove' && status === 'resolved') {
       // Get the recipe author ID
       const recipe = await prisma.recipe.findUnique({
         where: { id: report.recipeId },
@@ -86,7 +86,7 @@ export async function PATCH(
         const newStrike: UserStrike = {
           id: `strike_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           userId: recipeAuthorId,
-          reason: reason || 'Inappropriate content - recipe permanently deleted',
+          reason: 'Inappropriate content - recipe permanently deleted',
           recipeId: report.recipeId,
           recipeTitle: report.recipeTitle,
           adminId: session.user.id,
@@ -152,7 +152,7 @@ export async function PATCH(
             userId: recipeAuthorId,
             adminId: session.user.id,
             adminName: session.user.name || session.user.email,
-            reason: reason || 'Inappropriate content',
+            reason: 'Inappropriate content',
             read: false,
             createdAt: new Date().toISOString()
           };
