@@ -124,12 +124,14 @@ export default function Home() {
 
   useEffect(() => {
     if (status === "authenticated") {
-      // @ts-expect-error -- session.user is extended in next-auth.d.ts
       if (session?.user?.needsUsernameSetup) {
-        router.push("/auth/setup-username");
+        // Only redirect if we're not already on the setup page
+        if (typeof window !== 'undefined' && window.location.pathname !== '/auth/setup-username') {
+          router.push("/auth/setup-username");
+        }
       }
     }
-  }, [status, session, router]);
+  }, [status, session?.user?.needsUsernameSetup, router]);
 
   // Fetch latest recipes via API route to avoid server-only issues
   useEffect(() => {

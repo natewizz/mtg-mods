@@ -26,6 +26,7 @@ declare module "next-auth" {
         createdAt?: Date;
         updatedAt?: Date;
         emailVerified?: Date | null;
+        needsUsernameSetup?: boolean;
     }
 }
 
@@ -34,5 +35,6 @@ declare module "next-auth/jwt" {
     interface JWT {
         userId?: string;
         sub?: string;
+        needsUsernameSetup?: boolean;
     }
 } 

@@ -7,7 +7,7 @@ export const metadata = {
   openGraph: {
     title: 'Contact MTG Mods | Magic: The Gathering Community',
     description: 'Contact the MTG Mods team for support, feedback, or partnership inquiries. Join our Discord or send us a message directly.',
-    url: "https://mtgmods.xyz/contact",
+            url: "https://www.mtgmods.xyz/contact",
     siteName: 'MTG Mods',
     images: [
       {

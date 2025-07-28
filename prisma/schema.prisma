@@ -26,7 +26,11 @@ model User {
   credentials    UserCredential?
   usernameChange UsernameChange?
   votes          Vote[]
+  contentReports ContentReport[]
+  strikes        UserStrike[]
+  adminStrikes   UserStrike[]    @relation("AdminStrikes")
   role           String          @default("USER")
+  isDisabled     Boolean         @default(false)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
@@ -80,6 +84,8 @@ model Recipe {
   tags         RecipeTag[]
   tried        Tried[]
   votes        Vote[]
+  contentReports ContentReport[]
+  strikes      UserStrike[]
 
   @@index([authorId], map: "Recipe_authorId_idx")
 }
@@ -166,4 +172,42 @@ model WaitlistSignup {
   createdAt DateTime @default(now())
   source    String?
   notes     String?
+}
+
+model ContentReport {
+  id          String   @id @default(cuid())
+  recipeId    String
+  recipeTitle String
+  recipeSlug  String
+  reporterId  String
+  status      String   @default("PENDING") // PENDING, REVIEWED, RESOLVED, DISMISSED
+  notes       String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  recipe      Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  reporter    User     @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId], map: "ContentReport_recipeId_idx")
+  @@index([reporterId], map: "ContentReport_reporterId_idx")
+  @@index([status], map: "ContentReport_status_idx")
+  @@index([createdAt], map: "ContentReport_createdAt_idx")
+}
+
+model UserStrike {
+  id          String   @id @default(cuid())
+  userId      String
+  reason      String   @db.Text
+  recipeId    String?
+  recipeTitle String?
+  adminId     String
+  createdAt   DateTime @default(now())
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  admin       User     @relation("AdminStrikes", fields: [adminId], references: [id], onDelete: Cascade)
+  recipe      Recipe?  @relation(fields: [recipeId], references: [id], onDelete: SetNull)
+
+  @@index([userId], map: "UserStrike_userId_idx")
+  @@index([adminId], map: "UserStrike_adminId_idx")
+  @@index([createdAt], map: "UserStrike_createdAt_idx")
 }

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "MTG Mods – Magic: The Gathering Rule Variants & Community",
     description: "Discover, create, and share innovative Magic: The Gathering rule modifications and game variants. Join the Kickstarter waitlist for early access!",
-    url: "https://mtgmods.xyz",
+            url: "https://www.mtgmods.xyz",
     siteName: "MTG Mods",
     images: [
       {

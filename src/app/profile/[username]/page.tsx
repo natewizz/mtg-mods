@@ -5,6 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ProfileCard from "@/components/user/ProfileCard";
 import ProfileTabs from "@/components/user/ProfileTabs";
+import StrikeWarningBanner from "@/components/user/StrikeWarningBanner";
+import BannedUserBanner from "@/components/user/BannedUserBanner";
 import type { User as PrismaUser } from "@prisma/client";
 import type { RecipeWithStats } from "@/components/user/RecipeList";
 import { SessionUser } from "@/lib/auth/types";
@@ -111,6 +113,8 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-4xl mx-auto">
+      {isOwnProfile && <StrikeWarningBanner />}
+      {isOwnProfile && <BannedUserBanner />}
       <ProfileCard 
         user={profile}
         isCurrentUser={isOwnProfile}

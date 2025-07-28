@@ -77,7 +77,7 @@ export const metadata = {
   openGraph: {
     title: "All MTG Mods Recipes – Magic: The Gathering Rule Variants",
     description: "Browse all Magic: The Gathering rule modifications, custom formats, and community-created game variants. Filter by tags and discover trending recipes.",
-    url: "https://mtgmods.xyz/recipes",
+            url: "https://www.mtgmods.xyz/recipes",
     siteName: "MTG Mods",
     images: [
       {
