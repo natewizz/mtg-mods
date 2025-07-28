@@ -10,8 +10,9 @@
     "adminId": "cmcxgu6xz0000l3043ksq16rc",
     "adminName": "MTG MODS",
     "reason": "Inappropriate content",
-    "read": false,
-    "createdAt": "2025-07-28T16:57:45.971Z"
+    "read": true,
+    "createdAt": "2025-07-28T16:57:45.971Z",
+    "readAt": "2025-07-28T19:15:26.288Z"
   },
   {
     "id": "notification_1753715924141_n688f36bf",
@@ -26,6 +27,6 @@
     "reason": "Inappropriate content",
     "read": true,
     "createdAt": "2025-07-28T15:18:44.141Z",
-    "readAt": "2025-07-28T15:55:46.586Z"
+    "readAt": "2025-07-28T19:15:27.153Z"
   }
 ]

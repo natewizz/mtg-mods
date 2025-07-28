@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 interface ContentReport {
@@ -52,6 +52,7 @@ export default function ContentReports() {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleReportAction = async (reportId: string, action: 'dismiss' | 'remove') => {

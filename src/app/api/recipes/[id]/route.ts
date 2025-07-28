@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getSession, getCurrentUserId } from '@/lib/auth/get-session';
 import { z } from 'zod';
 import { slugify } from '@/lib/utils';
+import { revalidateTag } from 'next/cache';
 
 // Validation schema for updating a recipe
 const updateRecipeSchema = z.object({
@@ -178,6 +179,14 @@ export async function PUT(
       });
     });
 
+    // Invalidate cache to ensure fresh data
+    revalidateTag('recipes');
+    revalidateTag('filtered-recipes');
+    revalidateTag('trending-recipes');
+    revalidateTag('latest-recipes');
+    revalidateTag('tags');
+    revalidateTag('popular-tags');
+
     return NextResponse.json(updatedRecipe);
   } catch (error) {
     console.error('Error updating recipe:', error);
@@ -262,6 +271,14 @@ export async function DELETE(
         where: { id },
       });
     });
+
+    // Invalidate cache to ensure fresh data
+    revalidateTag('recipes');
+    revalidateTag('filtered-recipes');
+    revalidateTag('trending-recipes');
+    revalidateTag('latest-recipes');
+    revalidateTag('tags');
+    revalidateTag('popular-tags');
 
     return NextResponse.json({ message: 'Recipe deleted successfully' });
   } catch (error) {
