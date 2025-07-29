@@ -1,9 +1,9 @@
 'use client';
 import { useState } from 'react';
-import { useUserBanned } from '@/hooks/useUserBanned';
+import { useUserStrikes } from '@/contexts/UserStrikesContext';
 
 export default function StrikeWarningBanner() {
-  const { strikes, loading } = useUserBanned();
+  const { strikes, loading } = useUserStrikes();
   const [dismissed, setDismissed] = useState(false);
 
   // Don't show if loading, dismissed, or no strikes

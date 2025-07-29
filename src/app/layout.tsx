@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import { ReactNode } from "react";
 import { NextAuthProvider } from "./providers";
+import { UserStrikesProvider } from "@/contexts/UserStrikesContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
@@ -71,11 +72,13 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} bg-[var(--background)] min-h-screen flex flex-col`}>
         <NextAuthProvider>
-          <Header />
-          <main className="container mx-auto px-4 py-8 flex-grow">
-            {children}
-          </main>
-          <Footer />
+          <UserStrikesProvider>
+            <Header />
+            <main className="container mx-auto px-4 py-8 flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </UserStrikesProvider>
         </NextAuthProvider>
       </body>
     </html>

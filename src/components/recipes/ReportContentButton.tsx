@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useUserBanned } from '@/hooks/useUserBanned';
+import { useUserStrikes } from '@/contexts/UserStrikesContext';
 
 interface ReportContentButtonProps {
   recipeId: string;
@@ -21,7 +21,7 @@ export default function ReportContentButton({
   const [isReporting, setIsReporting] = useState(false);
   const [isReported, setIsReported] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
-  const { isBanned } = useUserBanned();
+  const { isBanned } = useUserStrikes();
 
   // Check if user is logged in
   const isLoggedIn = status === 'authenticated';
