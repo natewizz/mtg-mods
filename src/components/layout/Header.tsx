@@ -6,7 +6,7 @@ import Image from "next/image";
 import { SessionUser } from "@/lib/auth/types";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useUserBanned } from "@/hooks/useUserBanned";
+import { useUserStrikes } from '@/contexts/UserStrikesContext';
 
 export default function Header() {
   const { data: session, status } = useSession();
@@ -16,7 +16,7 @@ export default function Header() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const { isBanned } = useUserBanned();
+  const { isBanned } = useUserStrikes();
   
   // Safely access user properties with type safety
   const user = session?.user as SessionUser | undefined;

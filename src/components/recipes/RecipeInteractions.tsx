@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useUserStrikes } from '@/contexts/UserStrikesContext';
 import ReportContentButton from './ReportContentButton';
-import { useUserBanned } from '@/hooks/useUserBanned';
 
 interface RecipeInteractionsProps {
   recipeId: string;
@@ -29,7 +29,7 @@ export default function RecipeInteractions({
 }: RecipeInteractionsProps) {
   const { status } = useSession();
   const router = useRouter();
-  const { isBanned } = useUserBanned();
+  const { isBanned } = useUserStrikes();
   
   // Local state for optimistic updates
   const [userVote, setUserVote] = useState<number | null>(initialVoteValue);

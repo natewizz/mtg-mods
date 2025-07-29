@@ -1,8 +1,8 @@
 'use client';
-import { useUserBanned } from '@/hooks/useUserBanned';
+import { useUserStrikes } from '@/contexts/UserStrikesContext';
 
 export default function BannedUserBanner() {
-  const { strikes, loading } = useUserBanned();
+  const { strikes, loading } = useUserStrikes();
 
   // Don't show if loading or no strikes
   if (loading || strikes.length === 0) {
