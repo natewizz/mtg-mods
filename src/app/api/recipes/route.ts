@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { slugify } from '@/lib/utils';
 import { getLatestRecipes } from '@/lib/recipe-actions';
 import { revalidateTag } from 'next/cache';
+import { validateRecipeContent } from '@/lib/content-filter';
 
 // Validation schema for creating a recipe
 const createRecipeSchema = z.object({
@@ -38,6 +39,19 @@ export async function POST(request: NextRequest) {
     }
 
     const { title, instructions, tags = [] } = validationResult.data;
+
+    // Check for offensive content
+    const contentValidation = validateRecipeContent(title, instructions);
+    if (!contentValidation.isValid) {
+      return NextResponse.json(
+        { 
+          message: 'Content contains inappropriate language',
+          errors: contentValidation.errors,
+          offensiveWords: contentValidation.offensiveWords
+        },
+        { status: 400 }
+      );
+    }
 
     // Get the user ID using the helper function
     const userId = await getCurrentUserId();
