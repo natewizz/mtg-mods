@@ -4,6 +4,7 @@ import { getSession, getCurrentUserId } from '@/lib/auth/get-session';
 import { z } from 'zod';
 import { slugify } from '@/lib/utils';
 import { revalidateTag } from 'next/cache';
+import { validateRecipeContent } from '@/lib/content-filter';
 
 // Validation schema for updating a recipe
 const updateRecipeSchema = z.object({
@@ -120,6 +121,19 @@ export async function PUT(
     }
 
     const { title, instructions, tags = [] } = validationResult.data;
+
+    // Check for offensive content
+    const contentValidation = validateRecipeContent(title, instructions);
+    if (!contentValidation.isValid) {
+      return NextResponse.json(
+        { 
+          message: 'Content contains inappropriate language',
+          errors: contentValidation.errors,
+          offensiveWords: contentValidation.offensiveWords
+        },
+        { status: 400 }
+      );
+    }
 
     // Generate new slug if title has changed
     let newSlug = recipe.slug;

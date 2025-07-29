@@ -1,5 +1,19 @@
 [
   {
+    "id": "notification_1753731660988_rytc7cxvr",
+    "type": "USER_BANNED",
+    "title": "User Banned - Recipe Permanently Deleted",
+    "message": "Recipe \"tewst recipe for removal\" was permanently deleted. User received strike #2 and has been automatically banned.",
+    "recipeId": "cmdni7lxq0000gfyzlagn8le5",
+    "recipeTitle": "tewst recipe for removal",
+    "userId": "cmdnf7hui0000gfuvvfjfak13",
+    "adminId": "cmcxgu6xz0000l3043ksq16rc",
+    "adminName": "MTG MODS",
+    "reason": "Inappropriate content",
+    "read": false,
+    "createdAt": "2025-07-28T19:41:00.988Z"
+  },
+  {
     "id": "notification_1753731172800_ar1h1nuzu",
     "type": "RECIPE_REMOVED",
     "title": "Recipe Permanently Deleted",

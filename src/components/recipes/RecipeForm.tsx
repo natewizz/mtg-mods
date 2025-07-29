@@ -207,6 +207,15 @@ export default function RecipeForm({ recipe, isEditing = false }: RecipeFormProp
 
       if (!response.ok) {
         const errorData = await response.json();
+        
+        // Handle content filter errors specifically
+        if (errorData.message === 'Content contains inappropriate language') {
+          const errorMessage = errorData.offensiveWords && errorData.offensiveWords.length > 0
+            ? `Content contains inappropriate language: ${errorData.offensiveWords.slice(0, 3).join(', ')}${errorData.offensiveWords.length > 3 ? ` and ${errorData.offensiveWords.length - 3} more` : ''}. Please revise your recipe to remove offensive terms.`
+            : errorData.message;
+          throw new Error(errorMessage);
+        }
+        
         throw new Error(errorData.message || 'Something went wrong');
       }
 
