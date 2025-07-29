@@ -127,17 +127,59 @@ function normalizeText(text: string): string {
     .trim();
 }
 
+// Check for spaced/dotted variations of offensive words
+function checkSpacedVariations(text: string): string[] {
+  const foundWords: string[] = [];
+  const normalizedText = text.toLowerCase();
+  
+  // Check for spaced variations (e.g., "f u c k", "s h i t")
+  for (const word of OFFENSIVE_WORDS) {
+    if (word.length <= 2) continue; // Skip very short words
+    
+    // Create spaced version (e.g., "f u c k")
+    const spacedVersion = word.split('').join(' ');
+    if (normalizedText.includes(spacedVersion)) {
+      foundWords.push(word);
+    }
+    
+    // Create dotted version (e.g., "f.u.c.k")
+    const dottedVersion = word.split('').join('.');
+    if (normalizedText.includes(dottedVersion)) {
+      foundWords.push(word);
+    }
+    
+    // Create dash version (e.g., "f-u-c-k")
+    const dashVersion = word.split('').join('-');
+    if (normalizedText.includes(dashVersion)) {
+      foundWords.push(word);
+    }
+    
+    // Create underscore version (e.g., "f_u_c_k")
+    const underscoreVersion = word.split('').join('_');
+    if (normalizedText.includes(underscoreVersion)) {
+      foundWords.push(word);
+    }
+  }
+  
+  return foundWords;
+}
+
 // Check if text contains offensive words
 export function containsOffensiveContent(text: string): { hasOffensiveContent: boolean; offensiveWords: string[] } {
   const normalizedText = normalizeText(text);
   const words = normalizedText.split(' ');
   const foundOffensiveWords: string[] = [];
   
+  // Check for regular offensive words
   for (const word of words) {
     if (OFFENSIVE_WORDS.includes(word)) {
       foundOffensiveWords.push(word);
     }
   }
+  
+  // Check for spaced/dotted variations
+  const spacedVariations = checkSpacedVariations(text);
+  foundOffensiveWords.push(...spacedVariations);
   
   return {
     hasOffensiveContent: foundOffensiveWords.length > 0,
