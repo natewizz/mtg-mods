@@ -16,6 +16,13 @@ interface ChangelogEntry {
 const changelogData: ChangelogEntry[] = [
   {
     date: '2025-07-29',
+    version: 'v1.2.1',
+    title: 'Security Improvements',
+    description: 'Enhanced platform security and data protection measures to ensure user privacy and account safety.',
+    type: 'security'
+  },
+  {
+    date: '2025-07-29',
     version: 'v1.2.0',
     title: 'Content Moderation System',
     description: 'Added comprehensive content reporting, user strikes, and automated content filtering to maintain a positive community environment. Includes admin dashboard for managing reports and user bans.',

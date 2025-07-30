@@ -3,6 +3,8 @@ generator client {
   output   = "../node_modules/.prisma/client"
 }
 
+/// @map("_prisma_migrations")
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -32,6 +34,8 @@ model User {
   role           String          @default("USER")
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  @@map("User")
 }
 
 model UserCredential {
@@ -39,6 +43,8 @@ model UserCredential {
   userId         String @unique
   hashedPassword String
   user           User   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "UserCredential_userId_User_fkey")
+
+  @@map("UserCredential")
 }
 
 model Account {
@@ -58,6 +64,7 @@ model Account {
 
   @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_unique")
   @@index([userId], map: "Account_userId_idx")
+  @@map("Account")
 }
 
 model Session {
@@ -68,6 +75,7 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Session_userId_User_fkey")
 
   @@index([userId], map: "Session_userId_idx")
+  @@map("Session")
 }
 
 model Recipe {
@@ -87,6 +95,7 @@ model Recipe {
   strikes      UserStrike[]
 
   @@index([authorId], map: "Recipe_authorId_idx")
+  @@map("Recipe")
 }
 
 model Tag {
@@ -94,6 +103,8 @@ model Tag {
   name      String      @unique
   createdAt DateTime    @default(now())
   recipes   RecipeTag[]
+
+  @@map("Tag")
 }
 
 model RecipeTag {
@@ -107,6 +118,7 @@ model RecipeTag {
   @@unique([name, recipeId], map: "RecipeTag_name_recipeId_unique")
   @@index([recipeId], map: "RecipeTag_recipeId_idx")
   @@index([tagId], map: "RecipeTag_tagId_idx")
+  @@map("RecipeTag")
 }
 
 model Vote {
@@ -120,6 +132,7 @@ model Vote {
 
   @@unique([userId, recipeId], map: "Vote_userId_recipeId_unique")
   @@index([recipeId], map: "Vote_recipeId_idx")
+  @@map("Vote")
 }
 
 model Bookmark {
@@ -132,6 +145,7 @@ model Bookmark {
 
   @@unique([userId, recipeId], map: "Bookmark_userId_recipeId_unique")
   @@index([recipeId], map: "Bookmark_recipeId_idx")
+  @@map("Bookmark")
 }
 
 model Tried {
@@ -144,6 +158,7 @@ model Tried {
 
   @@unique([userId, recipeId], map: "Tried_userId_recipeId_unique")
   @@index([recipeId], map: "Tried_recipeId_idx")
+  @@map("Tried")
 }
 
 model PasswordReset {
@@ -154,6 +169,7 @@ model PasswordReset {
   createdAt DateTime @default(now())
 
   @@index([email])
+  @@map("PasswordReset")
 }
 
 model UsernameChange {
@@ -163,6 +179,8 @@ model UsernameChange {
   newValue      String
   changedAt     DateTime @default(now())
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "UsernameChange_userId_User_fkey")
+
+  @@map("UsernameChange")
 }
 
 model WaitlistSignup {
@@ -171,6 +189,8 @@ model WaitlistSignup {
   createdAt DateTime @default(now())
   source    String?
   notes     String?
+
+  @@map("WaitlistSignup")
 }
 
 model ContentReport {
@@ -191,6 +211,7 @@ model ContentReport {
   @@index([reporterId], map: "ContentReport_reporterId_idx")
   @@index([status], map: "ContentReport_status_idx")
   @@index([createdAt], map: "ContentReport_createdAt_idx")
+  @@map("ContentReport")
 }
 
 model UserStrike {
@@ -209,4 +230,5 @@ model UserStrike {
   @@index([userId], map: "UserStrike_userId_idx")
   @@index([adminId], map: "UserStrike_adminId_idx")
   @@index([createdAt], map: "UserStrike_createdAt_idx")
+  @@map("UserStrike")
 }
