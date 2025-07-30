@@ -4,6 +4,14 @@ All notable changes to the mtg-mods project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- Updated community guidelines to reflect implemented reporting system and ban criteria
+  - Added comprehensive content filtering system documentation
+  - Documented user strikes and banning system (2 strikes = automatic ban)
+  - Updated reporting system information with Report button functionality
+  - Added details about automated offensive content detection and evasion prevention
+  - Clarified consequences and enforcement procedures
+
 ### Fixed
 - **CRITICAL**: Fixed infinite loop in user strikes API calls by implementing React Context for shared state
   - Replaced individual `useUserBanned` hook calls with centralized `UserStrikesProvider`
