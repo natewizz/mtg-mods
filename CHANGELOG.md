@@ -5,6 +5,15 @@ All notable changes to the mtg-mods project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Public changelog page with historical timeline view
+  - Created `/changelog` route with beautiful vertical timeline design
+  - Added comprehensive historical entries from platform launch to current version
+  - Implemented color-coded entry types (feature, improvement, fix, security)
+  - Added interactive hover effects and modern UI matching brand colors
+  - Included feedback section with contact link for user suggestions
+- Updated footer navigation
+  - Added "Changelog" link to Policies section in footer
+  - Renamed "Submit a Mod" to "Create a Recipe" for better clarity
 - Updated community guidelines to reflect implemented reporting system and ban criteria
   - Added comprehensive content filtering system documentation
   - Documented user strikes and banning system (2 strikes = automatic ban)
