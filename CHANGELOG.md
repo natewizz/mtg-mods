@@ -4,6 +4,14 @@ All notable changes to the mtg-mods project will be documented in this file.
 
 ## [Unreleased]
 
+### Security
+- **CRITICAL**: Enabled Row Level Security (RLS) on all database tables
+  - Added comprehensive security policies for all tables to prevent unauthorized access
+  - Implemented user-specific access controls for personal data (profiles, bookmarks, votes, etc.)
+  - Added admin-only policies for sensitive operations (content moderation, user management)
+  - Created public read policies for shared content (recipes, tags, user profiles)
+  - Enhanced database security to comply with Supabase best practices
+
 ### Added
 - Public changelog page with historical timeline view
   - Created `/changelog` route with beautiful vertical timeline design
