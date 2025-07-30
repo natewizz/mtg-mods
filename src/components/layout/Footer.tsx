@@ -74,6 +74,7 @@ export default function Footer() {
               <li><Link href="/policies/terms" className="text-gray-300 hover:text-white transition">Terms of Service</Link></li>
               <li><Link href="/policies/privacy" className="text-gray-300 hover:text-white transition">Privacy Policy</Link></li>
               <li><Link href="/policies/community" className="text-gray-300 hover:text-white transition">Community Guidelines</Link></li>
+              <li><Link href="/changelog" className="text-gray-300 hover:text-white transition">Changelog</Link></li>
               <li><Link href="/faq" className="text-gray-300 hover:text-white transition">FAQ</Link></li>
             </ul>
           </div>
@@ -85,7 +86,7 @@ export default function Footer() {
               <li><Link href="/learn" className="text-gray-300 hover:text-white transition">Learn</Link></li>
               <li><Link href="/recipes" className="text-gray-300 hover:text-white transition">Browse Mods</Link></li>
               <li><Link href="/contact" className="text-gray-300 hover:text-white transition">Contact Us</Link></li>
-              <li><Link href="/recipes/new" className="text-gray-300 hover:text-white transition">Submit a Mod</Link></li>
+              <li><Link href="/recipes/new" className="text-gray-300 hover:text-white transition">Create a Recipe</Link></li>
               <li><Link href="/policies/community" className="text-gray-300 hover:text-white transition">Community</Link></li>
             </ul>
           </div>
