@@ -58,11 +58,25 @@ export default function CommunityGuidelines() {
             <li>Spam, scams, or misleading information</li>
             <li>Content that violates copyright or intellectual property rights</li>
             <li>Unrelated advertisements or solicitations</li>
+            <li><strong>Offensive language, profanity, or inappropriate content</strong> - Our automated content filter will prevent submission of recipes containing offensive terms</li>
           </ul>
         </section>
         
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">4. Inclusivity</h2>
+          <h2 className="text-2xl font-semibold mb-4">4. Content Filtering System</h2>
+          <p>
+            To maintain a family-friendly environment, we have implemented an automated content filtering system:
+          </p>
+          <ul className="list-disc pl-6">
+            <li><strong>Automated Detection:</strong> Our system automatically detects and prevents submission of content containing offensive language</li>
+            <li><strong>Comprehensive Filtering:</strong> The filter includes profanity, hate speech, sexual content, violence, and drug-related terms</li>
+            <li><strong>Evasion Detection:</strong> The system can detect attempts to bypass filters using spaces, dots, dashes, or underscores between letters (e.g., &quot;f u c k&quot;, &quot;s.h.i.t&quot;)</li>
+            <li><strong>Real-time Prevention:</strong> Offensive content is blocked before it reaches the homepage, ensuring a clean community experience</li>
+          </ul>
+        </section>
+        
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">5. Inclusivity</h2>
           <p>
             MTG Mods is for everyone who loves Magic: The Gathering, regardless of experience level, 
             background, or identity. We strive to be welcoming to all community members.
@@ -76,28 +90,59 @@ export default function CommunityGuidelines() {
         </section>
         
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">5. Reporting Violations</h2>
+          <h2 className="text-2xl font-semibold mb-4">6. Reporting System</h2>
           <p>
-            If you encounter content that violates these guidelines, please report it to us. We take 
-            all reports seriously and will review them promptly.
-          </p>
-          <p>
-            To report a violation, contact us at support@mtgmods.xyz with the following information:
+            We have implemented a comprehensive reporting system to help maintain community standards:
           </p>
           <ul className="list-disc pl-6">
-            <li>The URL or description of the content in question</li>
-            <li>Which guideline(s) you believe it violates</li>
-            <li>Any additional context you think is important</li>
+            <li><strong>Report Button:</strong> Each recipe page features a &quot;Report&quot; button for easy reporting of inappropriate content</li>
+            <li><strong>Admin Review:</strong> All reports are reviewed by our moderation team</li>
+            <li><strong>Quick Response:</strong> We aim to review and take action on reports within 24 hours</li>
+            <li><strong>Multiple Actions:</strong> Moderators can dismiss reports or remove content based on severity</li>
+          </ul>
+          <p>
+            To report content that violates our guidelines:
+          </p>
+          <ul className="list-disc pl-6">
+            <li>Click the &quot;Report&quot; button on any recipe page</li>
+            <li>Provide a reason for your report</li>
+            <li>Our moderation team will review and take appropriate action</li>
           </ul>
         </section>
         
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">6. Consequences</h2>
+          <h2 className="text-2xl font-semibold mb-4">7. User Strikes and Banning System</h2>
           <p>
-            Violations of these guidelines may result in content removal, warnings, temporary 
-            restrictions, or permanent account suspension, depending on the severity and frequency 
-            of the violations.
+            To ensure fair and consistent enforcement, we have implemented a progressive strike system:
           </p>
+          <ul className="list-disc pl-6">
+            <li><strong>First Violation:</strong> Users receive a strike and a warning banner appears on their profile</li>
+            <li><strong>Second Violation:</strong> Users receive a second strike and their account is automatically banned</li>
+            <li><strong>Banned Status:</strong> Banned users cannot create new content, vote, or interact with recipes</li>
+            <li><strong>Strike History:</strong> All strikes are recorded with reasons and associated content</li>
+          </ul>
+          <p>
+            <strong>What constitutes a violation:</strong>
+          </p>
+          <ul className="list-disc pl-6">
+            <li>Creating content that violates our prohibited content guidelines</li>
+            <li>Attempting to bypass content filters</li>
+            <li>Repeated violations of community guidelines</li>
+            <li>Harassment or abusive behavior toward other users</li>
+          </ul>
+        </section>
+        
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">8. Consequences</h2>
+          <p>
+            Violations of these guidelines may result in:
+          </p>
+          <ul className="list-disc pl-6">
+            <li><strong>Content Removal:</strong> Inappropriate content will be removed from the platform</li>
+            <li><strong>User Strikes:</strong> Violations result in strikes against your account</li>
+            <li><strong>Account Suspension:</strong> Multiple violations lead to temporary or permanent account suspension</li>
+            <li><strong>Permanent Banning:</strong> Severe or repeated violations result in permanent account banning</li>
+          </ul>
           <p>
             We strive to be fair and consistent in enforcement, but reserve the right to take 
             appropriate action at our discretion to maintain a positive community environment.
@@ -105,7 +150,7 @@ export default function CommunityGuidelines() {
         </section>
         
         <section>
-          <h2 className="text-2xl font-semibold mb-4">7. Feedback and Updates</h2>
+          <h2 className="text-2xl font-semibold mb-4">9. Feedback and Updates</h2>
           <p>
             These guidelines may evolve over time. We welcome feedback on how to improve them to better 
             serve our community.

@@ -58,7 +58,6 @@ const OFFENSIVE_WORDS = [
   // Violence and threats
   'kill', 'killing', 'killer', 'killers',
   'murder', 'murdering', 'murderer', 'murderers',
-  'death', 'dead', 'die', 'dying',
   'suicide', 'suicidal',
   'bomb', 'bombs', 'bombing',
   'shoot', 'shooting', 'shooter', 'shooters',

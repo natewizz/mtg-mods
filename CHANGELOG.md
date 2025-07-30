@@ -2,48 +2,54 @@
 
 All notable changes to the mtg-mods project will be documented in this file.
 
-## [2024-12-28] - Content Reporting System and User Strikes Fix
+## [Unreleased]
 
 ### Added
-- Comprehensive content reporting and moderation system
-  - Content reporting API endpoints for recipes
-  - Admin dashboard for managing content reports and user strikes
-  - User strike system with automatic banning after multiple violations
-  - Admin notifications system for content moderation events
-  - User strike warnings and banned user banners
-  - Report content button on recipe pages
-- User strike management
-  - User strikes API endpoints for tracking violations
-  - Strike warning banners for users with 1 violation
-  - Banned user banners for users with 2+ violations
-  - Automatic user banning after multiple content violations
-  - Admin interface for managing user strikes and bans
-
-### Changed
-- Improved session management and authentication flow
-  - Enhanced JWT and session callbacks to properly handle username updates
-  - Fixed session refresh after username setup to prevent redirect loops
-  - Centralized user strikes logic in useUserBanned hook
-  - Updated TypeScript types for better type safety
+- Updated community guidelines to reflect implemented reporting system and ban criteria
+  - Added comprehensive content filtering system documentation
+  - Documented user strikes and banning system (2 strikes = automatic ban)
+  - Updated reporting system information with Report button functionality
+  - Added details about automated offensive content detection and evasion prevention
+  - Clarified consequences and enforcement procedures
 
 ### Fixed
-- **Critical**: Fixed infinite loop in user strikes system
-  - Resolved infinite API calls to `/api/user/strikes` endpoint
-  - Fixed useUserBanned hook with proper useCallback and dependency management
-  - Eliminated duplicate API calls by centralizing logic in useUserBanned hook
-  - Fixed function recreation issues in useEffect hooks
-- Fixed redirect loops in username setup flow
-  - Added proper state management to prevent multiple redirect checks
-  - Fixed pathname checks to prevent redirecting when already on setup page
-  - Improved session update process after username setup
-- Fixed TypeScript errors
-  - Added proper types for needsUsernameSetup property
-  - Updated next-auth type definitions for better type safety
+- **CRITICAL**: Fixed infinite loop in user strikes API calls by implementing React Context for shared state
+  - Replaced individual `useUserBanned` hook calls with centralized `UserStrikesProvider`
+  - Eliminated multiple simultaneous API calls from Header, BannedUserBanner, StrikeWarningBanner, ReportContentButton, and RecipeInteractions components
+  - Added proper state management with `hasInitialized` flag to prevent redundant fetches
+  - Maintained backward compatibility with existing `useUserBanned` hook
 
-### Security
-- Enhanced content moderation with automatic user banning
-- Improved session security with proper token management
-- Added admin-only access controls for moderation features
+## [2025-07-29] - Content Reporting System and User Strikes Fix
+
+### Added
+- Content reporting system for recipes with admin review workflow
+- User strikes system with automatic banning after 2 violations
+- Admin dashboard with content reports and user strikes management
+- Content filtering system to prevent offensive language in recipes
+- Enhanced content filter to detect spaced/dotted/dashed/underscored offensive words (e.g., "f u c k", "s.h.i.t")
+- Google Analytics 4 integration with updated tracking ID (G-7KRYYYL31Z)
+
+### Fixed
+- Infinite redirect loop during user authentication and username setup
+- User strikes displaying admin names instead of banned user names
+- Recipe deletion not working in admin panel (now properly deletes from database)
+- User banning not working in admin panel (now properly adds [BANNED] to bio)
+- Recipe creation/deletion not auto-refreshing on page (now uses router.refresh())
+- Centralized user strikes logic in useUserBanned hook
+- Fixed useUserBanned hook with proper useCallback and dependency management
+- Eliminated duplicate API calls by centralizing logic in useUserBanned hook
+
+### Changed
+- Updated content reports workflow: removed "reviewed" status, simplified to "dismiss" or "remove" actions
+- Content reports now show latest 7 by default with "Load More" option
+- Report content button styling improved for better UX
+- Updated Google Analytics tracking ID from G-6Y1TBDE679 to G-7KRYYYL31Z
+
+### Technical
+- Added comprehensive TypeScript interfaces for all API responses
+- Implemented proper cache invalidation using revalidateTag for recipe operations
+- Added Prisma transaction support for atomic database operations
+- Enhanced error handling and user feedback for content validation
 
 ## [2024-05-25] - Profile Card Enhancements and Cleanup
 
@@ -170,85 +176,6 @@ All notable changes to the mtg-mods project will be documented in this file.
   - Ensured proper redirection after username changes
   - Fixed state management in profile components
   - Improved error handling during profile operations
-
-## [Unreleased]
-
-### Added
-- Initial project setup with Next.js, TypeScript, and Tailwind CSS
-- Project structure and configuration
-- CHANGELOG.md created to track project progress
-- Database schema implementation with Prisma
-  - User model with authentication fields
-  - Recipe model with rich text instructions
-  - Vote, Bookmark, and Tried models for interactions
-  - Proper relationships and constraints
-- Authentication system implementation
-  - Google OAuth integration
-  - NextAuth.js configuration
-  - Sign-in page and components
-  - Session management
-  - Protected routes setup
-- Recipe feature implementation
-  - Added `/recipes` page to display all recipes
-  - Added `/recipes/new` page for creating new recipes
-  - Basic recipe listing interface
-  - Recipe creation form
-- Recipe detailed features
-  - Added `/recipes/[id]` page for single recipe view
-  - Added `/recipes/[id]/edit` route for editing recipes 
-  - Implemented recipe interactions (upvote, bookmark, tried)
-  - Added RecipeCard component for consistent display
-  - Created DeleteRecipeButton for recipe management
-- API implementation
-  - Added recipe API endpoints for CRUD operations
-  - Added user profile image upload functionality
-  - Implemented recipe interactions API endpoints
-- Middleware implementation for authentication protection
-
-### Planned
-- Recipe feed and search
-- User profile system enhancement
-- Admin functionality
-- Deployment configuration
-
-### Changed
-- Updated Tailwind CSS configuration for v4 compatibility
-  - Switched from `@tailwind` directives to `@import "tailwindcss"`
-  - Added proper `@theme` configuration for custom colors
-  - Updated PostCSS configuration to use `@tailwindcss/postcss` plugin
-- Simplified signup form
-  - Removed username, favorite deck, and bio fields
-  - Improved styling with theme colors
-  - Added loading indicator for better UX
-  - These fields will be moved to user profile in the future
-- Enhanced recipe form with rich text editor
-- Improved authentication flow with better error handling
-- Updated package dependencies to latest versions
-
-### Fixed
-- Resolved NextAuth API handler errors by updating route implementation
-- Fixed CSS styling issues with Tailwind v4 compatibility
-- Resolved routing issues with recipes pages
-- Fixed TypeScript linter errors for React components
-- Corrected directory structure for Next.js routing
-- Resolved path issues in import statements
-- Fixed ESLint configuration for NextAuth.js types
-- Environment variable handling with fix-env.js utility
-- Database connection verification with db-verify.js
-
-### Security
-- Environment variables and sensitive data properly configured
-- Authentication credentials secured
-- Database credentials protected
-- Added middleware for route protection
-- Implemented proper authorization checks for recipe operations
-
-### Documentation
-- Initial CHANGELOG.md created
-- Project plan document moved to project root
-- Database schema documentation in Prisma schema
-- Authentication setup documentation 
-- Updated changelog with recent implementation details
 
 ## [2024-03-21] - Task Manager Project
 
