@@ -17,8 +17,8 @@ const changelogData: ChangelogEntry[] = [
   {
     date: '2025-07-29',
     version: 'v1.2.1',
-    title: 'Enhanced Database Security',
-    description: 'Implemented comprehensive Row Level Security (RLS) across all database tables to protect user data and ensure proper access controls. This enhances platform security and compliance with best practices.',
+    title: 'Security Improvements',
+    description: 'Enhanced platform security and data protection measures to ensure user privacy and account safety.',
     type: 'security'
   },
   {
