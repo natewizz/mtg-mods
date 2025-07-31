@@ -4,6 +4,14 @@ All notable changes to the mtg-mods project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- **Mobile UX Improvements**
+  - Fixed changelog mobile layout: version number now appears below type pill on smaller screens
+  - Updated all changelog dates to reflect 2025 timeline
+  - Added proper development and launch entries to show platform evolution
+  - Fixed mobile menu staying open after clicking links - menu now closes automatically
+  - Improved responsive design for better mobile experience
+
 ### Security
 - **CRITICAL**: Enabled Row Level Security (RLS) on all database tables
   - Added comprehensive security policies for all tables to prevent unauthorized access

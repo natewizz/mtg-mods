@@ -16,6 +16,13 @@ interface ChangelogEntry {
 const changelogData: ChangelogEntry[] = [
   {
     date: '2025-07-29',
+    version: 'v1.2.2',
+    title: 'Improved Changelog Experience',
+    description: 'Enhanced the changelog page with better mobile layout, improved timeline design, and better user experience across all devices.',
+    type: 'improvement'
+  },
+  {
+    date: '2025-07-29',
     version: 'v1.2.1',
     title: 'Security Improvements',
     description: 'Enhanced platform security and data protection measures to ensure user privacy and account safety.',
@@ -166,7 +173,7 @@ export default function ChangelogPage() {
 
         <div className="space-y-8">
           {changelogData.map((entry, index) => (
-            <div key={index} className="relative flex items-start">
+            <div key={index} className="relative flex items-center">
               {/* Timeline dot */}
               <div className="absolute left-6 w-4 h-4 bg-[#5A31F4] rounded-full border-4 border-white shadow-lg transform -translate-x-1/2 z-10"></div>
               
@@ -197,7 +204,7 @@ export default function ChangelogPage() {
         </div>
 
         {/* End of timeline indicator */}
-        <div className="relative mt-8">
+        <div className="relative mt-8 flex items-center">
           <div className="absolute left-6 w-4 h-4 bg-gray-300 rounded-full border-4 border-white shadow-lg transform -translate-x-1/2"></div>
           <div className="ml-16 text-center py-4">
             <p className="text-gray-500 text-sm">More updates coming soon...</p>
