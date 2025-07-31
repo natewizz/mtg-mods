@@ -55,6 +55,11 @@ export default function Header() {
     router.push('/auth/signin');
   };
 
+  // Close mobile menu when a link is clicked
+  const handleMobileLinkClick = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-6 py-4">
@@ -188,23 +193,23 @@ export default function Header() {
         {/* Mobile navigation */}
         <div className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden ${isMenuOpen ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
           <nav className="flex flex-col space-y-4 py-4">
-            <Link href="/" className="hover:text-primary transition-colors">
+            <Link href="/" className="hover:text-primary transition-colors" onClick={handleMobileLinkClick}>
               Home
             </Link>
-            <Link href="/recipes" className="hover:text-primary transition-colors">
+            <Link href="/recipes" className="hover:text-primary transition-colors" onClick={handleMobileLinkClick}>
               Recipes
             </Link>
-            <Link href="/policies/community" className="hover:text-primary transition-colors">
+            <Link href="/policies/community" className="hover:text-primary transition-colors" onClick={handleMobileLinkClick}>
               Community
             </Link>
-            <Link href="/learn" className="hover:text-primary transition-colors">
+            <Link href="/learn" className="hover:text-primary transition-colors" onClick={handleMobileLinkClick}>
               Learn
             </Link>
-            <Link href="/contact" className="hover:text-primary transition-colors">
+            <Link href="/contact" className="hover:text-primary transition-colors" onClick={handleMobileLinkClick}>
               Contact
             </Link>
             {user?.role === 'ADMIN' && (
-              <Link href="/dashboard" className="hover:text-[#5A31F4] transition-colors flex items-center gap-1">
+              <Link href="/dashboard" className="hover:text-[#5A31F4] transition-colors flex items-center gap-1" onClick={handleMobileLinkClick}>
                 <span>Admin Dashboard</span>
                 <span className="text-xs">🚨</span>
               </Link>
@@ -227,12 +232,15 @@ export default function Header() {
                       {userName?.charAt(0) || "U"}
                     </div>
                   )}
-                  <Link href="/profile/me" className="hover:text-primary transition-colors">
+                  <Link href="/profile/me" className="hover:text-primary transition-colors" onClick={handleMobileLinkClick}>
                     My Profile
                   </Link>
                 </div>
                 <button
-                  onClick={handleSignOut}
+                  onClick={() => {
+                    handleSignOut();
+                    handleMobileLinkClick();
+                  }}
                   className="text-left text-red-600"
                 >
                   Sign Out
@@ -243,12 +251,14 @@ export default function Header() {
                 <Link
                   href="/auth/signin"
                   className="px-4 py-2 rounded-md border border-primary text-primary text-center"
+                  onClick={handleMobileLinkClick}
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/auth/signup"
                   className="px-4 py-2 rounded-md bg-primary text-white text-center"
+                  onClick={handleMobileLinkClick}
                 >
                   Sign Up
                 </Link>

@@ -16,6 +16,13 @@ interface ChangelogEntry {
 const changelogData: ChangelogEntry[] = [
   {
     date: '2025-07-29',
+    version: 'v1.2.2',
+    title: 'Improved Changelog Experience',
+    description: 'Enhanced the changelog page with better mobile layout, improved timeline design, and better user experience across all devices.',
+    type: 'improvement'
+  },
+  {
+    date: '2025-07-29',
     version: 'v1.2.1',
     title: 'Security Improvements',
     description: 'Enhanced platform security and data protection measures to ensure user privacy and account safety.',
@@ -36,59 +43,66 @@ const changelogData: ChangelogEntry[] = [
     type: 'improvement'
   },
   {
-    date: '2024-06-12',
+    date: '2025-06-12',
     version: 'v1.1.0',
     title: 'Trending Recipes Feed',
     description: 'Added trending recipes feed that aggregates most upvoted, bookmarked, and tried recipes from the last 7 days. Enhanced recipe discovery with popular content highlighting.',
     type: 'feature'
   },
   {
-    date: '2024-06-11',
+    date: '2025-06-11',
     version: 'v1.0.9',
     title: 'User Timestamps & Profile Metadata',
     description: 'Added user timestamps and profile metadata display. Users can now see when they joined and their last activity, improving profile transparency and user engagement tracking.',
     type: 'improvement'
   },
   {
-    date: '2024-06-07',
+    date: '2025-06-07',
     version: 'v1.0.8',
     title: 'Admin Dashboard & Profile Privacy',
     description: 'Launched comprehensive admin dashboard with advanced metrics and analytics. Enhanced profile privacy by hiding full names and improved UI/UX with markdown support and copy link features.',
     type: 'feature'
   },
   {
-    date: '2024-05-25',
+    date: '2025-05-25',
     version: 'v1.0.7',
     title: 'Profile Card Enhancements',
     description: 'Major profile card redesign with gradient backgrounds, improved styling, website link validation, and enhanced visual hierarchy. Removed unused fields and improved overall user experience.',
     type: 'improvement'
   },
   {
-    date: '2024-05-13',
+    date: '2025-05-13',
     version: 'v1.0.6',
     title: 'Recipe Filtering & Sorting System',
     description: 'Implemented comprehensive recipe filtering and sorting system with tag-based filtering, multi-select functionality, and multiple sorting options. Added URL parameter support for shareable filtered views.',
     type: 'feature'
   },
   {
-    date: '2024-05-12',
+    date: '2025-05-12',
     version: 'v1.0.5',
     title: 'MTG Color-Themed Tag System',
     description: 'Created MTG color-themed tag styling system with reusable TagPill components. Implemented tag categorization based on MTG color wheel design and enhanced tag selection interface.',
     type: 'improvement'
   },
   {
-    date: '2024-05-11',
+    date: '2025-05-11',
     version: 'v1.0.4',
     title: 'URL Structure & Username System',
     description: 'Completely redesigned URL structure using slugified titles for recipes and username-based profiles. Added username selection feature with MTG-themed options and improved navigation throughout the platform.',
     type: 'feature'
   },
   {
-    date: '2024-03-21',
+    date: '2025-05-01',
     version: 'v1.0.0',
     title: 'Platform Launch',
-    description: 'Initial release of MTG Mods with recipe creation, user authentication, community features, and comprehensive MTG rule modification sharing capabilities.',
+    description: 'First public deployment of MTG Mods with recipe creation, user authentication, community features, and comprehensive MTG rule modification sharing capabilities.',
+    type: 'feature'
+  },
+  {
+    date: '2025-03-21',
+    version: 'v0.1.0',
+    title: 'Development Begins',
+    description: 'Started local development of MTG Mods platform. Initial setup with Next.js, TypeScript, Prisma, and comprehensive MTG rule modification sharing capabilities.',
     type: 'feature'
   }
 ];
@@ -159,14 +173,14 @@ export default function ChangelogPage() {
 
         <div className="space-y-8">
           {changelogData.map((entry, index) => (
-            <div key={index} className="relative flex items-start">
+            <div key={index} className="relative flex items-center">
               {/* Timeline dot */}
               <div className="absolute left-6 w-4 h-4 bg-[#5A31F4] rounded-full border-4 border-white shadow-lg transform -translate-x-1/2 z-10"></div>
               
               {/* Content card */}
               <div className="ml-16 bg-white rounded-lg shadow-md border border-gray-200 p-6 flex-1 hover:shadow-lg transition-shadow duration-200">
                 <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center space-x-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getTypeColor(entry.type)}`}>
                       {getTypeIcon(entry.type)}
                       <span className="ml-1 capitalize">{entry.type}</span>
@@ -190,7 +204,7 @@ export default function ChangelogPage() {
         </div>
 
         {/* End of timeline indicator */}
-        <div className="relative mt-8">
+        <div className="relative mt-8 flex items-center">
           <div className="absolute left-6 w-4 h-4 bg-gray-300 rounded-full border-4 border-white shadow-lg transform -translate-x-1/2"></div>
           <div className="ml-16 text-center py-4">
             <p className="text-gray-500 text-sm">More updates coming soon...</p>
