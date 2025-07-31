@@ -179,19 +179,19 @@ export default function ChangelogPage() {
               
               {/* Content card */}
               <div className="ml-16 bg-white rounded-lg shadow-md border border-gray-200 p-6 flex-1 hover:shadow-lg transition-shadow duration-200">
-                <div className="flex items-start justify-between mb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 space-y-2 sm:space-y-0">
                   <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getTypeColor(entry.type)}`}>
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border whitespace-nowrap ${getTypeColor(entry.type)}`}>
                       {getTypeIcon(entry.type)}
                       <span className="ml-1 capitalize">{entry.type}</span>
                     </span>
                     <span className="text-sm font-medium text-gray-500">{entry.version}</span>
                   </div>
-                  <time className="text-sm text-gray-500 font-medium">
+                  <time className="text-sm text-gray-500 font-medium whitespace-nowrap">
                     {new Date(entry.date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
+                      year: '2-digit',
+                      month: '2-digit',
+                      day: '2-digit'
                     })}
                   </time>
                 </div>
