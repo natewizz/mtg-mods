@@ -110,6 +110,7 @@ async function getProfileData(username: string) {
     const recipes = await prisma.recipe.findMany({
       where: { authorId: user.id },
       include: {
+        author: true,
         tags: true,
         _count: {
           select: {
@@ -132,6 +133,7 @@ async function getProfileData(username: string) {
         },
       },
       include: {
+        author: true,
         tags: true,
         _count: {
           select: {
@@ -154,6 +156,7 @@ async function getProfileData(username: string) {
         },
       },
       include: {
+        author: true,
         tags: true,
         _count: {
           select: {

@@ -19,7 +19,28 @@ const Editor = dynamic(() => import('@tinymce/tinymce-react').then(mod => mod.Ed
 const recipeSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters').max(100, 'Title must be less than 100 characters'),
   instructions: z.string().min(20, 'Instructions must be at least 20 characters'),
+  attachmentName: z.string().optional(),
+  attachmentUrl: z.string().optional(),
   tags: z.string().optional(),
+}).refine((data) => {
+  // If attachmentUrl is provided, attachmentName must also be provided
+  if (data.attachmentUrl && !data.attachmentName) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Please name your attachment",
+  path: ["attachmentName"],
+}).refine((data) => {
+  // Validate Google Drive PDF URL if provided
+  if (data.attachmentUrl) {
+    const googleDrivePdfRegex = /^https:\/\/drive\.google\.com\/file\/d\/[a-zA-Z0-9_-]+\/view(\?usp=sharing)?$/;
+    return googleDrivePdfRegex.test(data.attachmentUrl);
+  }
+  return true;
+}, {
+  message: "Only PDF files saved to Google Drive are accepted at this time",
+  path: ["attachmentUrl"],
 });
 
 type RecipeFormValues = z.infer<typeof recipeSchema>;
@@ -94,6 +115,8 @@ export default function RecipeForm({ recipe, isEditing = false }: RecipeFormProp
     defaultValues: {
       title: recipe?.title || '',
       instructions: recipe?.instructions || '',
+      attachmentName: recipe?.attachmentName || '',
+      attachmentUrl: recipe?.attachmentUrl || '',
       tags: '',
     },
   });
@@ -187,6 +210,11 @@ export default function RecipeForm({ recipe, isEditing = false }: RecipeFormProp
       const tagList = data.tags 
         ? data.tags.split(',').map(tag => tag.trim()).filter(Boolean)
         : [];
+
+      // Auto-add "physical" tag if attachment is provided
+      if (data.attachmentUrl && data.attachmentName && !tagList.includes('physical')) {
+        tagList.push('physical');
+      }
 
       const endpoint = isEditing 
         ? `/api/recipes/${recipe?.id}` 
@@ -286,6 +314,49 @@ export default function RecipeForm({ recipe, isEditing = false }: RecipeFormProp
         {errors.instructions && (
           <p className="mt-1 text-sm text-red-600">{errors.instructions.message}</p>
         )}
+      </div>
+
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-3">Attachments for this Recipe</h3>
+        <p className="text-sm text-gray-600 mb-4">
+          Optional: Attach additional files that don&apos;t fit in the instructions, such as special cards or reference materials.
+        </p>
+        
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="attachmentName" className="block text-sm font-medium text-gray-700 mb-1">
+              Link Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="attachmentName"
+              type="text"
+              {...register('attachmentName')}
+              className="input-field"
+              placeholder="e.g., Special Cards Reference, Rule Sheet, Card List"
+            />
+            {errors.attachmentName && (
+              <p className="mt-1 text-sm text-red-600">{errors.attachmentName.message}</p>
+            )}
+            <p className="mt-1 text-sm text-gray-500">Required if you provide a link below</p>
+          </div>
+
+          <div>
+            <label htmlFor="attachmentUrl" className="block text-sm font-medium text-gray-700 mb-1">
+              Link URL
+            </label>
+            <input
+              id="attachmentUrl"
+              type="url"
+              {...register('attachmentUrl')}
+              className="input-field"
+              placeholder="https://drive.google.com/file/d/..."
+            />
+            {errors.attachmentUrl && (
+              <p className="mt-1 text-sm text-red-600">{errors.attachmentUrl.message}</p>
+            )}
+            <p className="mt-1 text-sm text-gray-500">Only PDF files saved to Google Drive are accepted at this time</p>
+          </div>
+        </div>
       </div>
 
       <div>

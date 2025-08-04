@@ -11,7 +11,28 @@ import { validateRecipeContent } from '@/lib/content-filter';
 const createRecipeSchema = z.object({
   title: z.string().min(5).max(100),
   instructions: z.string().min(20),
+  attachmentName: z.string().optional(),
+  attachmentUrl: z.string().optional(),
   tags: z.array(z.string()).optional(),
+}).refine((data) => {
+  // If attachmentUrl is provided, attachmentName must also be provided
+  if (data.attachmentUrl && !data.attachmentName) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Please name your attachment",
+  path: ["attachmentName"],
+}).refine((data) => {
+  // Validate Google Drive PDF URL if provided
+  if (data.attachmentUrl) {
+    const googleDrivePdfRegex = /^https:\/\/drive\.google\.com\/file\/d\/[a-zA-Z0-9_-]+\/view(\?usp=sharing)?$/;
+    return googleDrivePdfRegex.test(data.attachmentUrl);
+  }
+  return true;
+}, {
+  message: "Only PDF files saved to Google Drive are accepted at this time",
+  path: ["attachmentUrl"],
 });
 
 export async function POST(request: NextRequest) {
@@ -38,7 +59,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { title, instructions, tags = [] } = validationResult.data;
+    const { title, instructions, attachmentName, attachmentUrl, tags = [] } = validationResult.data;
 
     // Check for offensive content
     const contentValidation = validateRecipeContent(title, instructions);
@@ -69,6 +90,8 @@ export async function POST(request: NextRequest) {
         title,
         slug: slugify(title),
         instructions,
+        attachmentName,
+        attachmentUrl,
         author: {
           connect: { id: userId },
         },

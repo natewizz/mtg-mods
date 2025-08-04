@@ -2,15 +2,7 @@
 
 import { useState } from 'react';
 import RecipeList from './RecipeList';
-import { Recipe } from '@prisma/client';
-
-type RecipeWithStats = Recipe & {
-  _count?: {
-    votes: number;
-    tried: number;
-  };
-  voteSum?: number;
-};
+import type { RecipeWithStats } from './RecipeList';
 
 type ProfileTabsProps = {
   recipes: RecipeWithStats[];
