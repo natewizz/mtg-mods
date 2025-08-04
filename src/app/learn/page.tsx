@@ -98,12 +98,15 @@ export default function LearnPage() {
                 <span className="text-white font-bold">1</span>
               </div>
               <h3 className="text-xl font-bold text-[#2C2E3A] mb-3">Simple Mods</h3>
-              <p className="text-gray-700">
+              <p className="text-gray-700 mb-3">
                 Single rule changes that can be explained in a sentence or two. These don&apos;t fundamentally
                 alter core game mechanics but add interesting twists.
               </p>
               <div className="mt-4 text-sm bg-white p-3 rounded-md">
                 <strong>Example:</strong> &quot;Players may cast one spell each turn from their graveyard.&quot;
+              </div>
+              <div className="mt-3 text-xs text-gray-600">
+                📝 <strong>No additional components needed</strong>
               </div>
             </div>
             
@@ -112,12 +115,15 @@ export default function LearnPage() {
                 <span className="text-white font-bold">2</span>
               </div>
               <h3 className="text-xl font-bold text-[#2C2E3A] mb-3">Moderate Mods</h3>
-              <p className="text-gray-700">
+              <p className="text-gray-700 mb-3">
                 Multiple rule changes that work together to create a coherent variant, requiring
                 more explanation and potentially some preparation.
               </p>
               <div className="mt-4 text-sm bg-white p-3 rounded-md">
                 <strong>Example:</strong> &quot;Players draft cards from a shared pile each turn and life totals affect draft priority.&quot;
+              </div>
+              <div className="mt-3 text-xs text-gray-600">
+                🎲 <strong>May need dice, counters, or tokens</strong>
               </div>
             </div>
             
@@ -126,14 +132,71 @@ export default function LearnPage() {
                 <span className="text-white font-bold">3</span>
               </div>
               <h3 className="text-xl font-bold text-[#2C2E3A] mb-3">Complex Mods</h3>
-              <p className="text-gray-700">
-                Comprehensive rules overhauls that may introduce entirely new game mechanics, 
-                phases, or win conditions, often requiring additional components.
+              <p className="text-gray-700 mb-3">
+                Comprehensive rules overhauls that introduce entirely new game mechanics, 
+                phases, or win conditions. Often require additional components or physical cards.
               </p>
               <div className="mt-4 text-sm bg-white p-3 rounded-md">
-                <strong>Example:</strong> &quot;A roleplaying variant where players are adventurers in a dungeon with a Dungeon Master player controlling monsters.&quot;
+                <strong>Example:</strong> &quot;Deck-based mods like Factions, Quests, or Planes that add new card types and mechanics.&quot;
+              </div>
+              <div className="mt-3 text-xs text-gray-600">
+                📎 <strong>Requires attachment files (PDFs, card images)</strong>
               </div>
             </div>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-xl shadow-md p-8 mb-10">
+          <h2 className="text-3xl font-bold text-[#2C2E3A] mb-6">Attachment-Based Recipes</h2>
+          
+          <p className="text-gray-700 mb-6 leading-relaxed">
+            Some of the most exciting and complex recipes require additional components that go beyond 
+            simple rule changes. These attachment-based recipes introduce new card types, game pieces, 
+            or reference materials that enhance the gameplay experience.
+          </p>
+          
+          <div className="bg-[#F1F3FA] p-6 rounded-lg mb-8">
+            <h3 className="text-xl font-bold text-[#5A31F4] mb-4">📎 What Are Attachment-Based Recipes?</h3>
+            <p className="text-gray-700 mb-4">
+              These recipes include downloadable PDFs, card images, or reference sheets that provide 
+              the physical components needed to play the modification. They&apos;re marked with a 
+              <span className="inline-block bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm mx-1">📎 Attachment</span> 
+              indicator on recipe cards.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white p-4 rounded-lg">
+                <h4 className="font-bold text-[#2C2E3A] mb-2">🎴 Deck-Based Mods</h4>
+                <p className="text-sm text-gray-700 mb-3">
+                  Recipes that introduce new card types like Factions, Quests, Planes, or Glitches. 
+                  These add entirely new mechanics and gameplay layers.
+                </p>
+                <div className="text-xs text-gray-600">
+                  <strong>Examples:</strong> Factions Deck, Quests Deck, Planes Deck, Glitches Deck
+                </div>
+              </div>
+              
+              <div className="bg-white p-4 rounded-lg">
+                <h4 className="font-bold text-[#2C2E3A] mb-2">📋 Reference Materials</h4>
+                <p className="text-sm text-gray-700 mb-3">
+                  Rules sheets, tracking cards, or setup guides that help players implement complex 
+                  modifications correctly.
+                </p>
+                <div className="text-xs text-gray-600">
+                  <strong>Examples:</strong> Role cards, tracking sheets, setup instructions
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-[#FFF8E1] p-6 rounded-lg border-l-4 border-[#FFC145] mb-8">
+            <h3 className="text-xl font-bold text-[#2C2E3A] mb-3">💡 Attachment Tips</h3>
+            <ul className="text-gray-700 space-y-2">
+              <li>• <strong>Print Quality:</strong> Use card stock or laminate for durability</li>
+              <li>• <strong>Organization:</strong> Keep attachment files organized in a dedicated folder</li>
+              <li>• <strong>Accessibility:</strong> Ensure PDFs are readable and well-formatted</li>
+              <li>• <strong>Updates:</strong> Check recipe pages for updated attachment versions</li>
+            </ul>
           </div>
         </div>
         

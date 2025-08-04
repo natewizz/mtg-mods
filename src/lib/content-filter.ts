@@ -76,7 +76,7 @@ const OFFENSIVE_WORDS = [
   'hash', 'hashish',
   'lsd', 'acid',
   'ecstasy', 'mdma',
-  'speed', 'amphetamine',
+  'amphetamine',
   'pills', 'drugs', 'drug',
   'inject', 'injecting', 'injection',
   'snort', 'snorting', 'snorted',
