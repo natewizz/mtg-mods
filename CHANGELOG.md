@@ -2,7 +2,7 @@
 
 All notable changes to the mtg-mods project will be documented in this file.
 
-## [Unreleased]
+## [2025-08-04] - User Badge System and Database Migration
 
 ### Added
 - **Comprehensive User Badge System**
