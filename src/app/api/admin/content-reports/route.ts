@@ -1,20 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth';
-import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
-
-interface ContentReport {
-  id: string;
-  recipeId: string;
-  recipeTitle: string;
-  recipeSlug: string;
-  userId: string;
-  userEmail: string;
-  reason: string;
-  status: 'pending' | 'reviewed' | 'resolved';
-  createdAt: string;
-}
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
@@ -23,23 +10,55 @@ export async function GET() {
       return NextResponse.json({ message: 'Admin access required' }, { status: 403 });
     }
 
-    const reportsFile = join(process.cwd(), 'content-reports.json');
-    if (!existsSync(reportsFile)) {
-      return NextResponse.json({ reports: [] });
-    }
+    // Get pending reports from database
+    const pendingReports = await prisma.contentReport.findMany({
+      where: {
+        status: 'PENDING'
+      },
+      include: {
+        reporter: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        },
+        recipe: {
+          select: {
+            id: true,
+            title: true,
+            slug: true,
+            author: {
+              select: {
+                id: true,
+                name: true,
+                email: true
+              }
+            }
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
 
-    try {
-      const fileContent = readFileSync(reportsFile, 'utf-8');
-      const allReports: ContentReport[] = JSON.parse(fileContent);
-      
-      // Only return pending reports by default
-      const pendingReports = allReports.filter(report => report.status === 'pending');
-      
-      return NextResponse.json({ reports: pendingReports });
-    } catch (error) {
-      console.error('Error reading reports file:', error);
-      return NextResponse.json({ reports: [] });
-    }
+    // Transform to match the expected format
+    const reports = pendingReports.map(report => ({
+      id: report.id,
+      recipeId: report.recipeId,
+      recipeTitle: report.recipeTitle,
+      recipeSlug: report.recipeSlug,
+      userId: report.reporterId,
+      userEmail: report.reporter.email || 'unknown',
+      reason: 'Inappropriate content',
+      status: report.status.toLowerCase(),
+      createdAt: report.createdAt.toISOString(),
+      reporter: report.reporter,
+      recipe: report.recipe
+    }));
+    
+    return NextResponse.json({ reports });
   } catch (error) {
     console.error('Error fetching content reports:', error);
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
