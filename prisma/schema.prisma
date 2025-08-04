@@ -31,6 +31,7 @@ model User {
   contentReports ContentReport[]
   strikes        UserStrike[]
   adminStrikes   UserStrike[]    @relation("AdminStrikes")
+  adminNotifications AdminNotification[] @relation("AdminNotifications")
   role           String          @default("USER")
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -233,4 +234,26 @@ model UserStrike {
   @@index([adminId], map: "UserStrike_adminId_idx")
   @@index([createdAt], map: "UserStrike_createdAt_idx")
   @@map("UserStrike")
+}
+
+model AdminNotification {
+  id          String   @id @default(cuid())
+  type        String   // RECIPE_REMOVED, USER_BANNED, etc.
+  title       String
+  message     String   @db.Text
+  recipeId    String?
+  recipeTitle String?
+  userId      String?
+  adminId     String
+  reason      String?
+  read        Boolean  @default(false)
+  readAt      DateTime?
+  createdAt   DateTime @default(now())
+  
+  admin       User     @relation("AdminNotifications", fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId], map: "AdminNotification_adminId_idx")
+  @@index([read], map: "AdminNotification_read_idx")
+  @@index([createdAt], map: "AdminNotification_createdAt_idx")
+  @@map("AdminNotification")
 }

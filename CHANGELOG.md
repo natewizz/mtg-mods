@@ -5,6 +5,14 @@ All notable changes to the mtg-mods project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- **Content Reports and Admin Notifications Database Migration**
+  - Migrated content reporting system from JSON files to PostgreSQL database
+  - Added AdminNotification model to Prisma schema with proper relationships
+  - Updated all API routes to use database instead of file-based storage
+  - Created data migration script to preserve existing content reports and notifications
+  - Enhanced data integrity with proper foreign key relationships and constraints
+  - Improved concurrent access handling and transaction support
+  - Added proper indexing for better query performance
 - **Beta Testers Sticky Link**
   - Added prominent sticky link in top-right corner for beta tester feedback
   - Integrated Google Forms link for easy feedback collection

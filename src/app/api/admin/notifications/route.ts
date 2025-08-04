@@ -1,24 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
-
-interface AdminNotification {
-  id: string;
-  type: string;
-  title: string;
-  message: string;
-  recipeId?: string;
-  recipeTitle?: string;
-  userId?: string;
-  adminId: string;
-  adminName: string;
-  reason?: string;
-  read: boolean;
-  createdAt: string;
-  readAt?: string;
-}
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
@@ -27,60 +10,75 @@ export async function GET() {
       return NextResponse.json({ message: 'Admin access required' }, { status: 403 });
     }
 
-    const notificationsFile = join(process.cwd(), 'admin-notifications.json');
-    if (!existsSync(notificationsFile)) {
-      return NextResponse.json({ notifications: [] });
-    }
+    // Get notifications from database
+    const notifications = await prisma.adminNotification.findMany({
+      where: {
+        adminId: session.user.id
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
 
-    try {
-      const fileContent = readFileSync(notificationsFile, 'utf-8');
-      const notifications: AdminNotification[] = JSON.parse(fileContent);
-      
-      return NextResponse.json({ notifications });
-    } catch (error) {
-      console.error('Error reading notifications file:', error);
-      return NextResponse.json({ notifications: [] });
-    }
+    // Transform to match the expected format
+    const formattedNotifications = notifications.map(notification => ({
+      id: notification.id,
+      type: notification.type,
+      title: notification.title,
+      message: notification.message,
+      recipeId: notification.recipeId,
+      recipeTitle: notification.recipeTitle,
+      userId: notification.userId,
+      adminId: notification.adminId,
+      reason: notification.reason,
+      read: notification.read,
+      createdAt: notification.createdAt.toISOString(),
+      readAt: notification.readAt?.toISOString()
+    }));
+    
+    return NextResponse.json({ notifications: formattedNotifications });
   } catch (error) {
     console.error('Error fetching admin notifications:', error);
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }
 
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'ADMIN') {
       return NextResponse.json({ message: 'Admin access required' }, { status: 403 });
     }
 
-    const { notificationId } = await request.json();
+    const { notificationId, read } = await request.json();
 
-    const notificationsFile = join(process.cwd(), 'admin-notifications.json');
-    if (!existsSync(notificationsFile)) {
-      return NextResponse.json({ message: 'No notifications found' }, { status: 404 });
+    if (!notificationId) {
+      return NextResponse.json({ message: 'Notification ID required' }, { status: 400 });
     }
 
-    const fileContent = readFileSync(notificationsFile, 'utf-8');
-    const notifications: AdminNotification[] = JSON.parse(fileContent);
-    
-    const notification = notifications.find((n: AdminNotification) => n.id === notificationId);
-    if (!notification) {
-      return NextResponse.json({ message: 'Notification not found' }, { status: 404 });
-    }
+    // Update notification read status
+    const updatedNotification = await prisma.adminNotification.update({
+      where: {
+        id: notificationId,
+        adminId: session.user.id // Ensure admin can only update their own notifications
+      },
+      data: {
+        read: read,
+        readAt: read ? new Date() : null
+      }
+    });
 
-    notification.read = true;
-    notification.readAt = new Date().toISOString();
-    
-    writeFileSync(notificationsFile, JSON.stringify(notifications, null, 2));
-    
     return NextResponse.json({ 
-      message: 'Notification marked as read',
-      notification 
+      message: 'Notification updated successfully',
+      notification: {
+        id: updatedNotification.id,
+        read: updatedNotification.read,
+        readAt: updatedNotification.readAt?.toISOString()
+      }
     });
 
   } catch (error) {
-    console.error('Error updating notification:', error);
+    console.error('Error updating admin notification:', error);
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 } 

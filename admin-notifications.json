@@ -1,5 +1,19 @@
 [
   {
+    "id": "notification_1754311951106_hsmhzdo4a",
+    "type": "RECIPE_REMOVED",
+    "title": "Recipe Permanently Deleted",
+    "message": "Recipe \"The Title of It\" was permanently deleted due to inappropriate content. User received strike #1.",
+    "recipeId": "cmdx406w10000gfuilvyqcv1v",
+    "recipeTitle": "The Title of It",
+    "userId": "cmdnczo340000gfqs25rlkaaw",
+    "adminId": "cmcxgu6xz0000l3043ksq16rc",
+    "adminName": "MTG MODS",
+    "reason": "Inappropriate content",
+    "read": false,
+    "createdAt": "2025-08-04T12:52:31.106Z"
+  },
+  {
     "id": "notification_1753731660988_rytc7cxvr",
     "type": "USER_BANNED",
     "title": "User Banned - Recipe Permanently Deleted",
