@@ -10,10 +10,11 @@ export async function GET() {
       return NextResponse.json({ message: 'Admin access required' }, { status: 403 });
     }
 
-    // Get notifications from database
+    // Get only unread notifications from database
     const notifications = await prisma.adminNotification.findMany({
       where: {
-        adminId: session.user.id
+        adminId: session.user.id,
+        read: false // Only get unread notifications
       },
       orderBy: {
         createdAt: 'desc'

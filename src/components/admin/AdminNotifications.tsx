@@ -48,11 +48,11 @@ export default function AdminNotifications() {
       const response = await fetch('/api/admin/notifications', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notificationId, action: 'mark_read' })
+        body: JSON.stringify({ notificationId, read: true })
       });
 
       if (response.ok) {
-        // Remove from local state
+        // Remove from local state since it's now marked as read
         setNotifications(prev => prev.filter(n => n.id !== notificationId));
       }
     } catch (error) {
