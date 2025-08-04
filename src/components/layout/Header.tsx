@@ -62,6 +62,22 @@ export default function Header() {
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
+      {/* Beta Testers Sticky Link */}
+      <div className="fixed top-4 right-4 z-50">
+        <a
+          href="https://forms.gle/KCK8AYfWL1Jd6CUY6"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+        >
+          <span className="animate-pulse">🚀</span>
+          Beta Testers Click Here
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </a>
+      </div>
+      
       <div className="container mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
           <Link href="/" className="flex items-center">

@@ -5,6 +5,12 @@ All notable changes to the mtg-mods project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- **Beta Testers Sticky Link**
+  - Added prominent sticky link in top-right corner for beta tester feedback
+  - Integrated Google Forms link for easy feedback collection
+  - Implemented attractive gradient design with hover animations and pulsing icon
+  - Ensured link follows users as they scroll across all pages
+  - Added proper external link attributes for security and accessibility
 - **Recipe Attachments Feature**
   - Added optional attachment fields (link name and URL) to recipe submission form
   - Implemented Google Drive PDF link validation with user-friendly error messages

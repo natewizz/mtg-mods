@@ -44,6 +44,13 @@ interface ChangelogEntry {
 const changelogData: ChangelogEntry[] = [
   {
     date: '2025-08-04',
+    version: 'v1.4.2',
+    title: 'Beta Testers Sticky Link & Enhanced Learn Page',
+    description: 'Added prominent sticky link for beta tester feedback in top-right corner. Enhanced learn page with attachment-based recipe examples and better complexity guidance. Improved user onboarding and feedback collection.',
+    type: 'feature'
+  },
+  {
+    date: '2025-08-04',
     version: 'v1.4.1',
     title: 'Improved Attachment Design & Database Fixes',
     description: 'Made recipe attachment sections much less intrusive and more elegant. Fixed database issues with UserStrike table and tag queries. Enhanced overall design consistency and user experience.',
