@@ -1,6 +1,9 @@
 const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// Create Prisma client with better error handling
+const prisma = new PrismaClient({
+  log: ['query', 'info', 'warn', 'error'],
+});
 
 const badges = [
   // Role Badges
@@ -398,20 +401,53 @@ async function seedBadges() {
   console.log('🌱 Seeding badges...');
   
   try {
+    // Test database connection first
+    console.log('🔍 Testing database connection...');
+    await prisma.$connect();
+    console.log('✅ Database connection successful');
+    
+    // Verify prisma object
+    if (!prisma || !prisma.badge) {
+      throw new Error('Prisma client not properly initialized');
+    }
+    
+    console.log('📝 Starting badge seeding...');
     for (const badge of badges) {
-      await prisma.badge.upsert({
-        where: { name: badge.name },
-        update: badge,
-        create: badge,
-      });
+      console.log(`Processing badge: ${badge.displayName}`);
+      
+      // Use raw SQL to avoid enum issues
+      await prisma.$executeRaw`
+        INSERT INTO "Badge" ("id", "name", "displayName", "description", "icon", "color", "category", "triggerType", "triggerValue", "isManual", "isActive", "createdAt", "updatedAt")
+        VALUES (${crypto.randomUUID()}, ${badge.name}, ${badge.displayName}, ${badge.description}, ${badge.icon}, ${badge.color}, ${badge.category}, ${badge.triggerType}, ${badge.triggerValue || null}, ${badge.isManual}, ${badge.isActive !== undefined ? badge.isActive : true}, NOW(), NOW())
+        ON CONFLICT ("name") DO UPDATE SET
+          "displayName" = EXCLUDED."displayName",
+          "description" = EXCLUDED."description",
+          "icon" = EXCLUDED."icon",
+          "color" = EXCLUDED."color",
+          "category" = EXCLUDED."category",
+          "triggerType" = EXCLUDED."triggerType",
+          "triggerValue" = EXCLUDED."triggerValue",
+          "isManual" = EXCLUDED."isManual",
+          "isActive" = EXCLUDED."isActive",
+          "updatedAt" = NOW()
+      `;
+      
       console.log(`✅ Created/Updated badge: ${badge.displayName}`);
     }
     
     console.log('🎉 All badges seeded successfully!');
   } catch (error) {
     console.error('❌ Error seeding badges:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      prismaExists: !!prisma,
+      badgeExists: !!(prisma && prisma.badge)
+    });
   } finally {
-    await prisma.$disconnect();
+    if (prisma) {
+      await prisma.$disconnect();
+    }
   }
 }
 
