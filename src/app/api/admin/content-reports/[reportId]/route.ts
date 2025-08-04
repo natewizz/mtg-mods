@@ -84,7 +84,7 @@ export async function PATCH(
         const recipeAuthorId = report.recipe.author.id;
 
         // Create a user strike
-        const newStrike = await tx.userStrike.create({
+        await tx.userStrike.create({
           data: {
             userId: recipeAuthorId,
             reason: 'Inappropriate content',
