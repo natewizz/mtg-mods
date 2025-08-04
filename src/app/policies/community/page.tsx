@@ -1,3 +1,38 @@
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Community Guidelines - MTG Mods',
+  description: 'Read the community guidelines for MTG Mods. Learn about our values, content policies, and how we maintain a positive environment for all users.',
+  keywords: [
+    'Magic the Gathering', 'MTG', 'community guidelines', 'content policy', 'moderation', 'user behavior', 'reporting system', 'strikes', 'bans'
+  ],
+  alternates: {
+    canonical: 'https://www.mtgmods.xyz/policies/community',
+  },
+  openGraph: {
+    title: 'Community Guidelines - MTG Mods',
+    description: 'Read the community guidelines for MTG Mods. Learn about our values, content policies, and how we maintain a positive environment for all users.',
+    url: 'https://www.mtgmods.xyz/policies/community',
+    siteName: 'MTG Mods',
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Community%20Guidelines%20-%20MTG%20Mods&description=Read%20the%20community%20guidelines%20for%20MTG%20Mods&type=default`,
+        width: 1200,
+        height: 630,
+        alt: 'Community Guidelines - MTG Mods'
+      }
+    ],
+    locale: 'en_US',
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Community Guidelines - MTG Mods',
+    description: 'Read the community guidelines for MTG Mods. Learn about our values, content policies, and how we maintain a positive environment for all users.',
+    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Community%20Guidelines%20-%20MTG%20Mods&description=Read%20the%20community%20guidelines%20for%20MTG%20Mods&type=default`]
+  }
+};
+
 export default function CommunityGuidelines() {
   return (
     <div className="prose prose-lg mx-auto max-w-4xl">

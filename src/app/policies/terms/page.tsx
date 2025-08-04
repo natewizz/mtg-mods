@@ -1,3 +1,38 @@
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Terms of Service - MTG Mods',
+  description: 'Read the terms of service for MTG Mods. Learn about user content policies, account responsibilities, and platform usage guidelines.',
+  keywords: [
+    'Magic the Gathering', 'MTG', 'terms of service', 'legal', 'user agreement', 'platform rules', 'content policy', 'account terms'
+  ],
+  alternates: {
+    canonical: 'https://www.mtgmods.xyz/policies/terms',
+  },
+  openGraph: {
+    title: 'Terms of Service - MTG Mods',
+    description: 'Read the terms of service for MTG Mods. Learn about user content policies, account responsibilities, and platform usage guidelines.',
+    url: 'https://www.mtgmods.xyz/policies/terms',
+    siteName: 'MTG Mods',
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Terms%20of%20Service%20-%20MTG%20Mods&description=Read%20the%20terms%20of%20service%20for%20MTG%20Mods&type=default`,
+        width: 1200,
+        height: 630,
+        alt: 'Terms of Service - MTG Mods'
+      }
+    ],
+    locale: 'en_US',
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Terms of Service - MTG Mods',
+    description: 'Read the terms of service for MTG Mods. Learn about user content policies, account responsibilities, and platform usage guidelines.',
+    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Terms%20of%20Service%20-%20MTG%20Mods&description=Read%20the%20terms%20of%20service%20for%20MTG%20Mods&type=default`]
+  }
+};
+
 export default function TermsOfService() {
   return (
     <div className="prose prose-lg mx-auto max-w-4xl">

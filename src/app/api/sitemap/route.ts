@@ -35,6 +35,12 @@ export async function GET() {
         priority: 0.7,
       },
       {
+        url: `${baseUrl}/changelog`,
+        lastModified: new Date().toISOString(),
+        changeFrequency: 'weekly',
+        priority: 0.6,
+      },
+      {
         url: `${baseUrl}/policies/terms`,
         lastModified: new Date().toISOString(),
         changeFrequency: 'monthly',
@@ -72,6 +78,27 @@ export async function GET() {
       },
     })
 
+    // Fetch all users with usernames for profile pages
+    const users = await prisma.user.findMany({
+      where: {
+        username: {
+          not: null,
+        },
+      },
+      select: {
+        username: true,
+        updatedAt: true,
+        _count: {
+          select: {
+            recipes: true,
+          },
+        },
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    })
+
     // Convert recipes to sitemap entries
     const recipePages = recipes.map((recipe) => {
       // Calculate priority based on engagement (votes, tries, bookmarks)
@@ -94,7 +121,28 @@ export async function GET() {
       }
     })
 
-    const allPages = [...staticPages, ...recipePages]
+    // Convert users to profile page sitemap entries
+    const profilePages = users.map((user) => {
+      // Calculate priority based on recipe count
+      let priority = 0.4 // Base priority for profiles
+      
+      if (user._count.recipes > 10) {
+        priority = 0.7 // Active creators
+      } else if (user._count.recipes > 3) {
+        priority = 0.6 // Regular contributors
+      } else if (user._count.recipes > 0) {
+        priority = 0.5 // Occasional contributors
+      }
+
+      return {
+        url: `${baseUrl}/profile/${user.username}`,
+        lastModified: user.updatedAt.toISOString(),
+        changeFrequency: 'weekly',
+        priority,
+      }
+    })
+
+    const allPages = [...staticPages, ...recipePages, ...profilePages]
 
     // Generate XML manually to ensure proper formatting
     const timestamp = new Date().toISOString()

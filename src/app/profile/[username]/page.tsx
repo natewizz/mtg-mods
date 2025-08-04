@@ -1,8 +1,7 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { prisma } from '@/lib/prisma';
+import { auth } from '@/auth';
 import ProfileCard from "@/components/user/ProfileCard";
 import ProfileTabs from "@/components/user/ProfileTabs";
 import StrikeWarningBanner from "@/components/user/StrikeWarningBanner";
@@ -11,114 +10,198 @@ import type { User as PrismaUser } from "@prisma/client";
 import type { RecipeWithStats } from "@/components/user/RecipeList";
 import { SessionUser } from "@/lib/auth/types";
 
-export default function ProfilePage() {
-  const params = useParams();
-  const router = useRouter();
-  const username = params.username as string;
-  const { data: session } = useSession();
-  const [profile, setProfile] = useState<PrismaUser | null>(null);
-  const [recipes, setRecipes] = useState<RecipeWithStats[]>([]);
-  const [bookmarkedRecipes, setBookmarkedRecipes] = useState<RecipeWithStats[]>([]);
-  const [triedRecipes, setTriedRecipes] = useState<RecipeWithStats[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface ProfilePageProps {
+  params: Promise<{ username: string }>;
+}
 
-  useEffect(() => {
-    if (username) {
-      const fetchProfile = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-          const response = await fetch(`/api/users/${username}`);
-          if (!response.ok) {
-            throw new Error('Failed to fetch profile');
-          }
-          const data = await response.json();
-          // Convert createdAt/updatedAt to Date objects
-          const user = {
-            ...data.user,
-            createdAt: data.user.createdAt ? new Date(data.user.createdAt) : undefined,
-            updatedAt: data.user.updatedAt ? new Date(data.user.updatedAt) : undefined,
-          };
-          setProfile(user);
-          setRecipes(data.recipes);
-          setBookmarkedRecipes(data.bookmarkedRecipes);
-          setTriedRecipes(data.triedRecipes);
-        } catch (err) {
-          console.error(err);
-          setError(err instanceof Error ? err.message : 'An error occurred');
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchProfile();
-    }
-  }, [username]);
-
-  // Handle profile update
-  const handleProfileUpdate = async (data: Partial<PrismaUser>) => {
-    if (!profile) return Promise.reject(new Error('Profile not loaded'));
-
-    try {
-      const response = await fetch(`/api/users/${profile.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
+export async function generateMetadata({ params }: ProfilePageProps): Promise<Metadata> {
+  const { username } = await params;
+  
+  try {
+    const user = await prisma.user.findUnique({
+      where: { username },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        image: true,
+        createdAt: true,
+        _count: {
+          select: {
+            recipes: true,
+            bookmarks: true,
+            tried: true,
+          },
         },
-        body: JSON.stringify(data),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update profile');
-      }
-      
-      const updatedUser = await response.json();
-      setProfile((prevProfile) => prevProfile ? { ...prevProfile, ...updatedUser } : updatedUser);
-      
-      // If username was changed, redirect to the new profile URL
-      if (data.username && data.username !== username) {
-        console.log(`Username changed from ${username} to ${data.username}. Redirecting...`);
-        router.push(`/profile/${data.username}`);
-      }
-      
-      return Promise.resolve();
-    } catch (err) {
-      console.error('Error updating profile:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      return Promise.reject(err);
+      },
+    });
+
+    if (!user) {
+      return {
+        title: 'User Not Found - MTG Mods',
+        description: 'The requested user profile could not be found.',
+      };
     }
-  };
 
-  // Cast to our custom type for type safety
-  const user = session?.user as SessionUser | undefined;
-  // Check if this is the current user's profile by comparing user IDs
-  const isOwnProfile = user?.id === profile?.id;
+    const displayName = user.username || user.name || 'Anonymous';
+    const recipeCount = user._count.recipes;
+    const bookmarkCount = user._count.bookmarks;
+    const triedCount = user._count.tried;
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--primary)]"></div>
-      </div>
-    );
+    return {
+      title: `${displayName}'s Profile - MTG Mods`,
+      description: `View ${displayName}'s MTG Mods profile. See their ${recipeCount} recipes, ${bookmarkCount} bookmarks, and ${triedCount} tried recipes.`,
+      keywords: [
+        'Magic the Gathering', 'MTG', 'user profile', displayName, 'recipes', 'community', 'game mods'
+      ],
+      alternates: {
+        canonical: `https://www.mtgmods.xyz/profile/${username}`,
+      },
+      openGraph: {
+        title: `${displayName}'s Profile - MTG Mods`,
+        description: `View ${displayName}'s MTG Mods profile. See their ${recipeCount} recipes, ${bookmarkCount} bookmarks, and ${triedCount} tried recipes.`,
+        url: `https://www.mtgmods.xyz/profile/${username}`,
+        siteName: 'MTG Mods',
+        images: [
+          {
+            url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=${encodeURIComponent(displayName)}'s%20Profile&description=${encodeURIComponent(`View ${displayName}'s MTG Mods profile with ${recipeCount} recipes`)}&type=profile`,
+            width: 1200,
+            height: 630,
+            alt: `${displayName}'s Profile`
+          }
+        ],
+        locale: 'en_US',
+        type: 'profile'
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${displayName}'s Profile - MTG Mods`,
+        description: `View ${displayName}'s MTG Mods profile. See their ${recipeCount} recipes, ${bookmarkCount} bookmarks, and ${triedCount} tried recipes.`,
+        images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=${encodeURIComponent(displayName)}'s%20Profile&description=${encodeURIComponent(`View ${displayName}'s MTG Mods profile with ${recipeCount} recipes`)}&type=profile`]
+      }
+    };
+  } catch (error) {
+    console.error('Error generating metadata for profile:', error);
+    return {
+      title: 'Profile - MTG Mods',
+      description: 'View user profiles and recipes on MTG Mods.',
+    };
+  }
+}
+
+async function getProfileData(username: string, currentUserId?: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { username },
+      include: {
+        _count: {
+          select: {
+            recipes: true,
+            bookmarks: true,
+            tried: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    // Fetch user's recipes with stats
+    const recipes = await prisma.recipe.findMany({
+      where: { authorId: user.id },
+      include: {
+        tags: true,
+        _count: {
+          select: {
+            votes: true,
+            tried: true,
+            bookmarks: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // Fetch bookmarked recipes
+    const bookmarkedRecipes = await prisma.recipe.findMany({
+      where: {
+        bookmarks: {
+          some: {
+            userId: user.id,
+          },
+        },
+      },
+      include: {
+        tags: true,
+        _count: {
+          select: {
+            votes: true,
+            tried: true,
+            bookmarks: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // Fetch tried recipes
+    const triedRecipes = await prisma.recipe.findMany({
+      where: {
+        tried: {
+          some: {
+            userId: user.id,
+          },
+        },
+      },
+      include: {
+        tags: true,
+        _count: {
+          select: {
+            votes: true,
+            tried: true,
+            bookmarks: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return {
+      user,
+      recipes: recipes as RecipeWithStats[],
+      bookmarkedRecipes: bookmarkedRecipes as RecipeWithStats[],
+      triedRecipes: triedRecipes as RecipeWithStats[],
+    };
+  } catch (error) {
+    console.error('Error fetching profile data:', error);
+    return null;
+  }
+}
+
+export default async function ProfilePage({ params }: ProfilePageProps) {
+  const { username } = await params;
+  const session = await auth();
+  const currentUserId = session?.user?.id;
+
+  const profileData = await getProfileData(username, currentUserId);
+
+  if (!profileData) {
+    notFound();
   }
 
-  if (error) {
-    return <div className="text-center text-red-500 mt-10">Error: {error}</div>;
-  }
-
-  if (!profile) {
-    return <div className="text-center mt-10">User not found.</div>;
-  }
+  const { user, recipes, bookmarkedRecipes, triedRecipes } = profileData;
+  const isOwnProfile = currentUserId === user.id;
 
   return (
     <div className="max-w-4xl mx-auto">
       {isOwnProfile && <StrikeWarningBanner />}
       {isOwnProfile && <BannedUserBanner />}
       <ProfileCard 
-        user={profile}
+        user={user}
         isCurrentUser={isOwnProfile}
-        onUpdate={isOwnProfile ? handleProfileUpdate : undefined}
+        onUpdate={isOwnProfile ? undefined : undefined} // We'll handle updates in a separate client component
       />
       <ProfileTabs 
         recipes={recipes} 

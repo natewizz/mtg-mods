@@ -74,17 +74,20 @@ export const metadata = {
   keywords: [
     "Magic the Gathering", "MTG", "recipes", "rule variants", "custom rules", "game mods", "community", "trending", "deck building"
   ],
+  alternates: {
+    canonical: 'https://www.mtgmods.xyz/recipes',
+  },
   openGraph: {
     title: "All MTG Mods Recipes – Magic: The Gathering Rule Variants",
     description: "Browse all Magic: The Gathering rule modifications, custom formats, and community-created game variants. Filter by tags and discover trending recipes.",
-            url: "https://www.mtgmods.xyz/recipes",
+    url: "https://www.mtgmods.xyz/recipes",
     siteName: "MTG Mods",
     images: [
       {
-        url: "/logo.png",
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=All%20MTG%20Mods%20Recipes&description=Browse%20all%20Magic%3A%20The%20Gathering%20rule%20modifications%2C%20custom%20formats%2C%20and%20community-created%20game%20variants&type=recipe`,
         width: 1200,
         height: 630,
-        alt: "MTG Mods Logo"
+        alt: "All MTG Mods Recipes - Magic: The Gathering Rule Variants"
       }
     ],
     locale: "en_US",
@@ -94,6 +97,6 @@ export const metadata = {
     card: "summary_large_image",
     title: "All MTG Mods Recipes – Magic: The Gathering Rule Variants",
     description: "Browse all Magic: The Gathering rule modifications, custom formats, and community-created game variants. Filter by tags and discover trending recipes.",
-    images: ["/logo.png"]
+    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=All%20MTG%20Mods%20Recipes&description=Browse%20all%20Magic%3A%20The%20Gathering%20rule%20modifications%2C%20custom%20formats%2C%20and%20community-created%20game%20variants&type=recipe`]
   }
 };
