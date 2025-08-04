@@ -1,374 +1,296 @@
 "use client";
 
-import { User } from '@prisma/client';
-import Image from 'next/image';
-import { useState, useRef } from 'react';
-import { useSession } from "next-auth/react";
-import { signIn } from "next-auth/react";
-import ReactMarkdown from 'react-markdown';
-import { formatDistanceToNow } from 'date-fns';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import type { User as PrismaUser } from "@prisma/client";
 
-// Extended interface to include new fields during transition
-interface ExtendedUser extends User {
-  linkUrl: string | null;
-  linkText: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+interface ProfileCardProps {
+  user: PrismaUser;
+  isCurrentUser: boolean;
+  onUpdate?: (data: Partial<PrismaUser>) => Promise<void>;
 }
 
-type ProfileCardProps = {
-  user: ExtendedUser;
-  isCurrentUser: boolean;
-  onUpdate?: (data: Partial<ExtendedUser>) => Promise<void>;
-};
-
-export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCardProps) {
+export default function ProfileCard({ user, isCurrentUser }: ProfileCardProps) {
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    username: user.username || '',
-    linkUrl: user.linkUrl || '',
-    linkText: user.linkText || '',
-    bio: user.bio || '',
+    name: user.name || "",
+    username: user.username || "",
+    linkUrl: user.linkUrl || "",
+    linkText: user.linkText || "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formError, setFormError] = useState('');
-  const [urlError, setUrlError] = useState('');
-  const [isUploadingImage, setIsUploadingImage] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const { update } = useSession();
+  const [error, setError] = useState<string | null>(null);
 
-  const validateUrl = (url: string) => {
-    if (!url) return true; // Empty URL is valid (optional field)
-    
+  const handleProfileUpdate = async (data: Partial<PrismaUser>) => {
+    if (!user) return Promise.reject(new Error('Profile not loaded'));
+
     try {
-      const urlObj = new URL(url);
-      return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-    } catch {
-      return false;
+      const response = await fetch(`/api/users/${user.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update profile');
+      }
+      
+      await response.json();
+      
+      // If username was changed, redirect to the new profile URL
+      if (data.username && data.username !== user.username) {
+        console.log(`Username changed from ${user.username} to ${data.username}. Redirecting...`);
+        router.push(`/profile/${data.username}`);
+      }
+      
+      return Promise.resolve();
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      return Promise.reject(err);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    
-    if (name === 'linkUrl') {
-      setUrlError('');
-      if (value && !validateUrl(value)) {
-        setUrlError('Please enter a valid URL (e.g., https://example.com)');
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setUploadError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(`/api/users/${user.id}/profile-image`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to upload image');
       }
+
+      await response.json();
+      
+      // Refresh the page to show the new image
+      router.refresh();
+    } catch (err) {
+      console.error('Error uploading image:', err);
+      setUploadError(err instanceof Error ? err.message : 'Failed to upload image');
+    } finally {
+      setIsUploading(false);
     }
-    
-    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!onUpdate) return;
-    
-    // Validate URL before submission
-    if (formData.linkUrl && !validateUrl(formData.linkUrl)) {
-      setUrlError('Please enter a valid URL (e.g., https://example.com)');
-      return;
-    }
-    
     setIsSubmitting(true);
-    setFormError('');
-    
+    setError(null);
+
     try {
-      await onUpdate(formData);
+      await handleProfileUpdate(formData);
       setIsEditing(false);
-    } catch (err) {
-      setFormError(err instanceof Error ? err.message : 'Failed to update profile');
+    } catch {
+      // Error is already set in handleProfileUpdate
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-    
-    const file = e.target.files[0];
-    
-    // Validate file type
-    if (!['image/jpeg', 'image/png'].includes(file.type)) {
-      return;
-    }
-    
-    // Validate file size (2MB max)
-    const maxSize = 2 * 1024 * 1024; // 2MB
-    if (file.size > maxSize) {
-      return;
-    }
-    
-    // Create a preview
-    setPreviewImage(URL.createObjectURL(file));
-    
-    // Upload the image
-    const formData = new FormData();
-    formData.append('image', file);
-    
-    setIsUploadingImage(true);
-    
-    try {
-      const response = await fetch(`/api/users/${user.id}/profile-image`, {
-        method: 'POST',
-        body: formData,
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to upload image');
-      }
-      
-      // Update the user object in the parent component
-      const data = await response.json();
-      
-      if (onUpdate) {
-        await onUpdate({ image: data.user.image });
-      }
-      // Refresh the session so the new image appears everywhere
-      if (typeof update === 'function') {
-        await update();
-      } else {
-        // fallback for older next-auth: force signIn to refresh session
-        await signIn(undefined, { redirect: false });
-      }
-    } catch {
-      // Reset preview on error
-      setPreviewImage(null);
-    } finally {
-      setIsUploadingImage(false);
-    }
+  const handleCancel = () => {
+    setFormData({
+      name: user.name || "",
+      username: user.username || "",
+      linkUrl: user.linkUrl || "",
+      linkText: user.linkText || "",
+    });
+    setError(null);
+    setIsEditing(false);
   };
 
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
+  const displayName = user.username || user.name || "Anonymous";
+  const memberSince = user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long'
+  }) : 'Unknown';
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden relative">
-      <div className="bg-gradient-to-r from-[#5A31F4]/10 to-[#3DA1C4]/10 p-6">
-        <div className="flex flex-col md:flex-row items-center gap-6">
-          <div className="relative w-24 h-24 rounded-full overflow-hidden group border-4 border-white shadow-md">
-            {previewImage || user.image ? (
-              <Image 
-                src={previewImage || user.image || ''} 
-                alt={user.name || 'User'} 
-                fill 
-                className="object-cover"
-              />
+    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div className="flex items-start justify-between mb-6">
+        <div className="flex items-center space-x-4">
+          <div className="relative">
+            {user.image ? (
+              <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-[var(--primary)]/20">
+                <Image 
+                  src={user.image}
+                  alt={`${displayName}'s profile`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
             ) : (
-              <div className="w-full h-full bg-[#5A31F4] flex items-center justify-center text-white text-2xl font-bold">
-                {user.name?.charAt(0) || '?'}
+              <div className="w-20 h-20 rounded-full bg-[var(--primary)]/20 flex items-center justify-center border-4 border-[var(--primary)]/20">
+                <span className="text-2xl font-bold text-[var(--primary)]">
+                  {displayName.charAt(0).toUpperCase()}
+                </span>
               </div>
             )}
             
             {isCurrentUser && (
-              <div 
-                className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-                onClick={triggerFileInput}
-              >
-                {isUploadingImage ? (
-                  <span className="text-white text-xs font-medium">Uploading...</span>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3Z" />
-                  </svg>
-                )}
-                <input 
+              <div className="absolute -bottom-1 -right-1">
+                <label htmlFor="profile-image-upload" className="cursor-pointer">
+                  <div className="w-6 h-6 bg-[var(--primary)] rounded-full flex items-center justify-center hover:bg-[var(--primary)]/80 transition-colors">
+                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </div>
+                </label>
+                <input
+                  id="profile-image-upload"
                   type="file"
-                  ref={fileInputRef}
-                  className="hidden"
-                  accept="image/jpeg, image/png"
+                  accept="image/jpeg,image/png"
                   onChange={handleImageUpload}
-                  disabled={isUploadingImage}
+                  className="hidden"
+                  disabled={isUploading}
                 />
               </div>
             )}
           </div>
-          
-          <div className="flex-1 text-center md:text-left">
-            {!isEditing ? (
-              <div className="mt-4 space-y-4">
-                {user.username && (
-                  <p className="text-gray-600 font-medium">
-                    <span className="text-[#3DA1C4]">@</span>{user.username}
-                  </p>
-                )}
-                
-                {user.linkUrl && (
-                  <div className="flex items-center text-[#5A31F4] space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                    </svg>
-                    <a 
-                      href={user.linkUrl} 
-                      target="_blank" 
-                      rel="nofollow noopener noreferrer" 
-                      className="hover:underline transition-all hover:text-[#4A21E4]"
-                    >
-                      {user.linkText || user.linkUrl}
-                    </a>
-                  </div>
-                )}
-                
-                {user.bio && (
-                  <div className="mt-4 border border-gray-200 rounded-md p-4 bg-gradient-to-br from-white via-[#f6f7fb] to-[#f3f0ff] shadow-sm">
-                    <div className="flex items-center mb-2 gap-2">
-                      <h3 className="text-lg font-semibold text-[#2C2E3A]">Bio</h3>
-                      {isCurrentUser && (
-                        <span className="text-xs text-gray-400 font-normal flex items-center gap-1">
-                          (supports markdown)
-                          <a
-                            href="https://www.markdownguide.org/cheat-sheet/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="ml-1 underline hover:text-[#5A31F4]"
-                          >
-                            Markdown Help
-                          </a>
-                        </span>
-                      )}
-                    </div>
-                    <div className="prose prose-sm max-w-none text-gray-700">
-                      <ReactMarkdown>{user.bio}</ReactMarkdown>
-                    </div>
-                  </div>
-                )}
-                
-                {isCurrentUser && (
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="mt-4 px-4 py-2 bg-[#5A31F4] text-white rounded hover:bg-[#4A21E4] transition-colors duration-300 shadow-md hover:shadow-lg"
-                  >
-                    Edit Profile
-                  </button>
-                )}
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="mt-4 space-y-4 bg-white rounded-md p-4 shadow-sm">
-                {formError && (
-                  <div className="p-3 bg-red-100 border border-red-300 text-red-700 rounded mb-4">
-                    {formError}
-                  </div>
-                )}
-                
-                <div>
-                  <label htmlFor="username" className="block text-sm font-medium text-[#2C2E3A]">
-                    Username
-                  </label>
-                  <div className="mt-1 relative">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-                      @
-                    </span>
-                    <input
-                      type="text"
-                      id="username"
-                      name="username"
-                      value={formData.username}
-                      onChange={handleChange}
-                      className="pl-7 block w-full rounded-md border border-gray-300 shadow-sm focus:border-[#5A31F4] focus:ring-[#5A31F4] px-3 py-2"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <label htmlFor="bio" className="block text-sm font-medium text-[#2C2E3A] flex items-center gap-2">
-                    Bio
-                    {isCurrentUser && (
-                      <span className="text-xs text-gray-400 font-normal flex items-center gap-1">
-                        (supports markdown)
-                        <a
-                          href="https://www.markdownguide.org/cheat-sheet/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ml-1 underline hover:text-[#5A31F4]"
-                        >
-                          Markdown Help
-                        </a>
-                      </span>
-                    )}
-                  </label>
-                  <textarea
-                    id="bio"
-                    name="bio"
-                    rows={4}
-                    value={formData.bio}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-[#5A31F4] focus:ring-[#5A31F4] px-3 py-2"
-                    placeholder="Tell others about yourself..."
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="linkUrl" className="block text-sm font-medium text-[#2C2E3A] flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                    </svg>
-                    Link URL
-                  </label>
-                  <input
-                    type="url"
-                    id="linkUrl"
-                    name="linkUrl"
-                    placeholder="https://example.com"
-                    value={formData.linkUrl}
-                    onChange={handleChange}
-                    className={`mt-1 block w-full rounded-md border ${urlError ? 'border-red-300' : 'border-gray-300'} shadow-sm focus:border-[#5A31F4] focus:ring-[#5A31F4] px-3 py-2`}
-                  />
-                  {urlError ? (
-                    <p className="text-xs text-red-500 mt-1">{urlError}</p>
-                  ) : (
-                    <p className="text-xs text-gray-500 mt-1">Add a link to your personal site, social media, or other profile</p>
-                  )}
-                </div>
-                
-                <div>
-                  <label htmlFor="linkText" className="block text-sm font-medium text-[#2C2E3A]">
-                    Link Text (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    id="linkText"
-                    name="linkText"
-                    placeholder="My Website"
-                    value={formData.linkText}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-[#5A31F4] focus:ring-[#5A31F4] px-3 py-2"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Custom text to display for your link (URL will be used if empty)</p>
-                </div>
-                
-                <div className="flex gap-4 pt-2">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting || !!urlError}
-                    className="px-4 py-2 bg-[#5A31F4] text-white rounded hover:bg-[#4A21E4] transition-colors duration-300 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
-                  >
-                    {isSubmitting ? 'Saving...' : 'Save'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsEditing(false)}
-                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors duration-300"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
+          <div>
+            <h1 className="text-2xl font-bold text-[var(--dark)]">{displayName}</h1>
+            <p className="text-gray-500">Member since {memberSince}</p>
+            {user.linkUrl && (
+              <a
+                href={user.linkUrl.startsWith('http') ? user.linkUrl : `https://${user.linkUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--primary)] hover:underline text-sm"
+              >
+                {user.linkText || user.linkUrl}
+              </a>
             )}
           </div>
         </div>
-        <div className="absolute bottom-3 right-6 text-xs text-gray-400 text-right pointer-events-none select-none">
-          <div>
-            Joined: {user.emailVerified ? new Date(user.emailVerified).toLocaleDateString() : user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Unknown'}
-          </div>
-          <div>
-            Last active: {user.updatedAt ? formatDistanceToNow(new Date(user.updatedAt), { addSuffix: true }) : 'Unknown'}
-          </div>
-        </div>
+        
+        {isCurrentUser && !isEditing && (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="btn-primary"
+          >
+            Edit Profile
+          </button>
+        )}
       </div>
+
+      {/* Upload Error Message */}
+      {uploadError && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+          {uploadError}
+        </div>
+      )}
+
+      {/* Upload Loading State */}
+      {isUploading && (
+        <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded mb-4">
+          Uploading image...
+        </div>
+      )}
+
+      {isEditing && (
+        <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+              {error}
+            </div>
+          )}
+          
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Display Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
+              placeholder="Your display name"
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              value={formData.username}
+              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
+              placeholder="Your username"
+              required
+            />
+            <p className="text-sm text-gray-500 mt-1">
+              This will change your profile URL
+            </p>
+          </div>
+          
+          <div>
+            <label htmlFor="linkUrl" className="block text-sm font-medium text-gray-700 mb-1">
+              Website URL (optional)
+            </label>
+            <input
+              type="url"
+              id="linkUrl"
+              value={formData.linkUrl}
+              onChange={(e) => setFormData({ ...formData, linkUrl: e.target.value })}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
+              placeholder="https://yourwebsite.com"
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="linkText" className="block text-sm font-medium text-gray-700 mb-1">
+              Link Text (optional)
+            </label>
+            <input
+              type="text"
+              id="linkText"
+              value={formData.linkText}
+              onChange={(e) => setFormData({ ...formData, linkText: e.target.value })}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
+              placeholder="My Website"
+            />
+          </div>
+          
+          <div className="flex space-x-3">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="btn-primary disabled:opacity-50"
+            >
+              {isSubmitting ? 'Saving...' : 'Save Changes'}
+            </button>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="btn-secondary"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   );
 } 

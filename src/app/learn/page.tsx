@@ -7,17 +7,20 @@ export const metadata = {
   keywords: [
     'Magic the Gathering', 'MTG', 'learn', 'how to', 'game mods', 'rule variants', 'custom rules', 'community', 'tutorial', 'guide'
   ],
+  alternates: {
+    canonical: 'https://www.mtgmods.xyz/learn',
+  },
   openGraph: {
     title: 'Learn About MTG Game Modifications | MTG Mods',
     description: 'Discover how to create, share, and play with game rule modifications for Magic: The Gathering. Learn about recipe complexity, dependencies, and unleash your creativity.',
-            url: 'https://www.mtgmods.xyz/learn',
+    url: 'https://www.mtgmods.xyz/learn',
     siteName: 'MTG Mods',
     images: [
       {
-        url: '/logo.png',
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Learn%20About%20MTG%20Game%20Modifications&description=Discover%20how%20to%20create%2C%20share%2C%20and%20play%20with%20game%20rule%20modifications%20for%20Magic%3A%20The%20Gathering&type=learn`,
         width: 1200,
         height: 630,
-        alt: 'MTG Mods Logo'
+        alt: 'Learn About MTG Game Modifications'
       }
     ],
     locale: 'en_US',
@@ -27,7 +30,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Learn About MTG Game Modifications | MTG Mods',
     description: 'Discover how to create, share, and play with game rule modifications for Magic: The Gathering. Learn about recipe complexity, dependencies, and unleash your creativity.',
-    images: ['/logo.png']
+    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Learn%20About%20MTG%20Game%20Modifications&description=Discover%20how%20to%20create%2C%20share%2C%20and%20play%20with%20game%20rule%20modifications%20for%20Magic%3A%20The%20Gathering&type=learn`]
   }
 };
 

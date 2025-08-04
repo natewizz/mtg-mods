@@ -2,7 +2,35 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Changelog - MTG Mods',
-  description: 'See the latest updates and new features added to MTG Mods',
+  description: 'See the latest updates and new features added to MTG Mods. Track the evolution of our platform with detailed release notes and improvements.',
+  keywords: [
+    'Magic the Gathering', 'MTG', 'changelog', 'updates', 'features', 'release notes', 'improvements', 'bug fixes', 'security updates'
+  ],
+  alternates: {
+    canonical: 'https://www.mtgmods.xyz/changelog',
+  },
+  openGraph: {
+    title: 'Changelog - MTG Mods',
+    description: 'See the latest updates and new features added to MTG Mods. Track the evolution of our platform with detailed release notes and improvements.',
+    url: 'https://www.mtgmods.xyz/changelog',
+    siteName: 'MTG Mods',
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Changelog%20-%20MTG%20Mods&description=See%20the%20latest%20updates%20and%20new%20features%20added%20to%20MTG%20Mods&type=default`,
+        width: 1200,
+        height: 630,
+        alt: 'Changelog - MTG Mods'
+      }
+    ],
+    locale: 'en_US',
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Changelog - MTG Mods',
+    description: 'See the latest updates and new features added to MTG Mods. Track the evolution of our platform with detailed release notes and improvements.',
+    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Changelog%20-%20MTG%20Mods&description=See%20the%20latest%20updates%20and%20new%20features%20added%20to%20MTG%20Mods&type=default`]
+  }
 };
 
 interface ChangelogEntry {
@@ -14,6 +42,20 @@ interface ChangelogEntry {
 }
 
 const changelogData: ChangelogEntry[] = [
+  {
+    date: '2025-08-04',
+    version: 'v1.3.1',
+    title: 'Profile Image Upload & Display Fixes',
+    description: 'Fixed profile pictures not displaying correctly and added profile image upload functionality. Users can now easily upload and edit their profile pictures with a simple pencil icon.',
+    type: 'fix'
+  },
+  {
+    date: '2025-08-04',
+    version: 'v1.3.0',
+    title: 'Dynamic Open Graph Images & SEO Optimization',
+    description: 'Implemented dynamic Open Graph image generation for beautiful social media previews. Added comprehensive SEO optimization with canonical URLs, structured data, and enhanced metadata across all pages.',
+    type: 'feature'
+  },
   {
     date: '2025-07-29',
     version: 'v1.2.2',

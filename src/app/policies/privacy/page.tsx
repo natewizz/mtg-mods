@@ -1,3 +1,38 @@
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy - MTG Mods',
+  description: 'Read the privacy policy for MTG Mods. Learn how we collect, use, and protect your personal information and data.',
+  keywords: [
+    'Magic the Gathering', 'MTG', 'privacy policy', 'data protection', 'personal information', 'cookies', 'user rights', 'data security'
+  ],
+  alternates: {
+    canonical: 'https://www.mtgmods.xyz/policies/privacy',
+  },
+  openGraph: {
+    title: 'Privacy Policy - MTG Mods',
+    description: 'Read the privacy policy for MTG Mods. Learn how we collect, use, and protect your personal information and data.',
+    url: 'https://www.mtgmods.xyz/policies/privacy',
+    siteName: 'MTG Mods',
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Privacy%20Policy%20-%20MTG%20Mods&description=Read%20the%20privacy%20policy%20for%20MTG%20Mods&type=default`,
+        width: 1200,
+        height: 630,
+        alt: 'Privacy Policy - MTG Mods'
+      }
+    ],
+    locale: 'en_US',
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Privacy Policy - MTG Mods',
+    description: 'Read the privacy policy for MTG Mods. Learn how we collect, use, and protect your personal information and data.',
+    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Privacy%20Policy%20-%20MTG%20Mods&description=Read%20the%20privacy%20policy%20for%20MTG%20Mods&type=default`]
+  }
+};
+
 export default function PrivacyPolicy() {
   return (
     <div className="prose prose-lg mx-auto max-w-4xl">

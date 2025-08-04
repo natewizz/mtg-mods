@@ -3,11 +3,11 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { Metadata } from 'next';
 import DeleteRecipeButton from '@/components/recipes/DeleteRecipeButton';
 import RecipeInteractionsClient from '@/components/recipes/RecipeInteractionsClient';
 import TagPill from '@/components/ui/TagPill';
 import { CopyLinkButton } from '@/components/CopyLinkButton';
-import Head from 'next/head';
 
 interface RecipeWithRelations {
   id: string;
@@ -48,6 +48,80 @@ type RecipeData = {
 } | {
   redirect: string;
 } | null;
+
+interface RecipePageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: RecipePageProps): Promise<Metadata> {
+  const { slug } = await params;
+  
+  try {
+    const recipe = await prisma.recipe.findUnique({
+      where: { slug },
+      include: {
+        author: true,
+        tags: true,
+      },
+    });
+
+    if (!recipe) {
+      return {
+        title: 'Recipe Not Found - MTG Mods',
+        description: 'The requested recipe could not be found.',
+      };
+    }
+
+    // Utility to strip HTML tags from instructions
+    function stripHtml(html: string): string {
+      if (!html) return '';
+      return html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+    }
+
+    // Generate description from instructions (first 160 chars)
+    const description = stripHtml(recipe.instructions).slice(0, 160);
+    const authorName = recipe.author.username || recipe.author.name || 'Anonymous';
+
+    return {
+      title: `${recipe.title} | MTG Mods`,
+      description: description,
+      keywords: [
+        'Magic the Gathering', 'MTG', 'recipe', recipe.title, 'game mod', 'rule variant', authorName, ...recipe.tags.map(tag => tag.name)
+      ],
+      alternates: {
+        canonical: `https://www.mtgmods.xyz/recipes/${slug}`,
+      },
+      openGraph: {
+        title: recipe.title,
+        description: description,
+        type: 'article',
+        url: `https://www.mtgmods.xyz/recipes/${slug}`,
+        siteName: 'MTG Mods',
+        images: [
+          {
+            url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=${encodeURIComponent(recipe.title)}&description=${encodeURIComponent(description)}&type=recipe`,
+            width: 1200,
+            height: 630,
+            alt: recipe.title
+          }
+        ],
+        locale: 'en_US',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: recipe.title,
+        description: description,
+        images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=${encodeURIComponent(recipe.title)}&description=${encodeURIComponent(description)}&type=recipe`]
+      }
+    };
+  } catch (error) {
+    console.error('Error generating metadata for recipe:', error);
+    return {
+      title: 'Recipe - MTG Mods',
+      description: 'View MTG recipe details and instructions.',
+    };
+  }
+}
 
 async function getRecipeWithInteractions(slug: string, userId?: string): Promise<RecipeData> {
   try {
@@ -179,60 +253,10 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
   const totalVotes = recipe._count.votes;
   const totalTried = recipe._count.tried;
 
-  // Utility to strip HTML tags from instructions
-  function stripHtml(html: string): string {
-    if (!html) return '';
-    return html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
-  }
 
-  // Generate description from instructions (first 160 chars)
-  const description = stripHtml(recipe.instructions).slice(0, 160);
-
-  // Canonical URL for this recipe
-  const canonicalUrl = `https://www.mtgmods.xyz/recipes/${slug}`;
-
-  // Default image (update if you add per-recipe images)
-  const imageUrl = 'https://www.mtgmods.xyz/logo.png';
-
-  // Build JSON-LD structured data
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Recipe',
-    name: recipe.title,
-    author: {
-      '@type': 'Person',
-      name: recipe.author.username || recipe.author.name || 'Anonymous',
-    },
-    datePublished: recipe.createdAt.toISOString(),
-    recipeInstructions: stripHtml(recipe.instructions),
-    keywords: recipe.tags.map((tag: { id: string; name: string }) => tag.name).join(', '),
-  };
 
   return (
     <>
-      <Head>
-        {/* Open Graph & Twitter Card meta tags */}
-        <title>{recipe.title} | MTG Mods</title>
-        <meta name="description" content={description} />
-        <link rel="canonical" href={canonicalUrl} />
-        {/* Open Graph */}
-        <meta property="og:title" content={recipe.title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:image" content={imageUrl} />
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={recipe.title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={imageUrl} />
-        <meta name="twitter:site" content="@mtgmods" />
-        {/* JSON-LD structured data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </Head>
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center mb-6">
           <Link href="/recipes" className="text-gray-500 hover:underline mr-2">

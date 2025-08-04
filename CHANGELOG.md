@@ -4,7 +4,56 @@ All notable changes to the mtg-mods project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- **Dynamic Open Graph Image Generation**
+  - Created `/api/og` route for server-side OG image generation using Next.js ImageResponse API
+  - Implemented 4 different OG image types with unique styling: Default (purple), Recipe (blue), Profile (dark), Learn (purple)
+  - Added dynamic content support with URL parameters for title, description, and type
+  - Updated all pages to use dynamic OG images instead of static logo.png
+  - Enhanced social media sharing with professional previews for Discord, Slack, Twitter, Facebook, LinkedIn
+- **Comprehensive SEO Optimization**
+  - Added canonical URLs to all pages using Next.js metadata alternates
+  - Implemented proper Open Graph and Twitter Card metadata across all pages
+  - Added structured data (JSON-LD) to homepage for better search engine understanding
+  - Enhanced sitemap to include profile pages with dynamic priority based on user activity
+  - Converted profile pages to server-side rendering for better SEO performance
+  - Added comprehensive metadata to all policy pages (Terms, Privacy, Community Guidelines)
+  - Implemented dynamic metadata generation for recipe detail pages with actual content
+  - Added proper alt text and image descriptions for all OG images
+
+### Changed
+- **Metadata Architecture**
+  - Migrated from client-side Head components to Next.js 13+ metadata API
+  - Updated all pages to use server-side metadata generation
+  - Replaced static image references with dynamic OG image URLs
+  - Enhanced metadata structure with proper keywords, descriptions, and canonical URLs
+- **Profile Page Optimization**
+  - Converted profile pages from client-side to server-side rendering
+  - Added dynamic metadata generation based on user data (recipe count, bookmarks, etc.)
+  - Maintained client-side functionality for profile updates while improving SEO
+  - Added proper canonical URLs for each user profile
+
+### Technical
+- **Performance Improvements**
+  - Used Edge Runtime for fast OG image generation
+  - Implemented proper caching headers for OG images
+  - Optimized database queries for metadata generation
+  - Added proper error handling for missing content
+- **Code Quality**
+  - Removed deprecated client-side Head components
+  - Updated TypeScript interfaces for better type safety
+  - Improved error handling and fallback mechanisms
+  - Enhanced code organization and maintainability
+
 ### Fixed
+- **Profile Image Upload and Display Issues**
+  - Fixed profile pictures not displaying correctly on profile cards
+  - Added profile image upload functionality with pencil icon for editing
+  - Replaced regular img tags with Next.js Image component for better performance
+  - Added fallback avatar with user initials when no profile picture is set
+  - Fixed Supabase client initialization in profile image upload API
+  - Added proper loading states and error handling for image uploads
+  - Improved UX with single pencil icon instead of multiple buttons
 - **Mobile UX Improvements**
   - Fixed changelog mobile layout: version number now appears below type pill on smaller screens
   - Updated all changelog dates to reflect 2025 timeline

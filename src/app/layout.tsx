@@ -11,23 +11,26 @@ import Footer from "@/components/layout/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'),
   title: "MTG Mods – Magic: The Gathering Rule Variants & Community",
   description: "Discover, create, and share innovative Magic: The Gathering rule modifications and game variants. Join the Kickstarter waitlist for early access!",
   keywords: [
     "Magic the Gathering", "MTG", "game mods", "rule variants", "custom rules", "Kickstarter", "waitlist", "card game", "tabletop", "community"
   ],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz',
+  },
   openGraph: {
     title: "MTG Mods – Magic: The Gathering Rule Variants & Community",
     description: "Discover, create, and share innovative Magic: The Gathering rule modifications and game variants. Join the Kickstarter waitlist for early access!",
-            url: "https://www.mtgmods.xyz",
+    url: "https://www.mtgmods.xyz",
     siteName: "MTG Mods",
     images: [
       {
-        url: "/logo.png",
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=MTG%20Mods&description=Magic%3A%20The%20Gathering%20Rule%20Variants%20%26%20Community&type=default`,
         width: 1200,
         height: 630,
-        alt: "MTG Mods Logo"
+        alt: "MTG Mods - Magic: The Gathering Rule Variants & Community"
       }
     ],
     locale: "en_US",
@@ -37,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "MTG Mods – Magic: The Gathering Rule Variants & Community",
     description: "Discover, create, and share innovative Magic: The Gathering rule modifications and game variants. Join the Kickstarter waitlist for early access!",
-    images: ["/logo.png"]
+    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=MTG%20Mods&description=Magic%3A%20The%20Gathering%20Rule%20Variants%20%26%20Community&type=default`]
   }
 };
 
