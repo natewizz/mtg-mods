@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Admin access required' }, { status: 403 });
     }
 
-    const { userId, badgeName, reason } = await request.json();
+    const { userId, badgeName } = await request.json();
 
     if (!userId || !badgeName) {
       return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });

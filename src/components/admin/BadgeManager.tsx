@@ -29,10 +29,15 @@ export default function BadgeManager() {
   const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchBadges();
-    fetchUsers();
+    const loadData = async () => {
+      setIsLoading(true);
+      await Promise.all([fetchBadges(), fetchUsers()]);
+      setIsLoading(false);
+    };
+    loadData();
   }, []);
 
   const fetchBadges = async () => {
@@ -41,9 +46,13 @@ export default function BadgeManager() {
       if (response.ok) {
         const data = await response.json();
         setBadges(data.filter((badge: Badge) => badge.isManual));
+      } else {
+        console.error('Failed to fetch badges:', response.status);
+        setBadges([]);
       }
     } catch (error) {
       console.error('Error fetching badges:', error);
+      setBadges([]);
     }
   };
 
@@ -53,9 +62,13 @@ export default function BadgeManager() {
       if (response.ok) {
         const data = await response.json();
         setUsers(data);
+      } else {
+        console.error('Failed to fetch users:', response.status);
+        setUsers([]);
       }
     } catch (error) {
       console.error('Error fetching users:', error);
+      setUsers([]);
     }
   };
 
@@ -91,12 +104,24 @@ export default function BadgeManager() {
       } else {
         setMessage(`❌ ${data.message}`);
       }
-    } catch (error) {
+    } catch {
       setMessage('❌ Error awarding badge');
     } finally {
       setLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold mb-6">Badge Manager</h2>
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Loading badge manager...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -141,11 +166,15 @@ export default function BadgeManager() {
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">Choose a badge...</option>
-            {badges.map((badge) => (
-              <option key={badge.id} value={badge.name}>
-                {badge.displayName}
-              </option>
-            ))}
+            {badges.length > 0 ? (
+              badges.map((badge) => (
+                <option key={badge.id} value={badge.name}>
+                  {badge.displayName}
+                </option>
+              ))
+            ) : (
+              <option value="" disabled>No manual badges available</option>
+            )}
           </select>
         </div>
       </div>

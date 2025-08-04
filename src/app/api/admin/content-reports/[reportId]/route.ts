@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth';
@@ -106,10 +106,10 @@ export async function PATCH(
 
         // Check if user should be banned (2+ strikes)
         if (userStrikeCount >= 2) {
-          // Update user role to indicate ban
+          // Disable the user account
           await tx.user.update({
             where: { id: recipeAuthorId },
-            data: { role: 'BANNED' }
+            data: { isDisabled: true }
           });
         }
 

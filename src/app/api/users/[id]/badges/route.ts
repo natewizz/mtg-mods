@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/auth';
 import { BadgeService } from '@/lib/badge-service';
 
 export async function GET(

@@ -1,4 +1,5 @@
 import { prisma } from './prisma';
+import { BadgeCategory } from '@prisma/client';
 
 export interface BadgeAward {
   userId: string;
@@ -198,7 +199,7 @@ export class BadgeService {
   /**
    * Create a notification when a badge is awarded
    */
-  static async createBadgeNotification(userId: string, badge: any) {
+  static async createBadgeNotification(userId: string, badge: { displayName: string; description: string }) {
     try {
       await prisma.adminNotification.create({
         data: {
@@ -242,13 +243,19 @@ export class BadgeService {
    * Get all available badges
    */
   static async getAllBadges() {
-    return await prisma.badge.findMany({
-      where: { isActive: true },
-      orderBy: [
-        { category: 'asc' },
-        { triggerValue: 'asc' }
-      ]
-    });
+    try {
+      return await prisma.badge.findMany({
+        where: { isActive: true },
+        orderBy: [
+          { category: 'asc' },
+          { triggerValue: 'asc' }
+        ]
+      });
+    } catch (error) {
+      console.error('Error fetching badges:', error);
+      // Return empty array if table doesn't exist or other error
+      return [];
+    }
   }
 
   /**
@@ -257,7 +264,7 @@ export class BadgeService {
   static async getBadgesByCategory(category: string) {
     return await prisma.badge.findMany({
       where: { 
-        category: category as any,
+        category: category as BadgeCategory,
         isActive: true 
       },
       orderBy: { triggerValue: 'asc' }
