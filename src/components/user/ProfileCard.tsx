@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import type { User as PrismaUser } from "@prisma/client";
-import BadgeCollection from "@/components/ui/BadgeCollection";
 import UserBadgeCollection from "@/components/ui/UserBadgeCollection";
 
 interface ProfileCardProps {
