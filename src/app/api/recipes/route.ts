@@ -6,6 +6,7 @@ import { slugify } from '@/lib/utils';
 import { getLatestRecipes } from '@/lib/recipe-actions';
 import { revalidateTag } from 'next/cache';
 import { validateRecipeContent } from '@/lib/content-filter';
+import { BadgeService } from '@/lib/badge-service';
 
 // Validation schema for creating a recipe
 const createRecipeSchema = z.object({
@@ -102,6 +103,14 @@ export async function POST(request: NextRequest) {
         },
       },
     });
+
+    // Check and award badges for recipe creation
+    try {
+      await BadgeService.checkRecipeBadges(userId);
+    } catch (badgeError) {
+      console.error('Error checking recipe badges:', badgeError);
+      // Don't fail the recipe creation if badge checking fails
+    }
 
     // Invalidate cache to ensure fresh data
     revalidateTag('recipes');

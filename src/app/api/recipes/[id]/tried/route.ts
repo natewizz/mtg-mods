@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { BadgeService } from '@/lib/badge-service';
 
 // Mark a recipe as tried
 export async function POST(
@@ -46,6 +47,17 @@ export async function POST(
         recipeId: params.id,
       },
     });
+
+    // Check and award badges for tries received by the recipe author
+    if (recipe.authorId !== session.user.id) {
+      try {
+        await BadgeService.checkTriedBadges(recipe.authorId);
+      } catch (badgeError) {
+        console.error('Error checking tried badges:', badgeError);
+        // Don't fail the tried action if badge checking fails
+      }
+    }
+
     return NextResponse.json(tried, { status: 200 });
   } catch (error) {
     console.error('Error marking recipe as tried:', error);

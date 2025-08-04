@@ -32,9 +32,12 @@ model User {
   strikes        UserStrike[]
   adminStrikes   UserStrike[]    @relation("AdminStrikes")
   adminNotifications AdminNotification[] @relation("AdminNotifications")
-  role           String          @default("USER")
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  userBadges     UserBadge[]
+  awardedBadges  UserBadge[]     @relation("AwardedBadges")
+  role           UserRole        @default(USER)
+  isDisabled     Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 
   @@map("User")
 }
@@ -256,4 +259,73 @@ model AdminNotification {
   @@index([read], map: "AdminNotification_read_idx")
   @@index([createdAt], map: "AdminNotification_createdAt_idx")
   @@map("AdminNotification")
+}
+
+model Badge {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  displayName String
+  description String   @db.Text
+  icon        String   // Icon name or emoji
+  color       String   // CSS color or tailwind class
+  category    BadgeCategory
+  triggerType BadgeTriggerType
+  triggerValue Int?    // For milestone badges (e.g., 10 recipes)
+  isManual    Boolean  @default(false) // Can only be assigned by admins
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  userBadges  UserBadge[]
+
+  @@index([category], map: "Badge_category_idx")
+  @@index([triggerType], map: "Badge_triggerType_idx")
+  @@map("Badge")
+}
+
+model UserBadge {
+  id        String   @id @default(cuid())
+  userId    String
+  badgeId   String
+  earnedAt  DateTime @default(now())
+  awardedBy String?  // Admin ID who manually awarded the badge
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  admin     User?    @relation("AwardedBadges", fields: [awardedBy], references: [id], onDelete: SetNull)
+
+  @@unique([userId, badgeId], map: "UserBadge_userId_badgeId_unique")
+  @@index([userId], map: "UserBadge_userId_idx")
+  @@index([badgeId], map: "UserBadge_badgeId_idx")
+  @@index([earnedAt], map: "UserBadge_earnedAt_idx")
+  @@map("UserBadge")
+}
+
+enum BadgeCategory {
+  ROLE
+  ACHIEVEMENT
+  MILESTONE
+  SPECIAL
+  STREAK
+  COMMUNITY
+}
+
+enum BadgeTriggerType {
+  FIRST_RECIPE
+  FIRST_LIKE
+  FIRST_TRIED
+  RECIPE_COUNT
+  LIKE_COUNT
+  TRIED_COUNT
+  BOOKMARK_COUNT
+  LOGIN_STREAK
+  MANUAL
+  BETA_USER
+  COMMUNITY_CONTRIBUTION
+}
+
+enum UserRole {
+  USER
+  MODERATOR
+  ADMIN
 }
