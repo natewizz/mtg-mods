@@ -12,6 +12,7 @@ import { SignupsByProviderChart } from './components/SignupsByProviderChart';
 import ContentReports from '@/components/admin/ContentReports';
 import UserStrikes from '@/components/admin/UserStrikes';
 import AdminNotifications from '@/components/admin/AdminNotifications';
+import BadgeManager from '@/components/admin/BadgeManager';
 import Image from 'next/image';
 
 // User type for dashboard tables
@@ -501,6 +502,12 @@ export default async function DashboardPage() {
           <ContentReports />
           <UserStrikes />
         </div>
+
+      {/* Badge Management Section */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-lg font-semibold mb-4 text-[#2C2E3A]">Badge Management</h2>
+        <BadgeManager />
+      </div>
     </div>
   );
 }

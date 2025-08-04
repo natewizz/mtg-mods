@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import type { User as PrismaUser } from "@prisma/client";
+import BadgeCollection from "@/components/ui/BadgeCollection";
+import UserBadgeCollection from "@/components/ui/UserBadgeCollection";
 
 interface ProfileCardProps {
   user: PrismaUser;
@@ -189,6 +191,12 @@ export default function ProfileCard({ user, isCurrentUser }: ProfileCardProps) {
             Edit Profile
           </button>
         )}
+      </div>
+
+      {/* User Badges */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-[var(--dark)] mb-3">Badges</h3>
+        <UserBadgeCollection userId={user.id} />
       </div>
 
       {/* Upload Error Message */}

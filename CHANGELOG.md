@@ -2,9 +2,27 @@
 
 All notable changes to the mtg-mods project will be documented in this file.
 
-## [Unreleased]
+## [2025-08-04] - User Badge System and Database Migration
 
 ### Added
+- **Comprehensive User Badge System**
+  - Added Badge and UserBadge models to Prisma schema with proper relationships
+  - Implemented automatic badge awarding for various user activities:
+    - **Recipe Creation**: First recipe, recipe milestones (1, 5, 10, 25, 50, 100)
+    - **Likes Received**: First like, like milestones (1, 5, 10, 25, 50, 100)
+    - **Tries Received**: First tried, tried milestones (1, 5, 10, 25, 50, 100)
+    - **Bookmarks Received**: Bookmark milestones (1, 5, 10, 25, 50, 100)
+  - **Role Badges**: User, Moderator, Admin with proper permissions
+  - **Special Badges**: Founding Member, Community Champion, Creative Chef, Helpful Helper
+  - **Beta User Badge**: Automatic award for early adopters
+  - Created BadgeService for centralized badge logic and management
+  - Added Badge and BadgeCollection UI components with tooltips and category grouping
+  - Implemented admin API endpoint for manual badge awarding
+  - Added user badge API endpoint for fetching user badges
+  - Integrated badge checking into all relevant API endpoints (recipes, votes, tried, bookmarks)
+  - Badge notifications sent to users when badges are earned
+  - Comprehensive badge seeding script with 40+ predefined badges
+  - Enhanced gamification with visual feedback and achievement tracking
 - **Content Reports and Admin Notifications Database Migration**
   - Migrated content reporting system from JSON files to PostgreSQL database
   - Added AdminNotification model to Prisma schema with proper relationships
@@ -14,117 +32,42 @@ All notable changes to the mtg-mods project will be documented in this file.
   - Improved concurrent access handling and transaction support
   - Added proper indexing for better query performance
 - **Beta Testers Sticky Link**
-  - Added prominent sticky link in top-right corner for beta tester feedback
-  - Integrated Google Forms link for easy feedback collection
-  - Implemented attractive gradient design with hover animations and pulsing icon
-  - Ensured link follows users as they scroll across all pages
-  - Added proper external link attributes for security and accessibility
-- **Recipe Attachments Feature**
-  - Added optional attachment fields (link name and URL) to recipe submission form
-  - Implemented Google Drive PDF link validation with user-friendly error messages
-  - Added automatic "physical" tag assignment when attachments are provided
-  - Created attachment display on recipe detail pages with descriptive text and icons
-  - Added attachment indicators on compact recipe cards with clever banner text
-  - Updated database schema to support attachmentName and attachmentUrl fields
-  - Enhanced recipe form validation to require link name when URL is provided
-- **Dynamic Open Graph Image Generation**
-  - Created `/api/og` route for server-side OG image generation using Next.js ImageResponse API
-  - Implemented 4 different OG image types with unique styling: Default (purple), Recipe (blue), Profile (dark), Learn (purple)
-  - Added dynamic content support with URL parameters for title, description, and type
-  - Updated all pages to use dynamic OG images instead of static logo.png
-  - Enhanced social media sharing with professional previews for Discord, Slack, Twitter, Facebook, LinkedIn
-- **Comprehensive SEO Optimization**
-  - Added canonical URLs to all pages using Next.js metadata alternates
-  - Implemented proper Open Graph and Twitter Card metadata across all pages
-  - Added structured data (JSON-LD) to homepage for better search engine understanding
-  - Enhanced sitemap to include profile pages with dynamic priority based on user activity
-  - Converted profile pages to server-side rendering for better SEO performance
-  - Added comprehensive metadata to all policy pages (Terms, Privacy, Community Guidelines)
-  - Implemented dynamic metadata generation for recipe detail pages with actual content
-  - Added proper alt text and image descriptions for all OG images
+  - Added prominent sticky link in top-right corner for beta tester feedback form
+  - Improved visibility and accessibility for beta testing feedback
+  - Enhanced user experience for early adopters
 
 ### Changed
-- **Metadata Architecture**
-  - Migrated from client-side Head components to Next.js 13+ metadata API
-  - Updated all pages to use server-side metadata generation
-  - Replaced static image references with dynamic OG image URLs
-  - Enhanced metadata structure with proper keywords, descriptions, and canonical URLs
-- **Profile Page Optimization**
-  - Converted profile pages from client-side to server-side rendering
-  - Added dynamic metadata generation based on user data (recipe count, bookmarks, etc.)
-  - Maintained client-side functionality for profile updates while improving SEO
-  - Added proper canonical URLs for each user profile
+- **Dashboard Notifications Filtering**
+  - Updated dashboard to only show unread notifications
+  - Notifications now disappear from sidebar after being dismissed
+  - Improved user experience by reducing notification clutter
+- **User Role System Enhancement**
+  - Updated User model to use proper UserRole enum instead of string
+  - Added isDisabled field to User model for better user management
+  - Enhanced role-based access control throughout the application
 
-### Technical
-- **Performance Improvements**
-  - Used Edge Runtime for fast OG image generation
-  - Implemented proper caching headers for OG images
-  - Optimized database queries for metadata generation
-  - Added proper error handling for missing content
-- **Code Quality**
-  - Removed deprecated client-side Head components
-  - Updated TypeScript interfaces for better type safety
-  - Improved error handling and fallback mechanisms
-  - Enhanced code organization and maintainability
-
-### Fixed
-- **Profile Page Recipe Stats Display Issues**
-  - Fixed recipe cards on profile pages not showing up-to-date vote and tried counts
-  - Replaced custom RecipeList implementation with standard RecipeCard component for consistency
-  - Updated profile page queries to include author information for proper RecipeCard display
-  - Ensured profile page recipe cards show attachment indicators and use correct slug-based URLs
-  - Improved consistency across all recipe card displays throughout the application
-- **Attachment Section Design Improvements**
-  - Made recipe attachment sections much less intrusive and more elegant
-  - Replaced large blue background boxes with subtle inline indicators in recipe headers
-  - Improved UX by reducing visual clutter while maintaining accessibility
-  - Enhanced overall design consistency and user experience
-- **Profile Image Upload and Display Issues**
-  - Fixed profile pictures not displaying correctly on profile cards
-  - Added profile image upload functionality with pencil icon for editing
-  - Replaced regular img tags with Next.js Image component for better performance
-  - Added fallback avatar with user initials when no profile picture is set
-  - Fixed Supabase client initialization in profile image upload API
-  - Added proper loading states and error handling for image uploads
-  - Improved UX with single pencil icon instead of multiple buttons
-- **Mobile UX Improvements**
-  - Fixed changelog mobile layout: version number now appears below type pill on smaller screens
-  - Updated all changelog dates to reflect 2025 timeline
-  - Added proper development and launch entries to show platform evolution
-  - Fixed mobile menu staying open after clicking links - menu now closes automatically
-  - Improved responsive design for better mobile experience
+### Technical Improvements
+- **Database Schema Updates**
+  - Added comprehensive badge system tables and relationships
+  - Enhanced user model with badge relationships and role improvements
+  - Improved data integrity with proper constraints and indexing
+- **API Enhancements**
+  - Added badge checking to all relevant user interaction endpoints
+  - Implemented admin badge management API
+  - Enhanced error handling and logging for badge operations
+- **UI Components**
+  - Created reusable Badge and BadgeCollection components
+  - Added tooltip support for badge information display
+  - Implemented category-based badge organization
+  - Enhanced visual feedback for user achievements
 
 ### Security
-- **CRITICAL**: Enabled Row Level Security (RLS) on all database tables
-  - Added comprehensive security policies for all tables to prevent unauthorized access
-  - Implemented user-specific access controls for personal data (profiles, bookmarks, votes, etc.)
-  - Added admin-only policies for sensitive operations (content moderation, user management)
-  - Created public read policies for shared content (recipes, tags, user profiles)
-  - Enhanced database security to comply with Supabase best practices
+- **Role-Based Badge Management**
+  - Manual badges can only be awarded by administrators
+  - Proper permission checking for badge operations
+  - Secure badge awarding with audit trail support
 
-### Added
-- Public changelog page with historical timeline view
-  - Created `/changelog` route with beautiful vertical timeline design
-  - Added comprehensive historical entries from platform launch to current version
-  - Implemented color-coded entry types (feature, improvement, fix, security)
-  - Added interactive hover effects and modern UI matching brand colors
-  - Included feedback section with contact link for user suggestions
-- Updated footer navigation
-  - Added "Changelog" link to Policies section in footer
-  - Renamed "Submit a Mod" to "Create a Recipe" for better clarity
-- Updated community guidelines to reflect implemented reporting system and ban criteria
-  - Added comprehensive content filtering system documentation
-  - Documented user strikes and banning system (2 strikes = automatic ban)
-  - Updated reporting system information with Report button functionality
-  - Added details about automated offensive content detection and evasion prevention
-  - Clarified consequences and enforcement procedures
-
-### Fixed
-- **CRITICAL**: Fixed infinite loop in user strikes API calls by implementing React Context for shared state
-  - Replaced individual `useUserBanned` hook calls with centralized `UserStrikesProvider`
-  - Eliminated multiple simultaneous API calls from Header, BannedUserBanner, StrikeWarningBanner, ReportContentButton, and RecipeInteractions components
-  - Added proper state management with `hasInitialized` flag to prevent redundant fetches
-  - Maintained backward compatibility with existing `useUserBanned` hook
+## [Previous Releases]
 
 ## [2025-07-29] - Content Reporting System and User Strikes Fix
 

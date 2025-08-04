@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 import { z } from 'zod';
+import { BadgeService } from '@/lib/badge-service';
 
 // Validation schema for voting (only positive votes allowed)
 const voteSchema = z.object({
@@ -65,6 +66,17 @@ export async function POST(
         value,
       },
     });
+
+    // Check and award badges for likes received by the recipe author
+    if (value === 1 && recipe.authorId !== session.user.id) {
+      try {
+        await BadgeService.checkLikeBadges(recipe.authorId);
+      } catch (badgeError) {
+        console.error('Error checking like badges:', badgeError);
+        // Don't fail the vote if badge checking fails
+      }
+    }
+
     return NextResponse.json(vote, { status: 200 });
   } catch (error) {
     console.error('Error voting on recipe:', error);

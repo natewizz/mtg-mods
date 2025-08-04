@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { BadgeService } from '@/lib/badge-service';
 
 // Add a bookmark
  
@@ -52,6 +53,16 @@ export async function POST(
         recipeId: recipeId,
       },
     });
+
+    // Check and award badges for bookmarks received by the recipe author
+    if (recipe.authorId !== session.user.id) {
+      try {
+        await BadgeService.checkBookmarkBadges(recipe.authorId);
+      } catch (badgeError) {
+        console.error('Error checking bookmark badges:', badgeError);
+        // Don't fail the bookmark action if badge checking fails
+      }
+    }
 
     return NextResponse.json(bookmark, { status: 200 });
   } catch (error) {

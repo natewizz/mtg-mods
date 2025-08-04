@@ -44,6 +44,13 @@ interface ChangelogEntry {
 const changelogData: ChangelogEntry[] = [
   {
     date: '2025-08-04',
+    version: 'v1.5.0',
+    title: 'User Badge System & Achievement Tracking',
+    description: 'Introduced a comprehensive badge system with automatic achievement tracking for recipe creation, likes, tries, and bookmarks. Users can now earn badges for milestones and special contributions. Enhanced gamification and user engagement.',
+    type: 'feature'
+  },
+  {
+    date: '2025-08-04',
     version: 'v1.4.2',
     title: 'Beta Testers Sticky Link & Enhanced Learn Page',
     description: 'Added prominent sticky link for beta tester feedback in top-right corner. Enhanced learn page with attachment-based recipe examples and better complexity guidance. Improved user onboarding and feedback collection.',
