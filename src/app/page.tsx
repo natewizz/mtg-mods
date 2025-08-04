@@ -14,6 +14,8 @@ type HomeRecipeWithRelations = {
   title: string;
   slug: string;
   instructions: string;
+  attachmentName: string | null;
+  attachmentUrl: string | null;
   createdAt: Date;
   updatedAt: Date;
   authorId: string;

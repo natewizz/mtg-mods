@@ -5,6 +5,14 @@ All notable changes to the mtg-mods project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- **Recipe Attachments Feature**
+  - Added optional attachment fields (link name and URL) to recipe submission form
+  - Implemented Google Drive PDF link validation with user-friendly error messages
+  - Added automatic "physical" tag assignment when attachments are provided
+  - Created attachment display on recipe detail pages with descriptive text and icons
+  - Added attachment indicators on compact recipe cards with clever banner text
+  - Updated database schema to support attachmentName and attachmentUrl fields
+  - Enhanced recipe form validation to require link name when URL is provided
 - **Dynamic Open Graph Image Generation**
   - Created `/api/og` route for server-side OG image generation using Next.js ImageResponse API
   - Implemented 4 different OG image types with unique styling: Default (purple), Recipe (blue), Profile (dark), Learn (purple)
@@ -46,6 +54,17 @@ All notable changes to the mtg-mods project will be documented in this file.
   - Enhanced code organization and maintainability
 
 ### Fixed
+- **Profile Page Recipe Stats Display Issues**
+  - Fixed recipe cards on profile pages not showing up-to-date vote and tried counts
+  - Replaced custom RecipeList implementation with standard RecipeCard component for consistency
+  - Updated profile page queries to include author information for proper RecipeCard display
+  - Ensured profile page recipe cards show attachment indicators and use correct slug-based URLs
+  - Improved consistency across all recipe card displays throughout the application
+- **Attachment Section Design Improvements**
+  - Made recipe attachment sections much less intrusive and more elegant
+  - Replaced large blue background boxes with subtle inline indicators in recipe headers
+  - Improved UX by reducing visual clutter while maintaining accessibility
+  - Enhanced overall design consistency and user experience
 - **Profile Image Upload and Display Issues**
   - Fixed profile pictures not displaying correctly on profile cards
   - Added profile image upload functionality with pencil icon for editing

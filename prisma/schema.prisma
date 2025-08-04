@@ -79,20 +79,22 @@ model Session {
 }
 
 model Recipe {
-  id           String      @id @default(cuid())
-  title        String
-  slug         String      @unique
-  instructions String      @db.Text
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  authorId     String
-  bookmarks    Bookmark[]
-  author       User        @relation(fields: [authorId], references: [id], map: "Recipe_authorId_User_fkey")
-  tags         RecipeTag[]
-  tried        Tried[]
-  votes        Vote[]
+  id             String      @id @default(cuid())
+  title          String
+  slug           String      @unique
+  instructions   String      @db.Text
+  attachmentName String?
+  attachmentUrl  String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  authorId       String
+  bookmarks      Bookmark[]
+  author         User        @relation(fields: [authorId], references: [id], map: "Recipe_authorId_User_fkey")
+  tags           RecipeTag[]
+  tried          Tried[]
+  votes          Vote[]
   contentReports ContentReport[]
-  strikes      UserStrike[]
+  strikes        UserStrike[]
 
   @@index([authorId], map: "Recipe_authorId_idx")
   @@map("Recipe")

@@ -15,8 +15,8 @@ export async function GET() {
     // Get tag usage counts
     const tagCounts = await prisma.$queryRaw`
       SELECT t.name, COUNT(rt.recipeId) as count
-      FROM Tag t
-      JOIN RecipeTag rt ON t.id = rt.tagId
+      FROM "Tag" t
+      JOIN "RecipeTag" rt ON t.id = rt.tagId
       GROUP BY t.name
       HAVING count >= 2
       ORDER BY count DESC
