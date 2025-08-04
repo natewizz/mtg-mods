@@ -44,6 +44,13 @@ interface ChangelogEntry {
 const changelogData: ChangelogEntry[] = [
   {
     date: '2025-08-04',
+    version: 'v1.3.1',
+    title: 'Profile Image Upload & Display Fixes',
+    description: 'Fixed profile pictures not displaying correctly and added profile image upload functionality. Users can now easily upload and edit their profile pictures with a simple pencil icon.',
+    type: 'fix'
+  },
+  {
+    date: '2025-08-04',
     version: 'v1.3.0',
     title: 'Dynamic Open Graph Images & SEO Optimization',
     description: 'Implemented dynamic Open Graph image generation for beautiful social media previews. Added comprehensive SEO optimization with canonical URLs, structured data, and enhanced metadata across all pages.',

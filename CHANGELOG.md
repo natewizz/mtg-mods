@@ -46,6 +46,14 @@ All notable changes to the mtg-mods project will be documented in this file.
   - Enhanced code organization and maintainability
 
 ### Fixed
+- **Profile Image Upload and Display Issues**
+  - Fixed profile pictures not displaying correctly on profile cards
+  - Added profile image upload functionality with pencil icon for editing
+  - Replaced regular img tags with Next.js Image component for better performance
+  - Added fallback avatar with user initials when no profile picture is set
+  - Fixed Supabase client initialization in profile image upload API
+  - Added proper loading states and error handling for image uploads
+  - Improved UX with single pencil icon instead of multiple buttons
 - **Mobile UX Improvements**
   - Fixed changelog mobile layout: version number now appears below type pill on smaller screens
   - Updated all changelog dates to reflect 2025 timeline
