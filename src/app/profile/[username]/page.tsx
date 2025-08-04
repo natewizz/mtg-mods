@@ -6,9 +6,7 @@ import ProfileCard from "@/components/user/ProfileCard";
 import ProfileTabs from "@/components/user/ProfileTabs";
 import StrikeWarningBanner from "@/components/user/StrikeWarningBanner";
 import BannedUserBanner from "@/components/user/BannedUserBanner";
-import type { User as PrismaUser } from "@prisma/client";
 import type { RecipeWithStats } from "@/components/user/RecipeList";
-import { SessionUser } from "@/lib/auth/types";
 
 interface ProfilePageProps {
   params: Promise<{ username: string }>;
@@ -89,7 +87,7 @@ export async function generateMetadata({ params }: ProfilePageProps): Promise<Me
   }
 }
 
-async function getProfileData(username: string, currentUserId?: string) {
+async function getProfileData(username: string) {
   try {
     const user = await prisma.user.findUnique({
       where: { username },
@@ -185,7 +183,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   const session = await auth();
   const currentUserId = session?.user?.id;
 
-  const profileData = await getProfileData(username, currentUserId);
+  const profileData = await getProfileData(username);
 
   if (!profileData) {
     notFound();

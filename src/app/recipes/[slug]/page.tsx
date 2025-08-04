@@ -81,7 +81,6 @@ export async function generateMetadata({ params }: RecipePageProps): Promise<Met
     // Generate description from instructions (first 160 chars)
     const description = stripHtml(recipe.instructions).slice(0, 160);
     const authorName = recipe.author.username || recipe.author.name || 'Anonymous';
-    const tags = recipe.tags.map(tag => tag.name).join(', ');
 
     return {
       title: `${recipe.title} | MTG Mods`,
@@ -254,34 +253,7 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
   const totalVotes = recipe._count.votes;
   const totalTried = recipe._count.tried;
 
-  // Utility to strip HTML tags from instructions
-  function stripHtml(html: string): string {
-    if (!html) return '';
-    return html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
-  }
 
-  // Generate description from instructions (first 160 chars)
-  const description = stripHtml(recipe.instructions).slice(0, 160);
-
-  // Canonical URL for this recipe
-  const canonicalUrl = `https://www.mtgmods.xyz/recipes/${slug}`;
-
-  // Default image (update if you add per-recipe images)
-  const imageUrl = 'https://www.mtgmods.xyz/logo.png';
-
-  // Build JSON-LD structured data
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Recipe',
-    name: recipe.title,
-    author: {
-      '@type': 'Person',
-      name: recipe.author.username || recipe.author.name || 'Anonymous',
-    },
-    datePublished: recipe.createdAt.toISOString(),
-    recipeInstructions: stripHtml(recipe.instructions),
-    keywords: recipe.tags.map((tag: { id: string; name: string }) => tag.name).join(', '),
-  };
 
   return (
     <>

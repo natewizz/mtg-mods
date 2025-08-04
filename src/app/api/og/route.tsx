@@ -19,25 +19,20 @@ export async function GET(request: NextRequest) {
   };
 
   // Create different layouts based on type
-  let layout = 'default';
   let bgColor = colors.primary;
-  let textColor = colors.white;
+  const textColor = colors.white;
 
   switch (type) {
     case 'recipe':
-      layout = 'recipe';
       bgColor = colors.accent;
       break;
     case 'profile':
-      layout = 'profile';
       bgColor = colors.dark;
       break;
     case 'learn':
-      layout = 'learn';
       bgColor = colors.primary;
       break;
     default:
-      layout = 'default';
       bgColor = colors.primary;
   }
 

@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import Image from "next/image";
 import type { User as PrismaUser } from "@prisma/client";
-import { SessionUser } from "@/lib/auth/types";
 
 interface ProfileCardProps {
   user: PrismaUser;
@@ -12,14 +11,16 @@ interface ProfileCardProps {
   onUpdate?: (data: Partial<PrismaUser>) => Promise<void>;
 }
 
-export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCardProps) {
+export default function ProfileCard({ user, isCurrentUser }: ProfileCardProps) {
   const router = useRouter();
-  const { data: session } = useSession();
   const [isEditing, setIsEditing] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: user.name || "",
     username: user.username || "",
-    website: user.website || "",
+    linkUrl: user.linkUrl || "",
+    linkText: user.linkText || "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +42,7 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
         throw new Error(errorData.error || 'Failed to update profile');
       }
       
-      const updatedUser = await response.json();
+      await response.json();
       
       // If username was changed, redirect to the new profile URL
       if (data.username && data.username !== user.username) {
@@ -57,6 +58,39 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
     }
   };
 
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setUploadError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(`/api/users/${user.id}/profile-image`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to upload image');
+      }
+
+      await response.json();
+      
+      // Refresh the page to show the new image
+      router.refresh();
+    } catch (err) {
+      console.error('Error uploading image:', err);
+      setUploadError(err instanceof Error ? err.message : 'Failed to upload image');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -65,7 +99,7 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
     try {
       await handleProfileUpdate(formData);
       setIsEditing(false);
-    } catch (err) {
+    } catch {
       // Error is already set in handleProfileUpdate
     } finally {
       setIsSubmitting(false);
@@ -76,7 +110,8 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
     setFormData({
       name: user.name || "",
       username: user.username || "",
-      website: user.website || "",
+      linkUrl: user.linkUrl || "",
+      linkText: user.linkText || "",
     });
     setError(null);
     setIsEditing(false);
@@ -93,30 +128,54 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
       <div className="flex items-start justify-between mb-6">
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <img
-              src={user.image || "/images/logo.png"}
-              alt={`${displayName}'s profile`}
-              className="w-20 h-20 rounded-full object-cover border-4 border-[var(--primary)]/20"
-            />
+            {user.image ? (
+              <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-[var(--primary)]/20">
+                <Image 
+                  src={user.image}
+                  alt={`${displayName}'s profile`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-[var(--primary)]/20 flex items-center justify-center border-4 border-[var(--primary)]/20">
+                <span className="text-2xl font-bold text-[var(--primary)]">
+                  {displayName.charAt(0).toUpperCase()}
+                </span>
+              </div>
+            )}
+            
             {isCurrentUser && (
-              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-[var(--primary)] rounded-full flex items-center justify-center">
-                <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
-                </svg>
+              <div className="absolute -bottom-1 -right-1">
+                <label htmlFor="profile-image-upload" className="cursor-pointer">
+                  <div className="w-6 h-6 bg-[var(--primary)] rounded-full flex items-center justify-center hover:bg-[var(--primary)]/80 transition-colors">
+                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </div>
+                </label>
+                <input
+                  id="profile-image-upload"
+                  type="file"
+                  accept="image/jpeg,image/png"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  disabled={isUploading}
+                />
               </div>
             )}
           </div>
           <div>
             <h1 className="text-2xl font-bold text-[var(--dark)]">{displayName}</h1>
             <p className="text-gray-500">Member since {memberSince}</p>
-            {user.website && (
+            {user.linkUrl && (
               <a
-                href={user.website.startsWith('http') ? user.website : `https://${user.website}`}
+                href={user.linkUrl.startsWith('http') ? user.linkUrl : `https://${user.linkUrl}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[var(--primary)] hover:underline text-sm"
               >
-                {user.website}
+                {user.linkText || user.linkUrl}
               </a>
             )}
           </div>
@@ -131,6 +190,20 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
           </button>
         )}
       </div>
+
+      {/* Upload Error Message */}
+      {uploadError && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+          {uploadError}
+        </div>
+      )}
+
+      {/* Upload Loading State */}
+      {isUploading && (
+        <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded mb-4">
+          Uploading image...
+        </div>
+      )}
 
       {isEditing && (
         <form onSubmit={handleSubmit} className="space-y-4 mb-6">
@@ -173,16 +246,30 @@ export default function ProfileCard({ user, isCurrentUser, onUpdate }: ProfileCa
           </div>
           
           <div>
-            <label htmlFor="website" className="block text-sm font-medium text-gray-700 mb-1">
-              Website (optional)
+            <label htmlFor="linkUrl" className="block text-sm font-medium text-gray-700 mb-1">
+              Website URL (optional)
             </label>
             <input
               type="url"
-              id="website"
-              value={formData.website}
-              onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+              id="linkUrl"
+              value={formData.linkUrl}
+              onChange={(e) => setFormData({ ...formData, linkUrl: e.target.value })}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
               placeholder="https://yourwebsite.com"
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="linkText" className="block text-sm font-medium text-gray-700 mb-1">
+              Link Text (optional)
+            </label>
+            <input
+              type="text"
+              id="linkText"
+              value={formData.linkText}
+              onChange={(e) => setFormData({ ...formData, linkText: e.target.value })}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
+              placeholder="My Website"
             />
           </div>
           
