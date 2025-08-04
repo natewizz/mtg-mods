@@ -44,6 +44,13 @@ interface ChangelogEntry {
 const changelogData: ChangelogEntry[] = [
   {
     date: '2025-08-04',
+    version: 'v1.4.0',
+    title: 'Recipe Attachments & Profile Stats Fix',
+    description: 'Added recipe attachments feature allowing users to link Google Drive PDFs to their recipes. Fixed profile page recipe stats to show real-time vote and tried counts. Improved consistency across all recipe card displays.',
+    type: 'feature'
+  },
+  {
+    date: '2025-08-04',
     version: 'v1.3.1',
     title: 'Profile Image Upload & Display Fixes',
     description: 'Fixed profile pictures not displaying correctly and added profile image upload functionality. Users can now easily upload and edit their profile pictures with a simple pencil icon.',
