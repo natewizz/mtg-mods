@@ -44,6 +44,13 @@ interface ChangelogEntry {
 const changelogData: ChangelogEntry[] = [
   {
     date: '2025-08-04',
+    version: 'v1.4.1',
+    title: 'Improved Attachment Design & Database Fixes',
+    description: 'Made recipe attachment sections much less intrusive and more elegant. Fixed database issues with UserStrike table and tag queries. Enhanced overall design consistency and user experience.',
+    type: 'improvement'
+  },
+  {
+    date: '2025-08-04',
     version: 'v1.4.0',
     title: 'Recipe Attachments & Profile Stats Fix',
     description: 'Added recipe attachments feature allowing users to link Google Drive PDFs to their recipes. Fixed profile page recipe stats to show real-time vote and tried counts. Improved consistency across all recipe card displays.',

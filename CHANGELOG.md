@@ -60,6 +60,11 @@ All notable changes to the mtg-mods project will be documented in this file.
   - Updated profile page queries to include author information for proper RecipeCard display
   - Ensured profile page recipe cards show attachment indicators and use correct slug-based URLs
   - Improved consistency across all recipe card displays throughout the application
+- **Attachment Section Design Improvements**
+  - Made recipe attachment sections much less intrusive and more elegant
+  - Replaced large blue background boxes with subtle inline indicators in recipe headers
+  - Improved UX by reducing visual clutter while maintaining accessibility
+  - Enhanced overall design consistency and user experience
 - **Profile Image Upload and Display Issues**
   - Fixed profile pictures not displaying correctly on profile cards
   - Added profile image upload functionality with pencil icon for editing
