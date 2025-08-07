@@ -44,6 +44,13 @@ interface ChangelogEntry {
 const changelogData: ChangelogEntry[] = [
   {
     date: '2025-08-04',
+    version: 'v1.6.0',
+    title: 'UX Improvements & Newsletter Integration',
+    description: 'Enhanced user experience with clickable author names for better community discovery, optimized homepage banner layout, and added newsletter subscription functionality. Improved content reporting guidance and terminology consistency.',
+    type: 'improvement'
+  },
+  {
+    date: '2025-08-04',
     version: 'v1.5.0',
     title: 'User Badge System & Achievement Tracking',
     description: 'Introduced a comprehensive badge system with automatic achievement tracking for recipe creation, likes, tries, and bookmarks. Users can now earn badges for milestones and special contributions. Enhanced gamification and user engagement.',
