@@ -52,9 +52,10 @@ export default async function DashboardPage() {
   const _last1Day = subDays(now, 1);
   const months = Array.from({ length: 12 }, (_, i) => format(addMonths(startOfMonth(subMonths(now, 11 - i)), 0), 'yyyy-MM'));
   const days = Array.from({ length: 30 }, (_, i) => format(addDays(last30Days, i), 'yyyy-MM-dd'));
-  const weeks = Array.from({ length: 12 }, (_, i) => format(addDays(last30Days, i * 7), 'yyyy-ww'));
 
-  // KPIs and advanced metrics
+  // KPIs and advanced metrics - BATCHED for better connection pool management
+  
+  // Batch 1: Core KPIs (fast queries)
   const [
     userCount,
     recipeCount,
@@ -62,43 +63,6 @@ export default async function DashboardPage() {
     bookmarkCount,
     triedCount,
     activeUserCount,
-    userGrowth,
-    recipeGrowth,
-    tagDistribution,
-    topUsersByRecipes,
-    topUsersByLikes,
-    topUsersByBookmarks,
-    topRecipesByLikes,
-    topRecipesByBookmarks,
-    topRecipesByTried,
-    dailyActiveUsers,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _weeklyActiveUsers,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _retention1d,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _retention7d,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _retention30d,
-    mostActiveUsers,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _recipesPerDay,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _recipesPerWeek,
-    recipesMostContributors,
-    interactionsPerDay,
-    interactionRate,
-    recipesNoInteractions,
-    signupsByProvider,
-    churnedUsers,
-    newVsReturning,
-    recipesMostEdits,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _mostCommentedRecipes,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _contentReports,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _contentReportsByStatus
   ] = await Promise.all([
     prisma.user.count(),
     prisma.recipe.count(),
@@ -114,6 +78,10 @@ export default async function DashboardPage() {
         ],
       },
     }),
+  ]);
+
+  // Batch 2: Growth metrics (time-based aggregations)
+  const [userGrowth, recipeGrowth] = await Promise.all([
     // User growth (last 12 months)
     Promise.all(months.map(month => {
       const [year, m] = month.split('-');
@@ -138,6 +106,15 @@ export default async function DashboardPage() {
         },
       });
     })),
+  ]);
+
+  // Batch 3: Tag and user rankings
+  const [
+    tagDistribution,
+    topUsersByRecipes,
+    topUsersByLikes,
+    topUsersByBookmarks,
+  ] = await Promise.all([
     // Tag distribution (pie chart)
     prisma.recipeTag.groupBy({
       by: ['name'],
@@ -191,6 +168,16 @@ export default async function DashboardPage() {
         },
       },
     }),
+  ]);
+
+  // Batch 4: Recipe rankings
+  const [
+    topRecipesByLikes,
+    topRecipesByBookmarks,
+    topRecipesByTried,
+    recipesMostContributors,
+    recipesMostEdits,
+  ] = await Promise.all([
     // Top 5 recipes by likes
     prisma.recipe.findMany({
       orderBy: { votes: { _count: 'desc' } },
@@ -209,6 +196,36 @@ export default async function DashboardPage() {
       take: 5,
       select: { id: true, title: true, tried: true, author: { select: { name: true, username: true, image: true } } },
     }),
+    // Recipes with most unique contributors (votes/bookmarks/tried)
+    prisma.recipe.findMany({
+      take: 5,
+      orderBy: [
+        { votes: { _count: 'desc' } },
+        { bookmarks: { _count: 'desc' } },
+        { tried: { _count: 'desc' } },
+      ],
+      select: {
+        id: true,
+        title: true,
+        votes: { select: { userId: true } },
+        bookmarks: { select: { userId: true } },
+        tried: { select: { userId: true } },
+      },
+    }),
+    // Recipes with most edits/updates
+    prisma.recipe.findMany({
+      orderBy: { updatedAt: 'desc' },
+      take: 5,
+      select: { id: true, title: true, updatedAt: true, author: { select: { name: true, username: true } } },
+    }),
+  ]);
+
+  // Batch 5: Activity metrics and daily aggregations
+  const [
+    dailyActiveUsers,
+    interactionsPerDay,
+    mostActiveUsers,
+  ] = await Promise.all([
     // Daily active users (last 30 days)
     Promise.all(days.map(day => {
       const start = new Date(day);
@@ -225,57 +242,17 @@ export default async function DashboardPage() {
         },
       });
     })),
-    // Weekly active users (last 12 weeks)
-    Promise.all(weeks.map(week => {
-      const [year, weekNum] = week.split('-');
-      const start = startOfWeekISO(year, weekNum);
-      const end = addDays(start, 7);
-      return prisma.user.count({
-        where: {
-          OR: [
-            { emailVerified: { gte: start, lt: end } },
-            { recipes: { some: { createdAt: { gte: start, lt: end } } } },
-            { votes: { some: { createdAt: { gte: start, lt: end } } } },
-            { bookmarks: { some: { createdAt: { gte: start, lt: end } } } },
-            { tried: { some: { createdAt: { gte: start, lt: end } } } },
-          ],
-        },
-      });
+    // Total interactions per day (last 30 days)
+    Promise.all(days.map(async day => {
+      const start = new Date(day);
+      const end = addDays(start, 1);
+      const [votes, bookmarks, tried] = await Promise.all([
+        prisma.vote.count({ where: { createdAt: { gte: start, lt: end } } }),
+        prisma.bookmark.count({ where: { createdAt: { gte: start, lt: end } } }),
+        prisma.tried.count({ where: { createdAt: { gte: start, lt: end } } }),
+      ]);
+      return votes + bookmarks + tried;
     })),
-    // User retention (1, 7, 30 days)
-    prisma.user.count({
-      where: {
-        emailVerified: { gte: subDays(now, 31), lt: subDays(now, 30) },
-        OR: [
-          { recipes: { some: { createdAt: { gte: subDays(now, 30) } } } },
-          { votes: { some: { createdAt: { gte: subDays(now, 30) } } } },
-          { bookmarks: { some: { createdAt: { gte: subDays(now, 30) } } } },
-          { tried: { some: { createdAt: { gte: subDays(now, 30) } } } },
-        ],
-      },
-    }),
-    prisma.user.count({
-      where: {
-        emailVerified: { gte: subDays(now, 8), lt: subDays(now, 7) },
-        OR: [
-          { recipes: { some: { createdAt: { gte: subDays(now, 7) } } } },
-          { votes: { some: { createdAt: { gte: subDays(now, 7) } } } },
-          { bookmarks: { some: { createdAt: { gte: subDays(now, 7) } } } },
-          { tried: { some: { createdAt: { gte: subDays(now, 7) } } } },
-        ],
-      },
-    }),
-    prisma.user.count({
-      where: {
-        emailVerified: { gte: subDays(now, 2), lt: subDays(now, 1) },
-        OR: [
-          { recipes: { some: { createdAt: { gte: subDays(now, 1) } } } },
-          { votes: { some: { createdAt: { gte: subDays(now, 1) } } } },
-          { bookmarks: { some: { createdAt: { gte: subDays(now, 1) } } } },
-          { tried: { some: { createdAt: { gte: subDays(now, 1) } } } },
-        ],
-      },
-    }),
     // Most active users (last 30d)
     prisma.user.findMany({
       take: 5,
@@ -304,50 +281,16 @@ export default async function DashboardPage() {
         tried: { select: { id: true } },
       },
     }),
-    // Recipes created per day (last 30 days)
-    Promise.all(days.map(day => {
-      const start = new Date(day);
-      const end = addDays(start, 1);
-      return prisma.recipe.count({
-        where: { createdAt: { gte: start, lt: end } },
-      });
-    })),
-    // Recipes created per week (last 12 weeks)
-    Promise.all(weeks.map(week => {
-      const [year, weekNum] = week.split('-');
-      const start = startOfWeekISO(year, weekNum);
-      const end = addDays(start, 7);
-      return prisma.recipe.count({
-        where: { createdAt: { gte: start, lt: end } },
-      });
-    })),
-    // Recipes with most unique contributors (votes/bookmarks/tried)
-    prisma.recipe.findMany({
-      take: 5,
-      orderBy: [
-        { votes: { _count: 'desc' } },
-        { bookmarks: { _count: 'desc' } },
-        { tried: { _count: 'desc' } },
-      ],
-      select: {
-        id: true,
-        title: true,
-        votes: { select: { userId: true } },
-        bookmarks: { select: { userId: true } },
-        tried: { select: { userId: true } },
-      },
-    }),
-    // Total interactions per day (last 30 days)
-    Promise.all(days.map(async day => {
-      const start = new Date(day);
-      const end = addDays(start, 1);
-      const [votes, bookmarks, tried] = await Promise.all([
-        prisma.vote.count({ where: { createdAt: { gte: start, lt: end } } }),
-        prisma.bookmark.count({ where: { createdAt: { gte: start, lt: end } } }),
-        prisma.tried.count({ where: { createdAt: { gte: start, lt: end } } }),
-      ]);
-      return votes + bookmarks + tried;
-    })),
+  ]);
+
+  // Batch 6: Final metrics and metadata
+  const [
+    interactionRate,
+    recipesNoInteractions,
+    signupsByProvider,
+    churnedUsers,
+    newVsReturning,
+  ] = await Promise.all([
     // Interaction rate (avg per recipe)
     (async () => {
       const [votes, bookmarks, tried, recipes] = await Promise.all([
@@ -400,33 +343,9 @@ export default async function DashboardPage() {
       });
       return { newUsers, returningUsers };
     })(),
-    // Recipes with most edits/updates
-    prisma.recipe.findMany({
-      orderBy: { updatedAt: 'desc' },
-      take: 5,
-      select: { id: true, title: true, updatedAt: true, author: { select: { name: true, username: true } } },
-    }),
-    // Most commented recipes (if comments exist)
-    Promise.resolve([]),
-    // Content reports (placeholder for now)
-    Promise.resolve([]),
-    // Content reports count by status (placeholder for now)
-    Promise.resolve([])
   ]);
 
-  // Helper for ISO week start
-  function startOfWeekISO(year: string, week: string) {
-    const y = Number(year);
-    const w = parseInt(week);
-    const simple = new Date(y, 0, 1 + (w - 1) * 7);
-    const dow = simple.getDay();
-    const ISOweekStart = simple;
-    if (dow <= 4)
-      ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
-    else
-      ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
-    return ISOweekStart;
-  }
+
 
   // Prepare data for charts
   const userGrowthData = months.map((month, i) => ({ month, count: userGrowth[i] }));

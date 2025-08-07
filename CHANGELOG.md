@@ -2,6 +2,23 @@
 
 All notable changes to the mtg-mods project will be documented in this file.
 
+## [2025-08-07] - Dashboard Performance Fix and Database Optimization
+
+### Fixed
+- **Dashboard Connection Pool Timeouts**
+  - Resolved Prisma connection pool timeout errors (P2024) on production dashboard
+  - Increased connection pool limit from 5 to 20 connections for better concurrent query handling
+  - Extended pool timeout from 10 to 60 seconds for complex analytics queries
+  - Implemented query batching to reduce concurrent database load from 100+ to 6 sequential batches
+  - Optimized dashboard query execution to prevent connection pool exhaustion
+
+### Technical
+- Enhanced Prisma client configuration with optimized connection pool settings
+- Restructured dashboard queries into logical batches to improve resource utilization
+- Reduced peak concurrent database connections during dashboard load
+
+---
+
 ## [2025-08-07] - Progressive Badges, Special Badge Attribution, and UX Polish
 
 ### Added
