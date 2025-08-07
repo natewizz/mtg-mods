@@ -2,6 +2,49 @@
 
 All notable changes to the mtg-mods project will be documented in this file.
 
+## [2025-08-04] - UX Improvements and Newsletter Integration
+
+### Added
+- **Newsletter Subscription System**
+  - Created `/api/newsletter` endpoint for email subscription management
+  - Integrated newsletter signup with existing WaitlistSignup database table
+  - Added comprehensive form validation and error handling
+  - Implemented loading states and user feedback for subscription process
+  - Added source tracking to distinguish newsletter subscriptions from other signups
+  - Enhanced footer with real-time subscription feedback and success/error messages
+
+### Changed
+- **Author Name Links for User Discovery**
+  - Made all author names clickable links to user profiles across the application
+  - Updated RecipeCard component (both compact and full versions) with profile links
+  - Enhanced individual recipe pages with clickable author names
+  - Updated dashboard RecipeCell component with author profile links
+  - Added proper hover states and styling for author links
+  - Implemented smart link generation (only for users with usernames)
+  - Improved user discovery and community engagement through profile navigation
+- **Homepage Banner Optimization**
+  - Reduced banner padding from `py-24` to `py-16` for more compact design
+  - Reorganized button layout: moved "Join Kickstarter Waitlist" below primary action buttons
+  - Adjusted spacing and visual hierarchy for better user flow
+  - Made primary actions ("Explore Recipes" and "Get Started") more prominent
+  - Reduced Kickstarter button size for better visual balance
+- **Footer Link Updates**
+  - Changed "Browse Mods" to "Browse Recipes" for terminology consistency
+  - Updated contact page FAQ with new content reporting process
+  - Enhanced reporting FAQ with step-by-step instructions and 24-hour timeline
+  - Improved user guidance for content moderation and community standards
+
+### Technical Improvements
+- **API Enhancements**
+  - Added newsletter subscription endpoint with email validation
+  - Implemented duplicate prevention for newsletter subscriptions
+  - Enhanced error handling and user feedback for subscription process
+- **UI/UX Enhancements**
+  - Added Link import to dashboard page for author profile links
+  - Implemented proper loading states and form validation
+  - Enhanced visual feedback with success/error message styling
+  - Improved responsive design and mobile experience
+
 ## [2025-08-04] - User Badge System and Database Migration
 
 ### Added

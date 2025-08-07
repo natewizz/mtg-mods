@@ -191,7 +191,7 @@ export default function Home() {
       <main className="min-h-screen">
         <WaitlistModal isOpen={waitlistOpen} onClose={() => setWaitlistOpen(false)} />
         {/* Hero section with animated gradient background */}
-        <div className="gradient-bg py-24 relative overflow-hidden">
+        <div className="gradient-bg py-16 relative overflow-hidden">
           <div className="absolute inset-0 bg-[rgba(0,0,0,0.2)]"></div>
           <div className="absolute w-60 h-60 rounded-full bg-[var(--primary)]/30 -top-10 -left-10 blur-3xl"></div>
           <div className="absolute w-60 h-60 rounded-full bg-[var(--accent)]/30 -bottom-10 -right-10 blur-3xl"></div>
@@ -202,24 +202,24 @@ export default function Home() {
                 <span className="block">MTG MODS</span>
                 <span className="block text-3xl md:text-4xl mt-2 text-[var(--accent)]/90">Reimagine the game</span>
               </h1>
-              <p className="text-xl md:text-2xl max-w-3xl mx-auto mb-12 text-white/80">
+              <p className="text-xl md:text-2xl max-w-3xl mx-auto mb-8 text-white/80">
                 Discover innovative game and rule modifications for Magic: The Gathering that transform how you play
               </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4 mb-6">
-                <button
-                  className="transition-all duration-200 bg-gradient-to-r from-[#FF8661] to-[#5A31F4] text-white font-extrabold py-4 px-8 rounded-full shadow-xl text-xl tracking-wider border-4 border-white hover:scale-110 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-[#5A31F4] focus:ring-offset-2 animate-bounce-slow"
-                  onClick={() => setWaitlistOpen(true)}
-                >
-                  Join Kickstarter Waitlist
-                </button>
-              </div>
-              <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
+              <div className="flex flex-col sm:flex-row justify-center gap-4 mb-4">
                 <Link href="/recipes" className="btn-primary btn-shine rounded-full text-center">
                   Explore Recipes
                 </Link>
                 <Link href="/auth/signin" className="btn-contrast btn-shine rounded-full text-center">
                   Get Started
                 </Link>
+              </div>
+              <div className="flex justify-center">
+                <button
+                  className="transition-all duration-200 bg-gradient-to-r from-[#FF8661] to-[#5A31F4] text-white font-extrabold py-3 px-6 rounded-full shadow-xl text-lg tracking-wider border-4 border-white hover:scale-110 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-[#5A31F4] focus:ring-offset-2 animate-bounce-slow"
+                  onClick={() => setWaitlistOpen(true)}
+                >
+                  Join Kickstarter Waitlist
+                </button>
               </div>
             </div>
           </div>

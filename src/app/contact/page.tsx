@@ -234,8 +234,15 @@ export default function ContactPage() {
           <div>
             <h3 className="text-lg font-medium text-[#5A31F4]">How can I report inappropriate content?</h3>
             <p className="mt-2">
-              If you encounter content that violates our Community Guidelines, please use the report feature 
-              on the specific content, or contact us at support@mtgmods.xyz with details about the content in question.
+              We have a comprehensive reporting system to maintain community standards. To report content that violates our Community Guidelines:
+            </p>
+            <ul className="mt-2 list-disc pl-6 space-y-1">
+              <li>Click the &quot;Report&quot; button on any recipe page</li>
+              <li>Provide a reason for your report</li>
+              <li>Our moderation team will review and take appropriate action within 24 hours</li>
+            </ul>
+            <p className="mt-2">
+              For additional concerns or questions about our moderation process, please contact us at mtgmodsofficial@gmail.com.
             </p>
           </div>
         </div>
