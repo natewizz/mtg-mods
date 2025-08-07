@@ -2,7 +2,34 @@
 
 All notable changes to the mtg-mods project will be documented in this file.
 
-## [2025-08-04] - UX Improvements and Newsletter Integration
+## [2025-08-07] - Progressive Badges, Special Badge Attribution, and UX Polish
+
+### Added
+- **Progressive Badge System (Visual + Logic)**
+  - Higher milestone badges now replace lower ones (show only highest achieved)
+  - Bronze → Silver → Gold → Platinum → Diamond visual tiers for milestone badges
+  - Tooltips show tier info and progression level
+- **Achievement Badge Indicators**
+  - Clear "🏆 Permanent Achievement" label on first-time badges (first recipe/like/tried)
+  - Subtle green ring to distinguish permanent achievements
+- **Maintenance Script**
+  - Added `scripts/update-progressive-badges.js` to retroactively clean up lower milestone badges
+
+### Changed
+- **Special Badges Attribution**
+  - Always display "Awarded by MTG Mods" when the awarding user is not set
+  - Default `awardedBy` to MTG Mods for system-awarded badges
+- **Badge Display**
+  - Only highest milestone per progression group is shown in user collections
+
+### Technical
+- Updated `BadgeService` with progressive groups, replacement logic, and filtered display
+- Enhanced `Badge` and `BadgeCollection` components to support tier visuals and labels
+- Updated retroactive award script to set proper `awardedBy`
+
+---
+
+## [2025-08-07] - UX Improvements and Newsletter Integration
 
 ### Added
 - **Newsletter Subscription System**
