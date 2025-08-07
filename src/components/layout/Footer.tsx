@@ -37,7 +37,7 @@ export default function Footer() {
         setMessage(data.error || 'Something went wrong. Please try again.');
         setMessageType('error');
       }
-    } catch (error) {
+    } catch {
       setMessage('Something went wrong. Please try again.');
       setMessageType('error');
     } finally {

@@ -237,7 +237,7 @@ export default function ContactPage() {
               We have a comprehensive reporting system to maintain community standards. To report content that violates our Community Guidelines:
             </p>
             <ul className="mt-2 list-disc pl-6 space-y-1">
-              <li>Click the "Report" button on any recipe page</li>
+              <li>Click the &quot;Report&quot; button on any recipe page</li>
               <li>Provide a reason for your report</li>
               <li>Our moderation team will review and take appropriate action within 24 hours</li>
             </ul>
