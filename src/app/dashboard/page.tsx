@@ -14,6 +14,7 @@ import UserStrikes from '@/components/admin/UserStrikes';
 import AdminNotifications from '@/components/admin/AdminNotifications';
 import BadgeManager from '@/components/admin/BadgeManager';
 import Image from 'next/image';
+import Link from 'next/link';
 
 // User type for dashboard tables
 interface DashboardUser {
@@ -578,7 +579,15 @@ function RecipeCell({ recipe }: { recipe: DashboardRecipe }) {
     <div>
       <span className="font-medium">{recipe.title}</span>
       {recipe.author && (
-        <span className="ml-2 text-xs text-gray-500">by {recipe.author.username || recipe.author.name}</span>
+        <span className="ml-2 text-xs text-gray-500">
+          by {recipe.author.username ? (
+            <Link href={`/profile/${recipe.author.username}`} className="hover:text-[#5A31F4] hover:underline">
+              {recipe.author.username || recipe.author.name}
+            </Link>
+          ) : (
+            recipe.author.username || recipe.author.name
+          )}
+        </span>
       )}
     </div>
   );

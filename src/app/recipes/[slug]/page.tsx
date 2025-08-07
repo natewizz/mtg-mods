@@ -288,7 +288,13 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6">
                 <div className="flex items-center">
                   <span className="font-medium">By</span>
-                  <span className="ml-1">{recipe.author.username || recipe.author.name || 'Anonymous'}</span>
+                  {recipe.author.username ? (
+                    <Link href={`/profile/${recipe.author.username}`} className="ml-1 hover:text-[#5A31F4] hover:underline">
+                      {recipe.author.username || recipe.author.name || 'Anonymous'}
+                    </Link>
+                  ) : (
+                    <span className="ml-1">{recipe.author.username || recipe.author.name || 'Anonymous'}</span>
+                  )}
                 </div>
                 
                 <div>

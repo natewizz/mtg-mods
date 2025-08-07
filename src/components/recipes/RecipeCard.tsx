@@ -38,6 +38,10 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
   // Generate the recipe URL using the slug
   const recipeUrl = `/recipes/${recipe.slug}`;
 
+  // Generate the author profile URL
+  const authorName = recipe.author.username || recipe.author.name || 'Anonymous';
+  const authorUrl = recipe.author.username ? `/profile/${recipe.author.username}` : null;
+
   // Strip HTML tags from instructions for preview (server-side only)
   const stripHtml = (html: string): string => {
     if (!html) return '';
@@ -100,7 +104,13 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
         )}
         
         <div className="flex justify-between items-center text-xs text-gray-500 mt-auto pt-2 border-t border-gray-100">
-          <span className="truncate max-w-[60%]">{recipe.author.username || recipe.author.name || 'Anonymous'}</span>
+          {authorUrl ? (
+            <Link href={authorUrl} className="truncate max-w-[60%] hover:text-[#5A31F4] hover:underline">
+              {authorName}
+            </Link>
+          ) : (
+            <span className="truncate max-w-[60%]">{authorName}</span>
+          )}
           
           <div className="flex items-center space-x-3 flex-shrink-0">
             <div className="flex items-center">
@@ -163,7 +173,13 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
       <div className="flex justify-between items-center text-sm text-gray-500 mt-auto">
         <div className="flex items-center">
           <span className="font-medium mr-1">By</span>
-          <span>{recipe.author.username || recipe.author.name || 'Anonymous'}</span>
+          {authorUrl ? (
+            <Link href={authorUrl} className="hover:text-[#5A31F4] hover:underline">
+              {authorName}
+            </Link>
+          ) : (
+            <span>{authorName}</span>
+          )}
         </div>
         
         <div className="flex items-center space-x-4">
