@@ -11,12 +11,38 @@ export default function Footer() {
   // Popular tags from the plan document
   const popularTags = ['commander', 'combo', 'tokens', 'multiplayer', 'budget-friendly'];
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState<'success' | 'error'>('success');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // This would connect to your newsletter service in production
-    console.log('Newsletter signup:', email);
-    setEmail('');
-    // Would show success message in production
+    setIsSubmitting(true);
+    setMessage('');
+    
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMessage(data.message);
+        setMessageType('success');
+        setEmail('');
+      } else {
+        setMessage(data.error || 'Something went wrong. Please try again.');
+        setMessageType('error');
+      }
+    } catch (error) {
+      setMessage('Something went wrong. Please try again.');
+      setMessageType('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
   return (
@@ -84,7 +110,7 @@ export default function Footer() {
             <h4 className="font-semibold text-lg mb-4 text-[#FF8661]">Resources</h4>
             <ul className="space-y-2">
               <li><Link href="/learn" className="text-gray-300 hover:text-white transition">Learn</Link></li>
-              <li><Link href="/recipes" className="text-gray-300 hover:text-white transition">Browse Mods</Link></li>
+              <li><Link href="/recipes" className="text-gray-300 hover:text-white transition">Browse Recipes</Link></li>
               <li><Link href="/contact" className="text-gray-300 hover:text-white transition">Contact Us</Link></li>
               <li><Link href="/recipes/new" className="text-gray-300 hover:text-white transition">Create a Recipe</Link></li>
               <li><Link href="/policies/community" className="text-gray-300 hover:text-white transition">Community</Link></li>
@@ -104,14 +130,26 @@ export default function Footer() {
                 placeholder="Your email address"
                 className="px-4 py-2 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#5A31F4]"
                 required
+                disabled={isSubmitting}
               />
               <button
                 type="submit"
-                className="px-4 py-2 bg-[#5A31F4] hover:bg-[#4921D8] rounded font-medium transition-colors"
+                disabled={isSubmitting}
+                className="px-4 py-2 bg-[#5A31F4] hover:bg-[#4921D8] rounded font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Subscribe
+                {isSubmitting ? 'Subscribing...' : 'Subscribe'}
               </button>
             </form>
+            
+            {message && (
+              <div className={`mt-3 p-2 rounded text-sm ${
+                messageType === 'success' 
+                  ? 'bg-green-900/20 text-green-300 border border-green-700' 
+                  : 'bg-red-900/20 text-red-300 border border-red-700'
+              }`}>
+                {message}
+              </div>
+            )}
             
             <div className="mt-6">
               <h5 className="font-medium mb-2 text-[#FFC145]">Popular Tags</h5>
