@@ -78,6 +78,7 @@ export default function BadgeCollection({
             earnedAt={badge.earnedAt}
             awardedBy={badge.awardedBy}
             size={size}
+            badgeName={badge.badge.name}
           />
         ))}
         {hasMore && (
@@ -112,6 +113,7 @@ export default function BadgeCollection({
                   earnedAt={badge.earnedAt}
                   awardedBy={badge.awardedBy}
                   size={size}
+                  badgeName={badge.badge.name}
                 />
               ))}
               {categoryHasMore && (

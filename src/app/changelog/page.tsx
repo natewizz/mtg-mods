@@ -43,7 +43,14 @@ interface ChangelogEntry {
 
 const changelogData: ChangelogEntry[] = [
   {
-    date: '2025-08-04',
+    date: '2025-08-07',
+    version: 'v1.7.0',
+    title: 'Progressive Badges, Special Badge Attribution, and UX Polish',
+    description: 'Implemented progressive badge replacement (show only highest milestone), added bronze→diamond visual tiers, and clear “Permanent Achievement” labeling for first-time badges. Ensured special badges always show Awarded by MTG Mods and added a maintenance script to retroactively clean up lower milestone badges.',
+    type: 'improvement'
+  },
+  {
+    date: '2025-08-07',
     version: 'v1.6.0',
     title: 'UX Improvements & Newsletter Integration',
     description: 'Enhanced user experience with clickable author names for better community discovery, optimized homepage banner layout, and added newsletter subscription functionality. Improved content reporting guidance and terminology consistency.',

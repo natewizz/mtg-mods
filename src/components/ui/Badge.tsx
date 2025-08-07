@@ -16,6 +16,7 @@ interface BadgeProps {
   showTooltip?: boolean;
   className?: string;
   useSvg?: boolean; // New prop to use SVG instead of emoji
+  badgeName?: string; // Add badge name for progression detection
 }
 
 export default function Badge({
@@ -28,7 +29,8 @@ export default function Badge({
   size = 'md',
   showTooltip = true,
   className = '',
-  useSvg = false
+  useSvg = false,
+  badgeName
 }: BadgeProps) {
   const [showTooltipState, setShowTooltipState] = useState(false);
 
@@ -38,8 +40,55 @@ export default function Badge({
     lg: 'w-12 h-12 text-lg'
   };
 
-  // Enhanced color classes with gradients and effects
+  // Detect if this is a progressive badge and get its tier
+  const getProgressiveTier = (badgeName?: string) => {
+    if (!badgeName) return null;
+    
+    const progressiveGroups = {
+      'recipe': ['recipe-1', 'recipe-5', 'recipe-10', 'recipe-25', 'recipe-50', 'recipe-100'],
+      'likes': ['likes-1', 'likes-5', 'likes-10', 'likes-25', 'likes-50', 'likes-100'],
+      'tried': ['tried-1', 'tried-5', 'tried-10', 'tried-25', 'tried-50', 'tried-100'],
+      'bookmarks': ['bookmarks-1', 'bookmarks-5', 'bookmarks-10', 'bookmarks-25', 'bookmarks-50', 'bookmarks-100']
+    };
+
+    for (const [groupKey, badges] of Object.entries(progressiveGroups)) {
+      const index = badges.indexOf(badgeName);
+      if (index !== -1) {
+        return { group: groupKey, tier: index, total: badges.length };
+      }
+    }
+    
+    return null;
+  };
+
+  const progressiveTier = getProgressiveTier(badgeName);
+
+  // Enhanced color classes with progression-based styling
   const getColorClasses = (baseColor: string) => {
+    // If it's a progressive badge, use tier-based styling
+    if (progressiveTier) {
+      const { tier, total } = progressiveTier;
+      const progress = tier / (total - 1); // 0 to 1
+      
+      if (progress <= 0.2) {
+        // Bronze tier (first 20%)
+        return 'bg-gradient-to-br from-amber-600 to-amber-800 shadow-amber-600/30 border-amber-500';
+      } else if (progress <= 0.4) {
+        // Silver tier (20-40%)
+        return 'bg-gradient-to-br from-gray-400 to-gray-600 shadow-gray-400/30 border-gray-300';
+      } else if (progress <= 0.6) {
+        // Gold tier (40-60%)
+        return 'bg-gradient-to-br from-yellow-400 to-yellow-600 shadow-yellow-400/30 border-yellow-300';
+      } else if (progress <= 0.8) {
+        // Platinum tier (60-80%)
+        return 'bg-gradient-to-br from-slate-300 to-slate-500 shadow-slate-300/30 border-slate-200';
+      } else {
+        // Diamond tier (80-100%)
+        return 'bg-gradient-to-br from-cyan-400 to-cyan-600 shadow-cyan-400/30 border-cyan-300';
+      }
+    }
+
+    // Fallback to original color mapping for non-progressive badges
     const colorMap: Record<string, string> = {
       'bg-gray-500': 'bg-gradient-to-br from-gray-400 to-gray-600 shadow-gray-500/20',
       'bg-blue-500': 'bg-gradient-to-br from-blue-400 to-blue-600 shadow-blue-500/20',
@@ -77,18 +126,53 @@ export default function Badge({
     return colorMap[baseColor] || baseColor;
   };
 
+  // Get progression indicator for tooltip
+  const getProgressionIndicator = () => {
+    if (!progressiveTier) return null;
+    
+    const { tier, total } = progressiveTier;
+    const progress = tier / (total - 1);
+    
+    if (progress <= 0.2) return '🥉 Bronze';
+    if (progress <= 0.4) return '🥈 Silver';
+    if (progress <= 0.6) return '🥇 Gold';
+    if (progress <= 0.8) return '💎 Platinum';
+    return '💠 Diamond';
+  };
+
+  // Check if this is an achievement badge (non-progressive, permanent)
+  const isAchievementBadge = badgeName && (
+    badgeName === 'first-recipe' || 
+    badgeName === 'first-like' || 
+    badgeName === 'first-tried'
+  );
+
   const tooltipContent = (
     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg whitespace-nowrap z-50 border border-gray-700">
       <div className="font-semibold text-white">{displayName}</div>
+      {progressiveTier && (
+        <div className="text-yellow-400 text-xs mt-1 font-medium">
+          {getProgressionIndicator()} • Tier {progressiveTier.tier + 1} of {progressiveTier.total}
+        </div>
+      )}
+      {isAchievementBadge && (
+        <div className="text-green-400 text-xs mt-1 font-medium">
+          🏆 Permanent Achievement
+        </div>
+      )}
       <div className="text-gray-300 text-xs mt-1">{description}</div>
       {earnedAt && (
         <div className="text-gray-400 text-xs mt-1">
           Earned {new Date(earnedAt).toLocaleDateString()}
         </div>
       )}
-      {awardedBy && (
+      {awardedBy && (awardedBy.name || awardedBy.username) ? (
         <div className="text-gray-400 text-xs">
           Awarded by {awardedBy.name || awardedBy.username}
+        </div>
+      ) : (
+        <div className="text-gray-400 text-xs">
+          Awarded by MTG Mods
         </div>
       )}
       <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
@@ -115,8 +199,10 @@ export default function Badge({
           transition-all 
           duration-200 
           cursor-pointer
-          border-2 border-white/20
+          border-2
           backdrop-blur-sm
+          ${progressiveTier ? 'animate-pulse' : ''}
+          ${isAchievementBadge ? 'ring-2 ring-green-400/50' : ''}
         `}
         title={showTooltip ? undefined : `${displayName}: ${description}`}
       >
