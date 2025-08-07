@@ -239,7 +239,7 @@ export class BadgeService {
         data: {
           userId,
           badgeId: badge.id,
-          awardedBy
+          awardedBy: awardedBy || 'MTG Mods'
         }
       });
 

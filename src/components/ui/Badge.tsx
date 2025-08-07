@@ -166,9 +166,13 @@ export default function Badge({
           Earned {new Date(earnedAt).toLocaleDateString()}
         </div>
       )}
-      {awardedBy && (
+      {awardedBy && (awardedBy.name || awardedBy.username) ? (
         <div className="text-gray-400 text-xs">
           Awarded by {awardedBy.name || awardedBy.username}
+        </div>
+      ) : (
+        <div className="text-gray-400 text-xs">
+          Awarded by MTG Mods
         </div>
       )}
       <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
