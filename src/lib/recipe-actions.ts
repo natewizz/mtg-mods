@@ -136,9 +136,9 @@ async function _getTrendingRecipes({
 
   // Calculate activity score with weighted factors
   const recipesWithActivity = recipes.map(recipe => {
-    const votes = recipe._count.votes || 0;
-    const bookmarks = recipe._count.bookmarks || 0;
-    const tried = recipe._count.tried || 0;
+    const votes = recipe._count?.votes || 0;
+    const bookmarks = recipe._count?.bookmarks || 0;
+    const tried = recipe._count?.tried || 0;
     
     // Weighted scoring: votes (3x), tried (2x), bookmarks (1x)
     // This gives more importance to actual engagement (votes and tries) over saves
