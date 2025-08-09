@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getSession, getCurrentUserId } from '@/lib/auth/get-session';
 import { z } from 'zod';
 import { slugify } from '@/lib/utils';
-import { getLatestRecipes } from '@/lib/recipe-actions';
+import { getLatestRecipes, getTrendingRecipes } from '@/lib/recipe-actions';
 import { revalidateTag } from 'next/cache';
 import { validateRecipeContent } from '@/lib/content-filter';
 import { BadgeService } from '@/lib/badge-service';
@@ -134,11 +134,19 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const latest = searchParams.get('latest');
+    const trending = searchParams.get('trending');
     
     // If latest parameter is provided, return latest recipes
     if (latest) {
       const count = parseInt(latest, 10) || 4;
       const recipes = await getLatestRecipes(count);
+      return NextResponse.json(recipes);
+    }
+    
+    // If trending parameter is provided, return trending recipes
+    if (trending) {
+      const count = parseInt(trending, 10) || 4;
+      const recipes = await getTrendingRecipes({ take: count });
       return NextResponse.json(recipes);
     }
     

@@ -122,7 +122,9 @@ export default function Home() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [latestRecipes, setLatestRecipes] = useState<HomeRecipeWithRelations[]>([]);
+  const [trendingRecipes, setTrendingRecipes] = useState<HomeRecipeWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
+  const [trendingLoading, setTrendingLoading] = useState(true);
   const [waitlistOpen, setWaitlistOpen] = useState(false);
 
   useEffect(() => {
@@ -151,7 +153,21 @@ export default function Home() {
       }
     };
 
+    const fetchTrendingRecipes = async () => {
+      try {
+        const response = await fetch('/api/recipes?trending=4');
+        const recipes = await response.json();
+        const processedRecipes = recipes.map(toRecipeWithRelations);
+        setTrendingRecipes(processedRecipes);
+      } catch (error) {
+        console.error('Error fetching trending recipes:', error);
+      } finally {
+        setTrendingLoading(false);
+      }
+    };
+
     fetchLatestRecipes();
+    fetchTrendingRecipes();
   }, []);
 
   // Structured data for the homepage
@@ -243,7 +259,7 @@ export default function Home() {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                   {latestRecipes.map((recipe) => (
-                    <RecipeCard key={recipe.id} recipe={toRecipeWithRelations(recipe)} />
+                    <RecipeCard key={recipe.id} recipe={toRecipeWithRelations(recipe)} compact={true} />
                   ))}
                 </div>
                 
@@ -251,6 +267,30 @@ export default function Home() {
                   <RandomRecipeButton />
                 </div>
               </>
+            )}
+          </div>
+        </div>
+        
+        {/* Trending Recipes Section */}
+        <div className="pt-16 pb-6 bg-[#F1F3FA]">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-3xl font-bold text-[#2C2E3A]">Trending Recipes</h2>
+              <Link href="/recipes" className="text-[#5A31F4] hover:underline font-semibold">
+                View All →
+              </Link>
+            </div>
+            
+            {trendingLoading ? (
+              <div className="flex justify-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5A31F4]"></div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {trendingRecipes.map((recipe) => (
+                  <RecipeCard key={recipe.id} recipe={toRecipeWithRelations(recipe)} compact={true} />
+                ))}
+              </div>
             )}
           </div>
         </div>
