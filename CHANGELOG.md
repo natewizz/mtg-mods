@@ -2,6 +2,39 @@
 
 All notable changes to the mtg-mods project will be documented in this file.
 
+## [2025-01-15] - Homepage Layout Improvements and Trending Recipes
+
+### Added
+- **Trending Recipes Section**
+  - Added new "Trending Recipes" section to homepage below "Latest Recipes"
+  - Implemented trending algorithm that considers likes (3x weight), tries (2x weight), and bookmarks (1x weight)
+  - Displays 4 trending recipes in the same card format as latest recipes
+  - Added proper loading states and error handling for trending recipes
+- **Enhanced Recipe Discovery**
+  - Moved random recipe button to its own section below both Latest and Trending recipes
+  - Improved layout flow: Latest → Trending → Random for better user experience
+  - Maintained tight spacing throughout all sections for cohesive design
+
+### Changed
+- **Homepage Layout Structure**
+  - Reorganized homepage sections for better content flow and user engagement
+  - Removed download links from compact recipe cards to prevent title text overlap
+  - Updated Latest Recipes section to use compact card format for consistent design
+  - Adjusted spacing between sections for tighter, more cohesive layout
+- **Recipe Card Design**
+  - Softened attachment indicators on recipe cards to be less intrusive
+  - Implemented paper clip icon + "Download" text for cleaner attachment display
+  - Maintained functionality while improving visual design
+
+### Technical
+- Enhanced `getTrendingRecipes` function with weighted scoring algorithm
+- Updated API route to support `?trending=4` query parameter
+- Improved Prisma queries with proper `_count` aggregation for likes, tries, and bookmarks
+- Added robust error handling with optional chaining for activity score calculations
+- Maintained responsive design across all new sections
+
+---
+
 ## [2025-01-15] - Comprehensive FAQ Page
 
 ### Added

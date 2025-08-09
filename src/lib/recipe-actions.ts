@@ -95,6 +95,7 @@ async function _getTrendingRecipes({
   take = 8,
   skip = 0,
 }: { take?: number; skip?: number } = {}) {
+  // Fetch more recipes to allow for better sorting by activity
   const recipes = await prisma.recipe.findMany({
     select: {
       id: true,
@@ -128,20 +129,28 @@ async function _getTrendingRecipes({
         },
       },
     },
-    orderBy: {
-      createdAt: 'desc'
-    },
-    take: take * 2, // Fetch more to allow for sorting
+    // Don't order by date initially - let the activity score do the sorting
+    take: take * 4, // Fetch more to allow for better sorting
     skip,
   });
 
-  // Client-side sorting by activity score (more efficient than complex Prisma queries)
-  const recipesWithActivity = recipes.map(recipe => ({
-    ...recipe,
-    activityScore: recipe._count.votes + recipe._count.bookmarks + recipe._count.tried
-  }));
+  // Calculate activity score with weighted factors
+  const recipesWithActivity = recipes.map(recipe => {
+    const votes = recipe._count?.votes || 0;
+    const bookmarks = recipe._count?.bookmarks || 0;
+    const tried = recipe._count?.tried || 0;
+    
+    // Weighted scoring: votes (3x), tried (2x), bookmarks (1x)
+    // This gives more importance to actual engagement (votes and tries) over saves
+    const activityScore = (votes * 3) + (tried * 2) + bookmarks;
+    
+    return {
+      ...recipe,
+      activityScore
+    };
+  });
 
-  // Sort by activity score and return top results
+  // Sort by activity score (highest first) and return top results
   return recipesWithActivity
     .sort((a, b) => b.activityScore - a.activityScore)
     .slice(0, take);
