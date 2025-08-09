@@ -2,6 +2,35 @@
 
 All notable changes to the mtg-mods project will be documented in this file.
 
+## [2025-01-15] - Comprehensive FAQ Page
+
+### Added
+- **Robust FAQ Page**
+  - Created comprehensive FAQ page at `/faq` route with organized sections
+  - Added 25+ frequently asked questions covering all aspects of the platform
+  - Implemented category-based navigation with smooth scrolling to sections
+  - Organized FAQ content into logical categories: General, Account & User Management, Recipe Creation & Management, Community & Interaction, Badges & Achievements, Technical & Support, Privacy & Security
+  - Added contact section at bottom for additional support
+  - Implemented responsive design with mobile-friendly navigation
+- **FAQ Navigation Integration**
+  - Added FAQ link to main navigation (desktop and mobile)
+  - Positioned FAQ link between Learn and Contact for logical flow
+  - Maintained consistent styling with existing navigation items
+
+### Changed
+- **Navigation Structure**
+  - Updated Header component to include FAQ link in both desktop and mobile menus
+  - Ensured proper mobile menu functionality with FAQ link integration
+
+### Technical
+- Created new FAQ page with TypeScript interfaces and proper metadata
+- Implemented category-based FAQ organization with dynamic filtering
+- Added SEO-optimized metadata including OpenGraph and Twitter cards
+- Ensured accessibility with proper heading structure and semantic HTML
+- Fixed ESLint issues with proper HTML entity escaping
+
+---
+
 ## [2025-01-15] - Recipe Attachment Indicators and Copy Link Functionality
 
 ### Added

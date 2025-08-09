@@ -44,6 +44,13 @@ interface ChangelogEntry {
 const changelogData: ChangelogEntry[] = [
   {
     date: '2025-08-09',
+    version: 'v1.9.0',
+    title: 'Comprehensive FAQ Page',
+    description: 'Added a robust FAQ page with 25+ frequently asked questions organized into logical categories. Implemented category-based navigation with smooth scrolling, responsive design, and comprehensive coverage of platform features, user accounts, recipe creation, community guidelines, and technical support.',
+    type: 'feature'
+  },
+  {
+    date: '2025-08-09',
     version: 'v1.8.0',
     title: 'Recipe Attachment Indicators & Copy Link Functionality',
     description: 'Added prominent attachment indicators to individual recipe pages for immediate visibility, positioned alongside copy link buttons. Implemented soft, non-intrusive attachment indicators on recipe cards with paper clip icons and "Download" text. Enhanced user experience with easy recipe sharing through copy link functionality.',
