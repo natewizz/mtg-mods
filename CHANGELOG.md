@@ -2,6 +2,38 @@
 
 All notable changes to the mtg-mods project will be documented in this file.
 
+## [2025-01-15] - Recipe Attachment Indicators and Copy Link Functionality
+
+### Added
+- **Recipe Attachment Indicators**
+  - Added prominent attachment indicators to individual recipe pages (e.g., `/recipes/eras-deck`)
+  - Positioned attachment indicators in the top row next to copy link buttons for immediate visibility
+  - Enhanced attachment styling with blue background, white text, and hover effects for better UX
+  - Implemented soft, non-intrusive attachment indicators on recipe cards with paper clip icon and "Download" text
+- **Copy Link Functionality**
+  - Added copy link buttons to recipe cards for easy sharing
+  - Created `RecipeCopyLinkButton` component for recipe-specific URL copying
+  - Integrated copy link functionality with proper URL generation and user feedback
+  - Positioned copy link buttons alongside attachment indicators for consistent UI
+
+### Changed
+- **Recipe Page Layout**
+  - Restructured individual recipe page header to accommodate attachment indicators and copy link buttons
+  - Moved attachment indicators from bottom metadata section to top row for better visibility
+  - Improved layout with flexbox design for proper alignment and spacing
+- **Recipe Card Design**
+  - Updated recipe cards to include soft attachment indicators and copy link buttons
+  - Softened attachment indicator styling to be less intrusive while maintaining functionality
+  - Maintained responsive design and proper spacing across all card variants
+
+### Technical
+- Created new `RecipeCopyLinkButton` client component for recipe-specific copy functionality
+- Enhanced `RecipeCard` component with attachment indicators and copy link integration
+- Updated individual recipe page layout for better attachment visibility and user experience
+- Implemented proper TypeScript types and interfaces for new components
+
+---
+
 ## [2025-08-07] - Dashboard Performance Fix and Database Optimization
 
 ### Fixed
