@@ -43,10 +43,17 @@ interface ChangelogEntry {
 
 const changelogData: ChangelogEntry[] = [
   {
+    date: '2025-08-09',
+    version: 'v1.8.0',
+    title: 'Recipe Attachment Indicators & Copy Link Functionality',
+    description: 'Added prominent attachment indicators to individual recipe pages for immediate visibility, positioned alongside copy link buttons. Implemented soft, non-intrusive attachment indicators on recipe cards with paper clip icons and "Download" text. Enhanced user experience with easy recipe sharing through copy link functionality.',
+    type: 'feature'
+  },
+  {
     date: '2025-08-07',
     version: 'v1.7.0',
     title: 'Progressive Badges, Special Badge Attribution, and UX Polish',
-    description: 'Implemented progressive badge replacement (show only highest milestone), added bronze→diamond visual tiers, and clear “Permanent Achievement” labeling for first-time badges. Ensured special badges always show Awarded by MTG Mods and added a maintenance script to retroactively clean up lower milestone badges.',
+    description: 'Implemented progressive badge replacement (show only highest milestone), added bronze→diamond visual tiers, and clear "Permanent Achievement" labeling for first-time badges. Ensured special badges always show Awarded by MTG Mods and added a maintenance script to retroactively clean up lower milestone badges.',
     type: 'improvement'
   },
   {
