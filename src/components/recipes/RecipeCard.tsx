@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Recipe, Vote, Tried } from '@prisma/client';
 import TagPill from '@/components/ui/TagPill';
 import ReportContentButton from './ReportContentButton';
+import RecipeCopyLinkButton from './RecipeCopyLinkButton';
 
 type RecipeWithRelations = Recipe & {
   author: {
@@ -70,9 +71,33 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
     // Compact version for trending recipes
     return (
       <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-3 min-h-[140px] h-full flex flex-col">
-        <Link href={recipeUrl}>
-          <h2 className="text-sm font-semibold mb-2 text-[var(--dark)] line-clamp-2 leading-tight hover:text-[#5A31F4]">{recipe.title}</h2>
-        </Link>
+        {/* Top row with title, copy link button, and attachment */}
+        <div className="flex items-start justify-between mb-2">
+          <Link href={recipeUrl} className="flex-1 min-w-0">
+            <h2 className="text-sm font-semibold text-[var(--dark)] line-clamp-2 leading-tight hover:text-[#5A31F4] pr-2">{recipe.title}</h2>
+          </Link>
+          
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Attachment indicator - softened and less intrusive */}
+            {recipe.attachmentName && recipe.attachmentUrl && (
+              <a
+                href={recipe.attachmentUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 px-2 py-1 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded transition-colors"
+                title={recipe.attachmentName}
+              >
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                </svg>
+                Download
+              </a>
+            )}
+            
+            {/* Copy Link Button */}
+            <RecipeCopyLinkButton recipeUrl={recipeUrl} />
+          </div>
+        </div>
         
         {/* Display tags if available */}
         {recipe.tags && recipe.tags.length > 0 && (
@@ -88,18 +113,6 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
             {recipe.tags.length > 2 && (
               <span className="text-xs text-gray-400">+{recipe.tags.length - 2}</span>
             )}
-          </div>
-        )}
-        
-        {/* Attachment indicator */}
-        {recipe.attachmentName && recipe.attachmentUrl && (
-          <div className="mb-2">
-            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">
-              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-              </svg>
-              📎 Attachment
-            </span>
           </div>
         )}
         
@@ -142,9 +155,33 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
   // Full version for regular recipes with preview
   return (
     <div className="card hover:shadow-lg transition-shadow min-h-[240px] h-full flex flex-col">
-      <Link href={recipeUrl}>
-        <h2 className="text-lg font-bold mb-2 text-[var(--dark)] hover:text-[#5A31F4]">{recipe.title}</h2>
-      </Link>
+      {/* Top row with title, copy link button, and attachment */}
+      <div className="flex items-start justify-between mb-2">
+        <Link href={recipeUrl} className="flex-1 min-w-0">
+          <h2 className="text-lg font-bold text-[var(--dark)] hover:text-[#5A31F4] pr-2">{recipe.title}</h2>
+        </Link>
+        
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Attachment indicator - softened and less intrusive */}
+          {recipe.attachmentName && recipe.attachmentUrl && (
+            <a
+              href={recipe.attachmentUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 px-2 py-1 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded transition-colors"
+              title={recipe.attachmentName}
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+              </svg>
+              Download
+            </a>
+          )}
+          
+          {/* Copy Link Button */}
+          <RecipeCopyLinkButton recipeUrl={recipeUrl} />
+        </div>
+      </div>
       
       {/* Recipe preview */}
       {previewText && (
