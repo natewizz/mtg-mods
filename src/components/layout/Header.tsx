@@ -137,9 +137,6 @@ export default function Header() {
             <Link href="/learn" className="hover-underline font-medium text-dark hover:text-primary transition-colors">
               Learn
             </Link>
-            <Link href="/faq" className="hover-underline font-medium text-dark hover:text-primary transition-colors">
-              FAQ
-            </Link>
             <Link href="/contact" className="hover-underline font-medium text-dark hover:text-primary transition-colors">
               Contact
             </Link>
@@ -239,9 +236,6 @@ export default function Header() {
             </Link>
             <Link href="/learn" className="hover:text-primary transition-colors" onClick={handleMobileLinkClick}>
               Learn
-            </Link>
-            <Link href="/faq" className="hover:text-primary transition-colors" onClick={handleMobileLinkClick}>
-              FAQ
             </Link>
             <Link href="/contact" className="hover:text-primary transition-colors" onClick={handleMobileLinkClick}>
               Contact
