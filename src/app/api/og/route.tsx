@@ -5,7 +5,7 @@ export const runtime = 'edge';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const title = searchParams.get('title') || 'MTG Mods';
+  const title = searchParams.get('title') || 'Cantripped';
   const description = searchParams.get('description') || 'Magic: The Gathering Rule Variants & Community';
   const type = searchParams.get('type') || 'default';
 
@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
               letterSpacing: '2px',
             }}
           >
-            MTG MODS
+            CANTRIPPED
           </div>
         </div>
 

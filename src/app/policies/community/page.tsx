@@ -36,7 +36,7 @@ export default function CommunityGuidelines() {
     <div className="prose prose-lg mx-auto max-w-4xl">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-[#5A31F4] mb-4">Community Guidelines</h1>
-        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+        <p className="text-gray-700 mb-6 leading-relaxed">
           Cantripped is a community-driven platform for sharing and discovering Magic: The Gathering
           rule modifications. These guidelines help us maintain a positive, inclusive environment
           where everyone can contribute and learn.
@@ -47,7 +47,7 @@ export default function CommunityGuidelines() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Our Community Values</h2>
           <p>
-            MTG Mods is a community-driven platform for sharing and discovering Magic: The Gathering 
+            Cantripped is a community-driven platform for sharing and discovering Magic: The Gathering 
             rule modifications. We aim to foster a creative, respectful, and inclusive environment where 
             players of all backgrounds can share ideas to enhance their MTG experience.
           </p>
@@ -87,9 +87,9 @@ export default function CommunityGuidelines() {
         </section>
         
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">3. Prohibited Content</h2>
-          <p>
-            The following types of content are not allowed on MTG Mods:
+          <h3 className="text-xl font-semibold mb-4 text-[#5A31F4]">Prohibited Content</h3>
+          <p className="text-gray-700 mb-4">
+            The following types of content are not allowed on Cantripped:
           </p>
           <ul className="list-disc pl-6">
             <li>Hate speech, discrimination, or content that targets individuals based on their identity</li>
@@ -118,7 +118,7 @@ export default function CommunityGuidelines() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">5. Inclusivity</h2>
           <p>
-            MTG Mods is for everyone who loves Magic: The Gathering, regardless of experience level, 
+            Cantripped is for everyone who loves Magic: The Gathering, regardless of experience level, 
             background, or identity. We strive to be welcoming to all community members.
           </p>
           <ul className="list-disc pl-6">

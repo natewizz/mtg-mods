@@ -102,7 +102,7 @@ function generateSitemap() {
 }
 
 async function main() {
-  console.log('🗺️  MTG Mods Sitemap Generator');
+  console.log('🗺️  Cantripped Sitemap Generator');
   console.log('================================');
   
   const startTime = Date.now();

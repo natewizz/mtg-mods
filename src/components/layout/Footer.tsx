@@ -55,7 +55,7 @@ export default function Footer() {
               <div className="relative h-10 w-10">
                 <Image 
                   src="/images/logo.png" 
-                  alt="MTG Mods Logo" 
+                  alt="Cantripped Logo" 
                   width={40} 
                   height={40} 
                   className="object-contain"

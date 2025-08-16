@@ -4,6 +4,7 @@ import RecipeCard from '@/components/recipes/RecipeCard';
 import RecipeFiltersWrapper from './RecipeFiltersWrapper';
 import { getFilteredRecipes, getPopularTags, preloadFilteredRecipes, preloadPopularTags } from '@/lib/recipe-actions';
 import { SortOption } from '@/components/recipes/RecipeFilters';
+import { Metadata } from 'next';
 
 export default async function RecipesPage({ searchParams }: { searchParams: Promise<{ tags?: string; sort?: SortOption }> }) {
   const resolvedSearchParams = await searchParams;
@@ -68,35 +69,35 @@ export default async function RecipesPage({ searchParams }: { searchParams: Prom
   );
 }
 
-export const metadata = {
-  title: "All MTG Mods Recipes – Magic: The Gathering Rule Variants",
+export const metadata: Metadata = {
+  title: "All Cantripped Recipes – Magic: The Gathering Rule Variants",
   description: "Browse all Magic: The Gathering rule modifications, custom formats, and community-created game variants. Filter by tags and discover trending recipes.",
   keywords: [
-    "Magic the Gathering", "MTG", "recipes", "rule variants", "custom rules", "game mods", "community", "trending", "deck building"
+    "Magic the Gathering", "MTG", "recipes", "rule modifications", "game variants", "custom rules", "community", "Cantripped"
   ],
   alternates: {
-    canonical: 'https://www.mtgmods.xyz/recipes',
+    canonical: 'https://www.cantripped.com/recipes',
   },
   openGraph: {
-    title: "All MTG Mods Recipes – Magic: The Gathering Rule Variants",
+    title: "All Cantripped Recipes – Magic: The Gathering Rule Variants",
     description: "Browse all Magic: The Gathering rule modifications, custom formats, and community-created game variants. Filter by tags and discover trending recipes.",
-    url: "https://www.mtgmods.xyz/recipes",
-    siteName: "MTG Mods",
+    url: "https://www.cantripped.com/recipes",
+    siteName: "Cantripped",
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=All%20MTG%20Mods%20Recipes&description=Browse%20all%20Magic%3A%20The%20Gathering%20rule%20modifications%2C%20custom%20formats%2C%20and%20community-created%20game%20variants&type=recipe`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=All%20Cantripped%20Recipes&description=Browse%20all%20Magic%3A%20The%20Gathering%20rule%20modifications%2C%20custom%20formats%2C%20and%20community-created%20game%20variants&type=default`,
         width: 1200,
         height: 630,
-        alt: "All MTG Mods Recipes - Magic: The Gathering Rule Variants"
+        alt: "All Cantripped Recipes - Magic: The Gathering Rule Variants"
       }
     ],
     locale: "en_US",
-    type: "website"
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "All MTG Mods Recipes – Magic: The Gathering Rule Variants",
+    title: "All Cantripped Recipes – Magic: The Gathering Rule Variants",
     description: "Browse all Magic: The Gathering rule modifications, custom formats, and community-created game variants. Filter by tags and discover trending recipes.",
-    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=All%20MTG%20Mods%20Recipes&description=Browse%20all%20Magic%3A%20The%20Gathering%20rule%20modifications%2C%20custom%20formats%2C%20and%20community-created%20game%20variants&type=recipe`]
+    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=All%20Cantripped%20Recipes&description=Browse%20all%20Magic%3A%20The%20Gathering%20rule%20modifications%2C%20custom%20formats%2C%20and%20community-created%20game%20variants&type=default`]
   }
 };

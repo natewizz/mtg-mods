@@ -10,7 +10,7 @@ const badges = [
   {
     name: 'user',
     displayName: 'User',
-    description: 'A member of the MTG Mods community',
+    description: 'A member of the Cantripped community',
     icon: '👤',
     color: 'bg-gray-500',
     category: 'ROLE',

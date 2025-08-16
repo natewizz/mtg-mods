@@ -51,10 +51,10 @@ export default function LearnPage() {
         <div className="bg-white rounded-xl shadow-md p-8 mb-10">
           <h2 className="text-3xl font-bold text-[#2C2E3A] mb-6">What is an MTG Recipe?</h2>
           
-          <p className="text-gray-700 mb-6 leading-relaxed">
-            In the context of MTG Mods, a <strong>recipe</strong> is a set of custom rule modifications or game variants
+          <p className="text-lg text-gray-600 mb-8">
+            In the context of Cantripped, a <strong>recipe</strong> is a set of custom rule modifications or game variants
             that transform how Magic: The Gathering is played. Unlike card alterations, these recipes change
-            the fundamental rules, interactions, and dynamics of the game itself.
+            the fundamental rules, win conditions, or gameplay mechanics to create entirely new experiences.
           </p>
           
           <p className="text-gray-700 mb-6 leading-relaxed">

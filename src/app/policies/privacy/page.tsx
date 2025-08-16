@@ -39,10 +39,9 @@ export default function PrivacyPolicy() {
       <div className="bg-white p-8 rounded-lg shadow-md">
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
-          <p>
-            At MTG Mods, we respect your privacy and are committed to protecting it through our 
-            compliance with this policy. This Privacy Policy describes how we collect, use, and share 
-            your personal information when you visit or use our website.
+          <p className="text-gray-700 mb-6 leading-relaxed">
+            At Cantripped, we respect your privacy and are committed to protecting it through our
+            compliance with this policy.
           </p>
           <p>
             By accessing or using our Service, you agree to this Privacy Policy. If you do not agree 
