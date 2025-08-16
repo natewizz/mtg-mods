@@ -37,7 +37,7 @@ jobs:
         if: success()
         run: |
           echo "✅ Sitemap generated and submitted successfully!"
-          echo "🌐 Sitemap URL: https://www.mtgmods.xyz/sitemap.xml"
+          echo "🌐 Sitemap URL: https://www.cantripped.com/sitemap.xml"
           echo "📅 Next run: Monday at 9 AM UTC"
           
       - name: Comment on failure

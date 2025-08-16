@@ -3,10 +3,10 @@ version: '3.8'
 services:
   mysql:
     image: mysql:8.0
-    container_name: mtg_mods_db
+    container_name: cantripped_db
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mtg_mods
+      MYSQL_DATABASE: cantripped
     ports:
       - "3306:3306"
     volumes:

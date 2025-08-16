@@ -174,18 +174,18 @@ export default function Home() {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "MTG Mods",
+    "name": "Cantripped",
     "description": "Discover, create, and share innovative Magic: The Gathering rule modifications and game variants",
-    "url": "https://www.mtgmods.xyz",
+    "url": "https://www.cantripped.com",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://www.mtgmods.xyz/recipes?search={search_term_string}",
+      "target": "https://www.cantripped.com/recipes?search={search_term_string}",
       "query-input": "required name=search_term_string"
     },
     "publisher": {
       "@type": "Organization",
-      "name": "MTG Mods",
-      "url": "https://www.mtgmods.xyz"
+      "name": "Cantripped",
+      "url": "https://www.cantripped.com"
     }
   };
 

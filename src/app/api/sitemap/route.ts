@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   console.log('Sitemap API route called')
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'
     
     // Static pages
     const staticPages = [
@@ -169,7 +169,7 @@ ${allPages.map(page => `  <url>
     console.error('Error generating sitemap:', error)
     
     // Fallback to basic sitemap if database fails
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'
     const timestamp = new Date().toISOString()
     const fallbackXml = `<?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated at ${timestamp} (fallback) -->

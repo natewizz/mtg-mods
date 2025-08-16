@@ -11,26 +11,26 @@ import Footer from "@/components/layout/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'),
-  title: "MTG Mods – Magic: The Gathering Rule Variants & Community",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'),
+  title: "Cantripped – Magic: The Gathering Rule Variants & Community",
   description: "Discover, create, and share innovative Magic: The Gathering rule modifications and game variants. Join the Kickstarter waitlist for early access!",
   keywords: [
     "Magic the Gathering", "MTG", "game mods", "rule variants", "custom rules", "Kickstarter", "waitlist", "card game", "tabletop", "community"
   ],
   alternates: {
-    canonical: process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz',
+    canonical: process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com',
   },
   openGraph: {
-    title: "MTG Mods – Magic: The Gathering Rule Variants & Community",
+    title: "Cantripped – Magic: The Gathering Rule Variants & Community",
     description: "Discover, create, and share innovative Magic: The Gathering rule modifications and game variants. Join the Kickstarter waitlist for early access!",
-    url: "https://www.mtgmods.xyz",
-    siteName: "MTG Mods",
+    url: "https://www.cantripped.com",
+    siteName: "Cantripped",
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=MTG%20Mods&description=Magic%3A%20The%20Gathering%20Rule%20Variants%20%26%20Community&type=default`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=Cantripped&description=Magic%3A%20The%20Gathering%20Rule%20Variants%20%26%20Community&type=default`,
         width: 1200,
         height: 630,
-        alt: "MTG Mods - Magic: The Gathering Rule Variants & Community"
+        alt: "Cantripped - Magic: The Gathering Rule Variants & Community"
       }
     ],
     locale: "en_US",
@@ -38,9 +38,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "MTG Mods – Magic: The Gathering Rule Variants & Community",
+    title: "Cantripped – Magic: The Gathering Rule Variants & Community",
     description: "Discover, create, and share innovative Magic: The Gathering rule modifications and game variants. Join the Kickstarter waitlist for early access!",
-    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=MTG%20Mods&description=Magic%3A%20The%20Gathering%20Rule%20Variants%20%26%20Community&type=default`]
+    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=Cantripped&description=Magic%3A%20The%20Gathering%20Rule%20Variants%20%26%20Community&type=default`]
   }
 };
 
