@@ -1,35 +1,33 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy - MTG Mods',
-  description: 'Read the privacy policy for MTG Mods. Learn how we collect, use, and protect your personal information and data.',
-  keywords: [
-    'Magic the Gathering', 'MTG', 'privacy policy', 'data protection', 'personal information', 'cookies', 'user rights', 'data security'
-  ],
+  title: 'Privacy Policy - Cantripped',
+  description: 'Read the privacy policy for Cantripped. Learn how we collect, use, and protect your personal information.',
+  keywords: ['privacy policy', 'data protection', 'personal information', 'Cantripped', 'MTG', 'Magic the Gathering'],
   alternates: {
-    canonical: 'https://www.mtgmods.xyz/policies/privacy',
+    canonical: 'https://www.cantripped.com/policies/privacy',
   },
   openGraph: {
-    title: 'Privacy Policy - MTG Mods',
-    description: 'Read the privacy policy for MTG Mods. Learn how we collect, use, and protect your personal information and data.',
-    url: 'https://www.mtgmods.xyz/policies/privacy',
-    siteName: 'MTG Mods',
+    title: 'Privacy Policy - Cantripped',
+    description: 'Read the privacy policy for Cantripped. Learn how we collect, use, and protect your personal information.',
+    url: 'https://www.cantripped.com/policies/privacy',
+    siteName: 'Cantripped',
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Privacy%20Policy%20-%20MTG%20Mods&description=Read%20the%20privacy%20policy%20for%20MTG%20Mods&type=default`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=Privacy%20Policy%20-%20Cantripped&description=Read%20the%20privacy%20policy%20for%20Cantripped&type=default`,
         width: 1200,
         height: 630,
-        alt: 'Privacy Policy - MTG Mods'
+        alt: 'Privacy Policy - Cantripped'
       }
     ],
     locale: 'en_US',
-    type: 'website'
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Privacy Policy - MTG Mods',
-    description: 'Read the privacy policy for MTG Mods. Learn how we collect, use, and protect your personal information and data.',
-    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Privacy%20Policy%20-%20MTG%20Mods&description=Read%20the%20privacy%20policy%20for%20MTG%20Mods&type=default`]
+    title: 'Privacy Policy - Cantripped',
+    description: 'Read the privacy policy for Cantripped. Learn how we collect, use, and protect your personal information.',
+    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=Privacy%20Policy%20-%20Cantripped&description=Read%20the%20privacy%20policy%20for%20Cantripped&type=default`]
   }
 };
 
@@ -164,8 +162,8 @@ export default function PrivacyPolicy() {
         
         <section>
           <h2 className="text-2xl font-semibold mb-4">9. Contact Us</h2>
-          <p>
-            If you have any questions about this Privacy Policy, please contact us at support@mtgmods.xyz.
+          <p className="mt-6 text-gray-600">
+            If you have any questions about this Privacy Policy, please contact us at cantrippedofficial@gmail.com.
           </p>
         </section>
       </div>

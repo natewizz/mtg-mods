@@ -1,35 +1,33 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service - MTG Mods',
-  description: 'Read the terms of service for MTG Mods. Learn about user content policies, account responsibilities, and platform usage guidelines.',
-  keywords: [
-    'Magic the Gathering', 'MTG', 'terms of service', 'legal', 'user agreement', 'platform rules', 'content policy', 'account terms'
-  ],
+  title: 'Terms of Service - Cantripped',
+  description: 'Read the terms of service for Cantripped. Learn about your rights and responsibilities when using our platform.',
+  keywords: ['terms of service', 'user agreement', 'legal', 'Cantripped', 'MTG', 'Magic the Gathering'],
   alternates: {
-    canonical: 'https://www.mtgmods.xyz/policies/terms',
+    canonical: 'https://www.cantripped.com/policies/terms',
   },
   openGraph: {
-    title: 'Terms of Service - MTG Mods',
-    description: 'Read the terms of service for MTG Mods. Learn about user content policies, account responsibilities, and platform usage guidelines.',
-    url: 'https://www.mtgmods.xyz/policies/terms',
-    siteName: 'MTG Mods',
+    title: 'Terms of Service - Cantripped',
+    description: 'Read the terms of service for Cantripped. Learn about your rights and responsibilities when using our platform.',
+    url: 'https://www.cantripped.com/policies/terms',
+    siteName: 'Cantripped',
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Terms%20of%20Service%20-%20MTG%20Mods&description=Read%20the%20terms%20of%20service%20for%20MTG%20Mods&type=default`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=Terms%20of%20Service%20-%20Cantripped&description=Read%20the%20terms%20of%20service%20for%20Cantripped&type=default`,
         width: 1200,
         height: 630,
-        alt: 'Terms of Service - MTG Mods'
+        alt: 'Terms of Service - Cantripped'
       }
     ],
     locale: 'en_US',
-    type: 'website'
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Terms of Service - MTG Mods',
-    description: 'Read the terms of service for MTG Mods. Learn about user content policies, account responsibilities, and platform usage guidelines.',
-    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Terms%20of%20Service%20-%20MTG%20Mods&description=Read%20the%20terms%20of%20service%20for%20MTG%20Mods&type=default`]
+    title: 'Terms of Service - Cantripped',
+    description: 'Read the terms of service for Cantripped. Learn about your rights and responsibilities when using our platform.',
+    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=Terms%20of%20Service%20-%20Cantripped&description=Read%20the%20terms%20of%20service%20for%20Cantripped&type=default`]
   }
 };
 
@@ -41,9 +39,9 @@ export default function TermsOfService() {
       <div className="bg-white p-8 rounded-lg shadow-md">
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
-          <p>
-            Welcome to MTG Mods. These Terms of Service govern your use of our website located at 
-            mtgmods.xyz and form a binding legal agreement between you and MTG Mods.
+          <p className="mb-6 text-gray-600">
+            These Terms of Service (&quot;Terms&quot;) govern your use of the Cantripped website and services
+            located at cantripped.com and form a binding legal agreement between you and Cantripped.
           </p>
           <p>
             By accessing or using our Service, you agree to be bound by these Terms. If you disagree 
@@ -87,13 +85,13 @@ export default function TermsOfService() {
           <h2 className="text-2xl font-semibold mb-4">4. Intellectual Property</h2>
           <p>
             The Service and its original content (excluding Content provided by users), features and functionality 
-            are and will remain the exclusive property of MTG Mods and its licensors. The Service is protected by 
+            are and will remain the exclusive property of Cantripped and its licensors. The Service is protected by 
             copyright, trademark, and other laws of both the United States and foreign countries. Our trademarks and 
             trade dress may not be used in connection with any product or service without the prior written consent 
-            of MTG Mods.
+            of Cantripped.
           </p>
           <p>
-            Magic: The Gathering is a trademark of Wizards of the Coast LLC. MTG Mods is not affiliated with, 
+            Magic: The Gathering is a trademark of Wizards of the Coast LLC. Cantripped is not affiliated with, 
             endorsed by, or sponsored by Wizards of the Coast.
           </p>
         </section>
@@ -127,7 +125,7 @@ export default function TermsOfService() {
         <section>
           <h2 className="text-2xl font-semibold mb-4">7. Contact Us</h2>
           <p>
-            If you have any questions about these Terms, please contact us at support@mtgmods.xyz.
+            If you have any questions about these Terms, please contact us at cantrippedofficial@gmail.com.
           </p>
         </section>
       </div>

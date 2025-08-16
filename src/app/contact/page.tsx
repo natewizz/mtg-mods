@@ -58,17 +58,23 @@ export default function ContactPage() {
       <h1 className="text-3xl font-bold mb-8 text-center text-[#5A31F4]">Contact Us</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-2xl font-semibold mb-6 text-[#2C2E3A]">Get In Touch</h2>
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          <h2 className="text-2xl font-bold text-[#2C2E3A] mb-6">Get in Touch</h2>
           
           <div className="space-y-6">
-            <div>
-              <h3 className="font-semibold text-[#FF8661]">Email</h3>
-              <p className="mt-1">
-                <a href="mailto:mtgmodsofficial@gmail.com" className="text-[#5A31F4] hover:underline">
-                  mtgmodsofficial@gmail.com
+            <div className="flex items-start space-x-4">
+              <div className="w-10 h-10 bg-[#5A31F4] rounded-full flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-medium text-[#5A31F4]">Email</h3>
+                <p className="text-gray-600 mb-2">Send us a message directly</p>
+                <a href="mailto:cantrippedofficial@gmail.com" className="text-[#5A31F4] hover:underline">
+                  cantrippedofficial@gmail.com
                 </a>
-              </p>
+              </div>
             </div>
             
             <div>
@@ -206,9 +212,9 @@ export default function ContactPage() {
         
         <div className="space-y-6">
           <div>
-            <h3 className="text-lg font-medium text-[#5A31F4]">What is MTG Mods?</h3>
+            <h3 className="text-lg font-medium text-[#5A31F4]">What is Cantripped?</h3>
             <p className="mt-2">
-              MTG Mods is a platform for sharing and discovering rule modifications for Magic: The Gathering. 
+              Cantripped is a platform for sharing and discovering rule modifications for Magic: The Gathering. 
               Our goal is to help players enhance their gameplay experience with creative twists on the 
               standard rules.
             </p>
@@ -224,9 +230,9 @@ export default function ContactPage() {
           </div>
           
           <div>
-            <h3 className="text-lg font-medium text-[#5A31F4]">Is MTG Mods affiliated with Wizards of the Coast?</h3>
+            <h3 className="text-lg font-medium text-[#5A31F4]">Is Cantripped affiliated with Wizards of the Coast?</h3>
             <p className="mt-2">
-              No, MTG Mods is not affiliated with, endorsed by, or sponsored by Wizards of the Coast. 
+              No, Cantripped is not affiliated with, endorsed by, or sponsored by Wizards of the Coast. 
               Magic: The Gathering is a trademark of Wizards of the Coast LLC.
             </p>
           </div>
@@ -242,7 +248,7 @@ export default function ContactPage() {
               <li>Our moderation team will review and take appropriate action within 24 hours</li>
             </ul>
             <p className="mt-2">
-              For additional concerns or questions about our moderation process, please contact us at mtgmodsofficial@gmail.com.
+              For additional concerns or questions about our moderation process, please contact us at cantrippedofficial@gmail.com.
             </p>
           </div>
         </div>

@@ -1,35 +1,33 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Changelog - MTG Mods',
-  description: 'See the latest updates and new features added to MTG Mods. Track the evolution of our platform with detailed release notes and improvements.',
-  keywords: [
-    'Magic the Gathering', 'MTG', 'changelog', 'updates', 'features', 'release notes', 'improvements', 'bug fixes', 'security updates'
-  ],
+  title: 'Changelog - Cantripped',
+  description: 'See the latest updates and new features added to Cantripped. Track the evolution of our platform with detailed release notes and improvements.',
+  keywords: ['changelog', 'updates', 'features', 'releases', 'Cantripped', 'MTG', 'Magic the Gathering'],
   alternates: {
-    canonical: 'https://www.mtgmods.xyz/changelog',
+    canonical: 'https://www.cantripped.com/changelog',
   },
   openGraph: {
-    title: 'Changelog - MTG Mods',
-    description: 'See the latest updates and new features added to MTG Mods. Track the evolution of our platform with detailed release notes and improvements.',
-    url: 'https://www.mtgmods.xyz/changelog',
-    siteName: 'MTG Mods',
+    title: 'Changelog - Cantripped',
+    description: 'See the latest updates and new features added to Cantripped. Track the evolution of our platform with detailed release notes and improvements.',
+    url: 'https://www.cantripped.com/changelog',
+    siteName: 'Cantripped',
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Changelog%20-%20MTG%20Mods&description=See%20the%20latest%20updates%20and%20new%20features%20added%20to%20MTG%20Mods&type=default`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=Changelog%20-%20Cantripped&description=See%20the%20latest%20updates%20and%20new%20features%20added%20to%20Cantripped&type=default`,
         width: 1200,
         height: 630,
-        alt: 'Changelog - MTG Mods'
+        alt: 'Changelog - Cantripped'
       }
     ],
     locale: 'en_US',
-    type: 'website'
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Changelog - MTG Mods',
-    description: 'See the latest updates and new features added to MTG Mods. Track the evolution of our platform with detailed release notes and improvements.',
-    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Changelog%20-%20MTG%20Mods&description=See%20the%20latest%20updates%20and%20new%20features%20added%20to%20MTG%20Mods&type=default`]
+    title: 'Changelog - Cantripped',
+    description: 'See the latest updates and new features added to Cantripped. Track the evolution of our platform with detailed release notes and improvements.',
+    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=Changelog%20-%20Cantripped&description=See%20the%20latest%20updates%20and%20new%20features%20added%20to%20Cantripped&type=default`]
   }
 };
 
@@ -38,10 +36,17 @@ interface ChangelogEntry {
   version: string;
   title: string;
   description: string;
-  type: 'feature' | 'improvement' | 'fix' | 'security';
+  type: 'feature' | 'improvement' | 'fix' | 'security' | 'major';
 }
 
 const changelogData: ChangelogEntry[] = [
+  {
+    date: '2025-08-16',
+    version: 'v2.0.0',
+    title: '🎉 MAJOR REBRAND: MTG Mods → Cantripped',
+    description: 'Complete platform rebrand to Cantripped! New domain, enhanced branding, and exciting new identity while preserving all functionality and community features.',
+    type: 'major'
+  },
   {
     date: '2025-08-09',
     version: 'v1.10.0',
@@ -222,6 +227,8 @@ function getTypeColor(type: ChangelogEntry['type']) {
       return 'bg-yellow-100 text-yellow-800 border-yellow-200';
     case 'security':
       return 'bg-red-100 text-red-800 border-red-200';
+    case 'major':
+      return 'bg-purple-100 text-purple-800 border-purple-200';
     default:
       return 'bg-gray-100 text-gray-800 border-gray-200';
   }
@@ -253,6 +260,12 @@ function getTypeIcon(type: ChangelogEntry['type']) {
           <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
         </svg>
       );
+    case 'major':
+      return (
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+        </svg>
+      );
     default:
       return (
         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -268,7 +281,7 @@ export default function ChangelogPage() {
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-[#5A31F4] mb-4">Changelog</h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Track the evolution of MTG Mods with our latest updates, new features, and improvements.
+          Track the evolution of Cantripped with our latest updates, new features, and improvements.
         </p>
       </div>
 

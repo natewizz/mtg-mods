@@ -1,42 +1,47 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Community Guidelines - MTG Mods',
-  description: 'Read the community guidelines for MTG Mods. Learn about our values, content policies, and how we maintain a positive environment for all users.',
-  keywords: [
-    'Magic the Gathering', 'MTG', 'community guidelines', 'content policy', 'moderation', 'user behavior', 'reporting system', 'strikes', 'bans'
-  ],
+  title: 'Community Guidelines - Cantripped',
+  description: 'Read the community guidelines for Cantripped. Learn about our community standards, moderation policies, and how to contribute positively.',
+  keywords: ['community guidelines', 'rules', 'moderation', 'Cantripped', 'MTG', 'Magic the Gathering'],
   alternates: {
-    canonical: 'https://www.mtgmods.xyz/policies/community',
+    canonical: 'https://www.cantripped.com/policies/community',
   },
   openGraph: {
-    title: 'Community Guidelines - MTG Mods',
-    description: 'Read the community guidelines for MTG Mods. Learn about our values, content policies, and how we maintain a positive environment for all users.',
-    url: 'https://www.mtgmods.xyz/policies/community',
-    siteName: 'MTG Mods',
+    title: 'Community Guidelines - Cantripped',
+    description: 'Read the community guidelines for Cantripped. Learn about our community standards, moderation policies, and how to contribute positively.',
+    url: 'https://www.cantripped.com/policies/community',
+    siteName: 'Cantripped',
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Community%20Guidelines%20-%20MTG%20Mods&description=Read%20the%20community%20guidelines%20for%20MTG%20Mods&type=default`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=Community%20Guidelines%20-%20Cantripped&description=Read%20the%20community%20guidelines%20for%20Cantripped&type=default`,
         width: 1200,
         height: 630,
-        alt: 'Community Guidelines - MTG Mods'
+        alt: 'Community Guidelines - Cantripped'
       }
     ],
     locale: 'en_US',
-    type: 'website'
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Community Guidelines - MTG Mods',
-    description: 'Read the community guidelines for MTG Mods. Learn about our values, content policies, and how we maintain a positive environment for all users.',
-    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=Community%20Guidelines%20-%20MTG%20Mods&description=Read%20the%20community%20guidelines%20for%20MTG%20Mods&type=default`]
+    title: 'Community Guidelines - Cantripped',
+    description: 'Read the community guidelines for Cantripped. Learn about our community standards, moderation policies, and how to contribute positively.',
+    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=Community%20Guidelines%20-%20Cantripped&description=Read%20the%20community%20guidelines%20for%20Cantripped&type=default`]
   }
 };
 
 export default function CommunityGuidelines() {
   return (
     <div className="prose prose-lg mx-auto max-w-4xl">
-      <h1 className="text-3xl font-bold mb-8 text-center text-[#5A31F4]">Community Guidelines</h1>
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold text-[#5A31F4] mb-4">Community Guidelines</h1>
+        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          Cantripped is a community-driven platform for sharing and discovering Magic: The Gathering
+          rule modifications. These guidelines help us maintain a positive, inclusive environment
+          where everyone can contribute and learn.
+        </p>
+      </div>
       
       <div className="bg-white p-8 rounded-lg shadow-md">
         <section className="mb-8">
@@ -192,7 +197,7 @@ export default function CommunityGuidelines() {
           </p>
           <p>
             For suggestions or questions about our Community Guidelines, please contact us at 
-            support@mtgmods.xyz.
+            cantrippedofficial@gmail.com.
           </p>
         </section>
       </div>
