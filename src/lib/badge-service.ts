@@ -276,7 +276,7 @@ export class BadgeService {
         data: {
           userId,
           badgeId: badge.id,
-          awardedBy: awardedBy || 'Cantripped'
+          awardedBy: awardedBy || 'cantripped'
         }
       });
 

@@ -1,5 +1,5 @@
 /**
- * Utility functions for the Cantripped application
+ * Utility functions for the cantripped application
  */
 
 /**

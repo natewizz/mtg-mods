@@ -100,7 +100,7 @@ export default function Header() {
             <div className="relative h-14">
               <Image 
                 src="/cantripped-logo.png" 
-                alt="Cantripped Logo" 
+                alt="cantripped logo" 
                 width={56} 
                 height={56} 
                 className="object-contain"

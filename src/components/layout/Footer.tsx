@@ -52,15 +52,15 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="relative h-10 w-10">
-                <Image 
-                  src="/cantripped-logo.png" 
-                  alt="Cantripped Logo" 
-                  width={40} 
-                  height={40} 
-                  className="object-contain"
-                />
+                                  <Image 
+                    src="/cantripped-logo.png" 
+                    alt="cantripped logo" 
+                    width={40} 
+                    height={40} 
+                    className="object-contain"
+                  />
               </div>
-              <h3 className="text-xl font-bold">Cantripped</h3>
+                              <h3 className="text-xl font-bold">cantripped</h3>
             </div>
             <p className="text-gray-300 mb-4">Share your Magic: The Gathering rule modifications and discover creative ways to enhance your gameplay experience.</p>
             <div className="flex space-x-4 mt-4">
@@ -168,8 +168,8 @@ export default function Footer() {
         </div>
         
         <div className="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-          <p>&copy; 2025 Cantripped. All rights reserved.</p>
-          <p className="mt-2 text-sm">Magic: The Gathering is a trademark of Wizards of the Coast LLC. Cantripped is not affiliated with Wizards of the Coast.</p>
+                  <p>&copy; 2025 cantripped. All rights reserved.</p>
+        <p className="mt-2 text-sm">Magic: The Gathering is a trademark of Wizards of the Coast LLC. cantripped is not affiliated with Wizards of the Coast.</p>
         </div>
       </div>
     </footer>

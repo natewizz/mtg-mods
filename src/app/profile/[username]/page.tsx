@@ -36,23 +36,23 @@ export async function generateMetadata({ params }: ProfilePageProps): Promise<Me
 
     if (!user) {
       return {
-        title: 'User Not Found - Cantripped',
+        title: 'User Not Found - cantripped',
         description: 'The requested user profile could not be found.',
-        keywords: ['profile', 'user', 'not found', 'Cantripped'],
+        keywords: ['profile', 'user', 'not found', 'cantripped'],
         alternates: {
           canonical: `https://www.cantripped.com/profile/${username}`,
         },
         openGraph: {
-          title: 'User Not Found - Cantripped',
+          title: 'User Not Found - cantripped',
           description: 'The requested user profile could not be found.',
           url: `https://www.cantripped.com/profile/${username}`,
-          siteName: 'Cantripped',
+          siteName: 'cantripped',
           images: [
             {
               url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=User%20Not%20Found&description=The%20requested%20user%20profile%20could%20not%20be%20found&type=default`,
               width: 1200,
               height: 630,
-              alt: 'User Not Found - Cantripped'
+              alt: 'User Not Found - cantripped'
             }
           ],
           locale: 'en_US',
@@ -60,8 +60,8 @@ export async function generateMetadata({ params }: ProfilePageProps): Promise<Me
         },
         twitter: {
           card: 'summary_large_image',
-          title: 'User Not Found - Cantripped',
-          description: 'The requested user profile could not be found.',
+                  title: 'User Not Found - cantripped',
+        description: 'The requested user profile could not be found.',
           images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=User%20Not%20Found&description=The%20requested%20user%20profile%20could%20not%20be%20found&type=default`]
         }
       };
@@ -73,8 +73,8 @@ export async function generateMetadata({ params }: ProfilePageProps): Promise<Me
     const triedCount = user._count.tried;
 
     return {
-      title: `${displayName}'s Profile - Cantripped`,
-      description: `View ${displayName}'s Cantripped profile. See their ${recipeCount} recipes, ${bookmarkCount} bookmarks, and ${triedCount} tried recipes.`,
+      title: `${displayName}'s Profile - cantripped`,
+      description: `View ${displayName}'s cantripped profile. See their ${recipeCount} recipes, ${bookmarkCount} bookmarks, and ${triedCount} tried recipes.`,
       keywords: [
         'Magic the Gathering', 'MTG', 'user profile', displayName, 'recipes', 'community', 'game mods'
       ],
@@ -82,10 +82,10 @@ export async function generateMetadata({ params }: ProfilePageProps): Promise<Me
         canonical: `https://www.cantripped.com/profile/${username}`,
       },
       openGraph: {
-        title: `${displayName}'s Profile - Cantripped`,
-        description: `View ${displayName}'s Cantripped profile. See their ${recipeCount} recipes, ${bookmarkCount} bookmarks, and ${triedCount} tried recipes.`,
+        title: `${displayName}'s Profile - cantripped`,
+        description: `View ${displayName}'s cantripped profile. See their ${recipeCount} recipes, ${bookmarkCount} bookmarks, and ${triedCount} tried recipes.`,
         url: `https://www.cantripped.com/profile/${username}`,
-        siteName: 'Cantripped',
+        siteName: 'cantripped',
         images: [
           {
             url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=${encodeURIComponent(displayName)}'s%20Profile&description=${encodeURIComponent(`View ${displayName}'s Cantripped profile with ${recipeCount} recipes`)}&type=profile`,
@@ -99,16 +99,16 @@ export async function generateMetadata({ params }: ProfilePageProps): Promise<Me
       },
       twitter: {
         card: 'summary_large_image',
-        title: `${displayName}'s Profile - Cantripped`,
-        description: `View ${displayName}'s Cantripped profile. See their ${recipeCount} recipes, ${bookmarkCount} bookmarks, and ${triedCount} tried recipes.`,
+        title: `${displayName}'s Profile - cantripped`,
+        description: `View ${displayName}'s cantripped profile. See their ${recipeCount} recipes, ${bookmarkCount} bookmarks, and ${triedCount} tried recipes.`,
         images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=${encodeURIComponent(displayName)}'s%20Profile&description=${encodeURIComponent(`View ${displayName}'s Cantripped profile with ${recipeCount} recipes`)}&type=profile`]
       }
     };
   } catch (error) {
     console.error('Error generating metadata for profile:', error);
     return {
-        title: 'Profile - Cantripped',
-  description: 'View user profiles and recipes on Cantripped.',
+        title: 'Profile - cantripped',
+  description: 'View user profiles and recipes on cantripped.',
     };
   }
 }

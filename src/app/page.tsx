@@ -174,7 +174,7 @@ export default function Home() {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Cantripped",
+    "name": "cantripped",
     "description": "Discover, create, and share innovative Magic: The Gathering rule modifications and game variants",
     "url": "https://www.cantripped.com",
     "potentialAction": {
@@ -184,7 +184,7 @@ export default function Home() {
     },
     "publisher": {
       "@type": "Organization",
-      "name": "Cantripped",
+      "name": "cantripped",
       "url": "https://www.cantripped.com"
     }
   };
@@ -215,7 +215,7 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-6 relative z-10">
             <div className="text-center">
               <h1 className="text-5xl md:text-7xl font-extrabold mb-6 text-white">
-                <span className="block">CANTRIPPED</span>
+                <span className="block">cantripped</span>
                 <span className="block text-3xl md:text-4xl mt-2 text-[var(--accent)]/90">transform your games</span>
               </h1>
               <p className="text-xl md:text-2xl max-w-3xl mx-auto mb-8 text-white/80">
