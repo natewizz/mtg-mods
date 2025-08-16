@@ -1,35 +1,31 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'FAQ - MTG Mods',
-  description: 'Frequently asked questions about MTG Mods. Find answers about recipe creation, user accounts, community guidelines, and more.',
-  keywords: [
-    'Magic the Gathering', 'MTG', 'FAQ', 'frequently asked questions', 'help', 'support', 'recipe creation', 'user accounts', 'community guidelines'
-  ],
-  alternates: {
-    canonical: 'https://www.mtgmods.xyz/faq',
-  },
+  title: 'FAQ - Cantripped',
+  description: 'Frequently asked questions about Cantripped. Find answers about recipe creation, user accounts, community guidelines, and more.',
+  keywords: ['FAQ', 'help', 'support', 'Cantripped', 'recipes', 'community'],
   openGraph: {
-    title: 'FAQ - MTG Mods',
-    description: 'Frequently asked questions about MTG Mods. Find answers about recipe creation, user accounts, community guidelines, and more.',
-    url: 'https://www.mtgmods.xyz/faq',
-    siteName: 'MTG Mods',
+    title: 'FAQ - Cantripped',
+    description: 'Frequently asked questions about Cantripped. Find answers about recipe creation, user accounts, community guidelines, and more.',
+    url: 'https://www.cantripped.com/faq',
+    siteName: 'Cantripped',
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=FAQ%20-%20MTG%20Mods&description=Frequently%20asked%20questions%20about%20MTG%20Mods&type=default`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=FAQ%20-%20Cantripped&description=Frequently%20asked%20questions%20about%20Cantripped&type=default`,
         width: 1200,
         height: 630,
-        alt: 'FAQ - MTG Mods'
+        alt: 'FAQ - Cantripped'
       }
     ],
     locale: 'en_US',
-    type: 'website'
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FAQ - MTG Mods',
-    description: 'Frequently asked questions about MTG Mods. Find answers about recipe creation, user accounts, community guidelines, and more.',
-    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=FAQ%20-%20MTG%20Mods&description=Frequently%20asked%20questions%20about%20MTG%20Mods&type=default`]
+    title: 'FAQ - Cantripped',
+    description: 'Frequently asked questions about Cantripped. Find answers about recipe creation, user accounts, community guidelines, and more.',
+    images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=FAQ%20-%20Cantripped&description=Frequently%20asked%20questions%20about%20Cantripped&type=default`]
   }
 };
 
@@ -42,22 +38,22 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   // General Questions
   {
-    question: "What is MTG Mods?",
-    answer: "MTG Mods is a platform for sharing and discovering rule modifications for Magic: The Gathering. Our goal is to help players enhance their gameplay experience with creative twists on the standard rules. Whether you&apos;re looking for new ways to play or want to share your own custom rules, MTG Mods is the place for you.",
+    question: "What is Cantripped?",
+    answer: "Cantripped is a platform for sharing and discovering rule modifications for Magic: The Gathering. Our goal is to help players enhance their gameplay experience with creative twists on the standard rules. Whether you&apos;re looking for new ways to play or want to share your own custom rules, Cantripped is the place for you.",
     category: "General"
   },
   {
-    question: "Is MTG Mods affiliated with Wizards of the Coast?",
-    answer: "No, MTG Mods is not affiliated with, endorsed by, or sponsored by Wizards of the Coast. Magic: The Gathering is a trademark of Wizards of the Coast LLC. We are an independent community platform created by players, for players.",
+    question: "Is Cantripped affiliated with Wizards of the Coast?",
+    answer: "No, Cantripped is not affiliated with, endorsed by, or sponsored by Wizards of the Coast. Magic: The Gathering is a trademark of Wizards of the Coast LLC. We are an independent community platform created by players, for players.",
     category: "General"
   },
   {
-    question: "Is MTG Mods free to use?",
-    answer: "Yes! MTG Mods is completely free to use. You can browse recipes, create an account, and share your own rule modifications without any cost. We believe in making MTG content accessible to everyone.",
+    question: "Is Cantripped free to use?",
+    answer: "Yes! Cantripped is completely free to use. You can browse recipes, create an account, and share your own rule modifications without any cost. We believe in making MTG content accessible to everyone.",
     category: "General"
   },
   {
-    question: "How do I get started with MTG Mods?",
+    question: "How do I get started with Cantripped?",
     answer: "Getting started is easy! You can browse recipes without an account, but to create and share your own rule modifications, you&apos;ll need to sign up for a free account. Once registered, you can start creating recipes, voting on others&apos; content, and engaging with the community.",
     category: "General"
   },
@@ -146,7 +142,7 @@ const faqData: FAQItem[] = [
   // Badges & Achievements
   {
     question: "What are badges and how do I earn them?",
-    answer: "Badges are achievements you can earn for various activities on MTG Mods. You can earn badges for creating your first recipe, reaching voting milestones, being helpful to the community, and more. Badges appear on your profile and help showcase your contributions to the community.",
+    answer: "Badges are achievements you can earn for various activities on Cantripped. You can earn badges for creating your first recipe, reaching voting milestones, being helpful to the community, and more. Badges appear on your profile and help showcase your contributions to the community.",
     category: "Badges & Achievements"
   },
   {
@@ -163,12 +159,12 @@ const faqData: FAQItem[] = [
   // Technical & Support
   {
     question: "What browsers are supported?",
-    answer: "MTG Mods works best on modern browsers including Chrome, Firefox, Safari, and Edge. We recommend using the latest version of your browser for the best experience. Some features may not work properly on older browsers.",
+    answer: "Cantripped works best on modern browsers including Chrome, Firefox, Safari, and Edge. We recommend using the latest version of your browser for the best experience. Some features may not work properly on older browsers.",
     category: "Technical & Support"
   },
   {
-    question: "Is MTG Mods mobile-friendly?",
-    answer: "Yes! MTG Mods is fully responsive and works great on mobile devices. You can browse recipes, create content, and interact with the community from your smartphone or tablet. The interface automatically adjusts to provide the best experience on your device.",
+    question: "Is Cantripped mobile-friendly?",
+    answer: "Yes! Cantripped is fully responsive and works great on mobile devices. You can browse recipes, create content, and interact with the community from your smartphone or tablet. The interface automatically adjusts to provide the best experience on your device.",
     category: "Technical & Support"
   },
   {
@@ -208,7 +204,7 @@ export default function FAQPage() {
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-[#5A31F4] mb-4">Frequently Asked Questions</h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Find answers to common questions about MTG Mods, recipe creation, user accounts, and more.
+          Find answers to common questions about Cantripped, recipe creation, user accounts, and more.
         </p>
       </div>
 
@@ -257,24 +253,21 @@ export default function FAQPage() {
       </div>
 
       {/* Contact Section */}
-      <div className="mt-16 bg-gray-50 rounded-lg p-8 text-center">
-        <h2 className="text-2xl font-bold text-[#2C2E3A] mb-4">Still Have Questions?</h2>
-        <p className="text-gray-600 mb-6">
-          If you couldn&apos;t find the answer you&apos;re looking for, we&apos;re here to help!
+      <div className="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
+        <h3 className="text-lg font-semibold text-blue-800 mb-2">Still have questions?</h3>
+        <p className="text-blue-700 mb-4">
+          If you can&apos;t find the answer you&apos;re looking for, feel free to reach out to us. We&apos;re here to help!
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="/contact"
-            className="inline-flex items-center justify-center px-6 py-3 bg-[#5A31F4] text-white font-medium rounded-lg hover:bg-[#4A2BE4] transition-colors"
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Link 
+            href="/contact" 
+            className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             Contact Us
-            <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </a>
-          <a
-            href="mailto:mtgmodsofficial@gmail.com"
-            className="inline-flex items-center justify-center px-6 py-3 border border-[#5A31F4] text-[#5A31F4] font-medium rounded-lg hover:bg-[#5A31F4] hover:text-white transition-colors"
+          </Link>
+          <a 
+            href="mailto:cantrippedofficial@gmail.com" 
+            className="inline-flex items-center justify-center px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
           >
             Email Support
           </a>

@@ -159,7 +159,7 @@ async function awardRetroactiveBadges() {
       const userCreatedAt = new Date(user.createdAt);
       const betaCutoff = new Date('2025-01-01');
       if (userCreatedAt < betaCutoff && !existingBadgeNames.includes('beta-user')) {
-        await awardBadge(user.id, 'beta-user', 'MTG Mods');
+        await awardBadge(user.id, 'beta-user', 'Cantripped');
         awardedCount++;
         console.log(`  ✅ Awarded beta-user badge`);
       }

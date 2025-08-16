@@ -19,7 +19,7 @@ Error 401: invalid_client
 5. If it's missing or you need a new one:
    - Click "Create Credentials" > "OAuth client ID"
    - Select "Web application" for Application Type
-   - Name it "MTG Mods App (Development)"
+   - Name it "Cantripped App (Development)"
    - Add Authorized JavaScript origins: `http://localhost:3000`
    - Add Authorized redirect URIs: `http://localhost:3000/api/auth/callback/google`
    - Click "Create"
@@ -30,7 +30,7 @@ Error 401: invalid_client
 1. Go to "APIs & Services" > "OAuth consent screen"
 2. Choose "External" user type (unless you're using Google Workspace)
 3. Fill in the required details:
-   - App name: "MTG Mods App"
+   - App name: "Cantripped App"
    - User support email: Your email
    - Developer contact information: Your email
 4. Click "Save and Continue"

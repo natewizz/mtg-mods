@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
   
   // Popular tags from the plan document
@@ -54,14 +53,14 @@ export default function Footer() {
             <div className="flex items-center gap-3 mb-4">
               <div className="relative h-10 w-10">
                 <Image 
-                  src="/images/logo.png" 
-                  alt="MTG Mods Logo" 
+                  src="/cantripped-logo.png" 
+                  alt="Cantripped Logo" 
                   width={40} 
                   height={40} 
                   className="object-contain"
                 />
               </div>
-              <h3 className="text-xl font-bold">MTG Mods</h3>
+              <h3 className="text-xl font-bold">Cantripped</h3>
             </div>
             <p className="text-gray-300 mb-4">Share your Magic: The Gathering rule modifications and discover creative ways to enhance your gameplay experience.</p>
             <div className="flex space-x-4 mt-4">
@@ -120,7 +119,7 @@ export default function Footer() {
           {/* Newsletter column */}
           <div>
             <h4 className="font-semibold text-lg mb-4 text-[#3DA1C4]">Stay Updated</h4>
-            <p className="text-gray-300 mb-4">Subscribe to our newsletter for the latest mods and MTG content.</p>
+            <p className="text-gray-300 mb-4">Subscribe to our newsletter for the latest recipes and gaming content.</p>
             
             <form onSubmit={handleSubmit} className="flex flex-col space-y-2">
               <input
@@ -169,8 +168,8 @@ export default function Footer() {
         </div>
         
         <div className="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-          <p>&copy; {currentYear} MTG Mods. All rights reserved.</p>
-          <p className="mt-2 text-sm">Magic: The Gathering is a trademark of Wizards of the Coast LLC. MTG Mods is not affiliated with Wizards of the Coast.</p>
+          <p>&copy; 2025 Cantripped. All rights reserved.</p>
+          <p className="mt-2 text-sm">Magic: The Gathering is a trademark of Wizards of the Coast LLC. Cantripped is not affiliated with Wizards of the Coast.</p>
         </div>
       </div>
     </footer>

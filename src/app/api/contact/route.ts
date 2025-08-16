@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const DEST_EMAIL = 'mtgmodsofficial@gmail.com';
+const DEST_EMAIL = process.env.ADMIN_EMAIL || 'cantrippedofficial@gmail.com';
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 
 export async function POST(request: NextRequest) {

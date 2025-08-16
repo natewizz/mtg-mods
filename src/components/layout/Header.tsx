@@ -62,8 +62,8 @@ export default function Header() {
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
-      {/* Beta Testers Sticky Link */}
-      <div className="fixed top-4 right-4 z-50 md:block hidden">
+      {/* Beta Testers Sticky Link - positioned below header to avoid covering navigation */}
+      <div className="fixed top-20 right-4 z-50 md:block hidden">
         <a
           href="https://forms.gle/KCK8AYfWL1Jd6CUY6"
           target="_blank"
@@ -84,7 +84,7 @@ export default function Header() {
           href="https://forms.gle/KCK8AYfWL1Jd6CUY6"
           target="_blank"
           rel="noopener noreferrer"
-          className="fixed top-20 right-4 z-40 inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-3 py-1.5 rounded-full text-xs font-medium shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+          className="fixed top-24 right-4 z-40 inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-3 py-1.5 rounded-full text-xs font-medium shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
         >
           <span className="animate-pulse">🚀</span>
           Beta Testers
@@ -99,8 +99,8 @@ export default function Header() {
           <Link href="/" className="flex items-center">
             <div className="relative h-14">
               <Image 
-                src="/images/logo.png" 
-                alt="MTG Mods Logo" 
+                src="/cantripped-logo.png" 
+                alt="Cantripped Logo" 
                 width={56} 
                 height={56} 
                 className="object-contain"

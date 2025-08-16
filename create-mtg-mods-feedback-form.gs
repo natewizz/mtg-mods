@@ -1,187 +1,203 @@
 /**
- * Google Apps Script to create MTG Mods Beta Feedback Form
+ * Google Apps Script to create Cantripped Beta Feedback Form
  * 
  * Instructions:
- * 1. Go to script.google.com
+ * 1. Open Google Apps Script (script.google.com)
  * 2. Create a new project
- * 3. Replace the default code with this script
- * 4. Run the createMTGModsFeedbackForm function
- * 5. Check your Google Drive for the new form
+ * 3. Copy and paste this code
+ * 4. Run the createCantrippedFeedbackForm function
+ * 5. Run the createMTGModsFeedbackForm function
  */
 
-function createMTGModsFeedbackForm() {
-  // Create the form
-  const form = FormApp.create('MTG Mods Beta Testing Feedback');
+function createCantrippedFeedbackForm() {
+  const form = FormApp.create('Cantripped Beta Testing Feedback');
   
-  // Set form description
-  form.setDescription('Thank you for testing MTG Mods! We\'re building a community platform for Magic: The Gathering rule modifications and custom game variants. Your feedback will help us improve before our full launch.');
+  form.setDescription('Thank you for testing Cantripped! We\'re building a community platform for Magic: The Gathering rule modifications and custom game variants. Your feedback will help us improve before our full launch.');
   
-  // Set form settings
-  form.setCollectEmail(false);
-  form.setAllowResponseEdits(false);
-  form.setAcceptingResponses(true);
+  // Basic info section
+  const basicInfoSection = form.addSectionHeaderItem();
+  basicInfoSection.setTitle('Basic Information');
   
-  // Section 1: Getting Started
-  form.addSectionHeaderItem()
-    .setTitle('Getting Started');
+  // Email (required)
+  const emailItem = form.addTextItem();
+  emailItem.setTitle('Email Address')
+    .setRequired(true)
+    .setHelpText('We\'ll use this to follow up on your feedback and notify you about updates.');
   
-  form.addMultipleChoiceItem()
-    .setTitle('How easy was it to sign up and get started?')
-    .setChoiceValues(['Very easy', 'Easy', 'Neutral', 'Difficult', 'Very difficult'])
+  // Age group
+  const ageItem = form.addMultipleChoiceItem();
+  ageItem.setTitle('What is your age group?')
+    .setChoiceValues([
+      'Under 18',
+      '18-24',
+      '25-34', 
+      '35-44',
+      '45-54',
+      '55+'
+    ])
     .setRequired(true);
   
-  form.addMultipleChoiceItem()
-    .setTitle('What sign-in method did you use?')
-    .setChoiceValues(['Google', 'Discord', 'Email/Password', 'I didn\'t sign up'])
+  // MTG experience
+  const experienceItem = form.addMultipleChoiceItem();
+  experienceItem.setTitle('How long have you been playing Magic: The Gathering?')
+    .setChoiceValues([
+      'Less than 1 year',
+      '1-3 years',
+      '3-5 years',
+      '5-10 years',
+      '10+ years',
+      'I don\'t play MTG'
+    ])
     .setRequired(true);
   
-  form.addTextItem()
-    .setTitle('If you had trouble signing up, what was the issue?')
-    .setRequired(false);
+  // Platform usage section
+  const usageSection = form.addSectionHeaderItem();
+  usageSection.setTitle('Platform Usage');
   
-  // Section 2: Core Features
-  form.addSectionHeaderItem()
-    .setTitle('Core Features');
-  
-  form.addMultipleChoiceItem()
-    .setTitle('Did you try creating a recipe? If yes, how was the experience?')
-    .setChoiceValues(['Yes, it was intuitive', 'Yes, but I needed help figuring it out', 'Yes, but it was confusing', 'No, I didn\'t try', 'No, I couldn\'t find how to do it'])
+  // How did you find us
+  const discoveryItem = form.addMultipleChoiceItem();
+  discoveryItem.setTitle('How did you discover Cantripped?')
+    .setChoiceValues([
+      'Social media (Twitter/X, Instagram, etc.)',
+      'Friend recommendation',
+      'Search engine',
+      'MTG community forum',
+      'Discord server',
+      'Other'
+    ])
     .setRequired(true);
   
-  form.addMultipleChoiceItem()
-    .setTitle('Did you try browsing/reading recipes? How was that experience?')
-    .setChoiceValues(['Great - easy to find and read recipes', 'Good - mostly clear', 'Okay - some confusion', 'Poor - hard to navigate', 'I didn\'t browse recipes'])
+  // Usage frequency
+  const frequencyItem = form.addMultipleChoiceItem();
+  frequencyItem.setTitle('How often do you use Cantripped?')
+    .setChoiceValues([
+      'Daily',
+      'Several times a week',
+      'Once a week',
+      'A few times a month',
+      'Rarely',
+      'This is my first time'
+    ])
     .setRequired(true);
   
-  form.addMultipleChoiceItem()
-    .setTitle('How clear is the concept of "recipes" for MTG rule modifications?')
-    .setChoiceValues(['Very clear - I immediately understood', 'Clear - made sense after looking around', 'Somewhat clear - needed some thinking', 'Unclear - confusing terminology', 'Very unclear - I don\'t get it'])
+  // Features section
+  const featuresSection = form.addSectionHeaderItem();
+  featuresSection.setTitle('Features & Functionality');
+  
+  // Recipe creation
+  const recipeCreationItem = form.addMultipleChoiceItem();
+  recipeCreationItem.setTitle('Have you created any recipes on Cantripped?')
+    .setChoiceValues([
+      'Yes, multiple recipes',
+      'Yes, one recipe',
+      'No, but I plan to',
+      'No, and I don\'t plan to'
+    ])
     .setRequired(true);
   
-  // Section 3: Specific Feedback
-  form.addSectionHeaderItem()
-    .setTitle('Specific Feedback');
-  
-  form.addCheckboxItem()
-    .setTitle('What features did you use? (Check all that apply)')
-    .setChoiceValues(['Browsing recipes', 'Creating a recipe', 'Editing a recipe', 'Voting on recipes', 'Bookmarking recipes', 'Marking recipes as "tried"', 'Filtering by tags', 'Contact form', 'Profile setup'])
+  // Favorite features
+  const favoriteFeaturesItem = form.addCheckboxGridItem();
+  favoriteFeaturesItem.setTitle('Which features do you find most useful? (Check all that apply)')
+    .setRows([
+      'Recipe browsing',
+      'Recipe creation',
+      'User profiles',
+      'Voting system',
+      'Tag system',
+      'Community features',
+      'Mobile experience',
+      'Search functionality'
+    ])
+    .setColumns(['Very Useful', 'Somewhat Useful', 'Not Useful'])
     .setRequired(true);
   
-  form.addMultipleChoiceItem()
-    .setTitle('Did you encounter any bugs or errors?')
-    .setChoiceValues(['No issues', 'Minor issues that didn\'t stop me', 'Major issues that prevented me from doing something', 'The site was mostly broken for me'])
+  // Feedback section
+  const feedbackSection = form.addSectionHeaderItem();
+  feedbackSection.setTitle('Feedback & Suggestions');
+  
+  // Overall experience
+  const experienceRatingItem = form.addScaleItem();
+  experienceRatingItem.setTitle('How would you rate your overall experience with Cantripped?')
+    .setBounds(1, 10)
+    .setLabels('Poor', 'Excellent')
     .setRequired(true);
   
-  form.addParagraphTextItem()
-    .setTitle('If you encountered bugs, please describe them:')
-    .setRequired(false);
+  // Describe to friend
+  const describeItem = form.addParagraphTextItem();
+  describeItem.setTitle('How would you describe Cantripped to a friend?')
+    .setRequired(true)
+    .setHelpText('Please be honest and specific about what you like and don\'t like.');
   
-  // Section 4: Content & Community
-  form.addSectionHeaderItem()
-    .setTitle('Content & Community');
-  
-  form.addParagraphTextItem()
-    .setTitle('How would you describe MTG Mods to a friend?')
-    .setRequired(true);
-  
-  form.addCheckboxItem()
-    .setTitle('What type of MTG rule modifications interest you most?')
-    .setChoiceValues(['Casual/fun variants', 'Competitive format tweaks', 'Deck building restrictions', 'Multiplayer modifications', 'Draft/limited variants', 'Commander/EDH modifications', 'Other'])
-    .setRequired(true);
-  
-  form.addMultipleChoiceItem()
-    .setTitle('Would you share your own rule modifications here?')
-    .setChoiceValues(['Definitely yes', 'Probably yes', 'Maybe', 'Probably not', 'Definitely not'])
-    .setRequired(true);
-  
-  // Section 5: Missing Features
-  form.addSectionHeaderItem()
-    .setTitle('Missing Features');
-  
-  form.addCheckboxItem()
-    .setTitle('What features do you wish existed? (Check all that apply)')
-    .setChoiceValues(['Comments on recipes', 'Recipe ratings/reviews', 'Following other users', 'Recipe collections/folders', 'Advanced search', 'Mobile app', 'Recipe templates', 'Playtesting notes', 'Video/image uploads', 'Integration with deck builders', 'Other'])
-    .setRequired(false);
-  
-  form.addTextItem()
-    .setTitle('What\'s the #1 feature you\'d want added next?')
-    .setRequired(true);
-  
-  // Section 6: Overall Experience
-  form.addSectionHeaderItem()
-    .setTitle('Overall Experience');
-  
-  form.addScaleItem()
-    .setTitle('How likely are you to recommend MTG Mods to other Magic players?')
+  // Recommendation likelihood
+  const recommendationItem = form.addScaleItem();
+  recommendationItem.setTitle('How likely are you to recommend Cantripped to other Magic players?')
     .setBounds(0, 10)
     .setLabels('Not at all likely', 'Extremely likely')
     .setRequired(true);
   
-  form.addMultipleChoiceItem()
-    .setTitle('What almost stopped you from using the site?')
-    .setChoiceValues(['Nothing - smooth experience', 'Confusing navigation', 'Unclear purpose', 'Technical issues', 'Required sign-up', 'Lack of content', 'Other'])
+  // What they like most
+  const likesItem = form.addParagraphTextItem();
+  likesItem.setTitle('What did you like most about Cantripped?')
+    .setRequired(true)
+    .setHelpText('What features or aspects stood out to you?');
+  
+  // What could be improved
+  const improvementsItem = form.addParagraphTextItem();
+  improvementsItem.setTitle('What could Cantripped improve?')
+    .setRequired(true)
+    .setHelpText('Be specific about what you\'d like to see changed or added.');
+  
+  // Additional comments
+  const commentsItem = form.addParagraphTextItem();
+  commentsItem.setTitle('Any additional comments or suggestions?')
+    .setRequired(false);
+  
+  // Contact preferences
+  const contactSection = form.addSectionHeaderItem();
+  contactSection.setTitle('Contact Preferences');
+  
+  const contactItem = form.addMultipleChoiceItem();
+  contactItem.setTitle('Would you like us to contact you about your feedback?')
+    .setChoiceValues([
+      'Yes, please contact me',
+      'No, thank you'
+    ])
     .setRequired(true);
   
-  form.addMultipleChoiceItem()
-    .setTitle('Overall, how would you rate your experience?')
-    .setChoiceValues(['Excellent', 'Good', 'Fair', 'Poor', 'Very poor'])
-    .setRequired(true);
+  // Set form settings
+  form.setCollectEmail(true);
+  form.setAllowResponseEdits(false);
+  form.setShowLinkToRespondAgain(false);
   
-  // Section 7: Open Feedback
-  form.addSectionHeaderItem()
-    .setTitle('Open Feedback');
+  // Set confirmation message
+  form.setConfirmationMessage('Thank you for your feedback! We appreciate you taking the time to help us improve Cantripped.');
   
-  form.addParagraphTextItem()
-    .setTitle('What did you like most about MTG Mods?')
-    .setRequired(true);
-  
-  form.addParagraphTextItem()
-    .setTitle('What frustrated you the most?')
-    .setRequired(false);
-  
-  form.addParagraphTextItem()
-    .setTitle('Any other suggestions or comments?')
-    .setRequired(false);
-  
-  form.addMultipleChoiceItem()
-    .setTitle('Would you like us to follow up with you about your feedback?')
-    .setChoiceValues(['Yes (please provide email below)', 'No, thanks'])
-    .setRequired(false);
-  
-  form.addTextItem()
-    .setTitle('If yes, your email address:')
-    .setRequired(false);
-  
-  // Set up response destination (optional)
-  // Uncomment the next line if you want responses to go to a specific spreadsheet
-  // form.setDestination(FormApp.DestinationType.SPREADSHEET, 'your-spreadsheet-id');
-  
-  // Log the form URL
   console.log('Form created successfully!');
   console.log('Form URL: ' + form.getPublishedUrl());
-  console.log('Edit URL: ' + form.getEditUrl());
+  console.log('Form ID: ' + form.getId());
   
-  // Return the form for further manipulation if needed
   return form;
 }
 
-/**
- * Alternative function to create a simpler version for testing
- */
-function createSimpleTestForm() {
-  const form = FormApp.create('MTG Mods Beta Test - Simple');
+// Simple version for quick testing
+function createSimpleForm() {
+  const form = FormApp.create('Cantripped Beta Test - Simple');
   
-  form.setDescription('Quick test version of the MTG Mods feedback form');
+  form.setDescription('Quick test version of the Cantripped feedback form');
   
-  form.addMultipleChoiceItem()
-    .setTitle('How easy was sign-up?')
-    .setChoiceValues(['Very easy', 'Easy', 'Neutral', 'Difficult', 'Very difficult'])
-    .setRequired(true);
+  const emailItem = form.addTextItem();
+  emailItem.setTitle('Email Address').setRequired(true);
   
-  form.addParagraphTextItem()
-    .setTitle('Any feedback?')
-    .setRequired(false);
+  const feedbackItem = form.addParagraphTextItem();
+  feedbackItem.setTitle('What do you think of Cantripped?').setRequired(true);
   
-  console.log('Simple form created: ' + form.getPublishedUrl());
+  const ratingItem = form.addScaleItem();
+  ratingItem.setTitle('Rate your experience (1-10)').setBounds(1, 10);
+  
+  form.setConfirmationMessage('Thanks for your feedback!');
+  
+  console.log('Simple form created!');
+  console.log('Form URL: ' + form.getPublishedUrl());
+  
   return form;
 } 

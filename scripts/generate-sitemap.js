@@ -19,7 +19,7 @@ const https = require('https');
 const { execSync } = require('child_process');
 
 // Configuration
-const SITEMAP_URL = 'https://www.mtgmods.xyz/sitemap.xml';
+const SITEMAP_URL = 'https://www.cantripped.com/sitemap.xml';
 const GOOGLE_SEARCH_CONSOLE_URL = 'https://www.google.com/ping?sitemap=';
 const BING_WEBMASTER_URL = 'https://www.bing.com/ping?sitemap=';
 
@@ -102,7 +102,7 @@ function generateSitemap() {
 }
 
 async function main() {
-  console.log('🗺️  MTG Mods Sitemap Generator');
+  console.log('🗺️  Cantripped Sitemap Generator');
   console.log('================================');
   
   const startTime = Date.now();

@@ -174,18 +174,18 @@ export default function Home() {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "MTG Mods",
+    "name": "Cantripped",
     "description": "Discover, create, and share innovative Magic: The Gathering rule modifications and game variants",
-    "url": "https://www.mtgmods.xyz",
+    "url": "https://www.cantripped.com",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://www.mtgmods.xyz/recipes?search={search_term_string}",
+      "target": "https://www.cantripped.com/recipes?search={search_term_string}",
       "query-input": "required name=search_term_string"
     },
     "publisher": {
       "@type": "Organization",
-      "name": "MTG Mods",
-      "url": "https://www.mtgmods.xyz"
+      "name": "Cantripped",
+      "url": "https://www.cantripped.com"
     }
   };
 
@@ -215,8 +215,8 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-6 relative z-10">
             <div className="text-center">
               <h1 className="text-5xl md:text-7xl font-extrabold mb-6 text-white">
-                <span className="block">MTG MODS</span>
-                <span className="block text-3xl md:text-4xl mt-2 text-[var(--accent)]/90">Reimagine the game</span>
+                <span className="block">CANTRIPPED</span>
+                <span className="block text-3xl md:text-4xl mt-2 text-[var(--accent)]/90">transform your games</span>
               </h1>
               <p className="text-xl md:text-2xl max-w-3xl mx-auto mb-8 text-white/80">
                 Discover innovative game and rule modifications for Magic: The Gathering that transform how you play
@@ -356,7 +356,7 @@ export default function Home() {
         <div className="py-16 bg-[var(--primary)]">
           <div className="max-w-5xl mx-auto px-6 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Transform Your Magic Experience?</h2>
-            <p className="text-white/80 text-xl mb-8 max-w-3xl mx-auto">Join fellow MTG enthusiasts sharing and discovering exciting new ways to play.</p>
+            <p className="text-white/80 text-xl mb-8 max-w-3xl mx-auto">Join fellow card game enthusiasts sharing and discovering exciting new ways to play.</p>
             <Link href="/auth/signup" className="inline-block bg-white text-[var(--primary)] font-bold py-3 px-8 rounded-full hover:bg-opacity-90 transition-all">
               Create Free Account
             </Link>

@@ -70,7 +70,7 @@ export async function POST(
     // Check and award badges for likes received by the recipe author
     if (value === 1 && recipe.authorId !== session.user.id) {
       try {
-        await BadgeService.checkLikeBadges(recipe.authorId);
+        await BadgeService.checkVotingBadges(recipe.authorId);
       } catch (badgeError) {
         console.error('Error checking like badges:', badgeError);
         // Don't fail the vote if badge checking fails

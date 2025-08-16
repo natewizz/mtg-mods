@@ -171,8 +171,8 @@ export default function Badge({
           Awarded by {awardedBy.name || awardedBy.username}
         </div>
       ) : (
-        <div className="text-gray-400 text-xs">
-          Awarded by MTG Mods
+        <div className="text-xs text-gray-500 mt-1">
+          Awarded by Cantripped
         </div>
       )}
       <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>

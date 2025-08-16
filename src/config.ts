@@ -4,7 +4,7 @@
 
 export const config = {
   database: {
-    url: process.env.DATABASE_URL || "mysql://user:password@localhost:3306/mtg_mods",
+    url: process.env.DATABASE_URL || "mysql://user:password@localhost:3306/cantripped",
   },
   nextAuth: {
     url: process.env.NEXTAUTH_URL || "http://localhost:3000",

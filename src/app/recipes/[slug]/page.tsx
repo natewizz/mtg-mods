@@ -51,76 +51,78 @@ type RecipeData = {
   redirect: string;
 } | null;
 
-interface RecipePageProps {
-  params: Promise<{ slug: string }>;
-}
 
-export async function generateMetadata({ params }: RecipePageProps): Promise<Metadata> {
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   
   try {
     const recipe = await prisma.recipe.findUnique({
       where: { slug },
       include: {
-        author: true,
-        tags: true,
+        author: {
+          select: {
+            name: true,
+            username: true,
+          },
+        },
+        tags: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
     if (!recipe) {
       return {
-        title: 'Recipe Not Found - MTG Mods',
+        title: 'Recipe Not Found - Cantripped',
         description: 'The requested recipe could not be found.',
+        keywords: ['recipe', 'not found', 'Cantripped'],
       };
     }
 
-    // Utility to strip HTML tags from instructions
-    function stripHtml(html: string): string {
-      if (!html) return '';
-      return html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
-    }
-
-    // Generate description from instructions (first 160 chars)
-    const description = stripHtml(recipe.instructions).slice(0, 160);
-    const authorName = recipe.author.username || recipe.author.name || 'Anonymous';
+    const description = recipe.instructions.length > 150 
+      ? recipe.instructions.substring(0, 150) + '...'
+      : recipe.instructions;
 
     return {
-      title: `${recipe.title} | MTG Mods`,
+      title: `${recipe.title} | Cantripped`,
       description: description,
       keywords: [
-        'Magic the Gathering', 'MTG', 'recipe', recipe.title, 'game mod', 'rule variant', authorName, ...recipe.tags.map(tag => tag.name)
+        'Magic the Gathering', 'MTG', 'recipe', recipe.title, 'rule modification', 'game variant', 'Cantripped'
       ],
       alternates: {
-        canonical: `https://www.mtgmods.xyz/recipes/${slug}`,
+        canonical: `https://www.cantripped.com/recipes/${slug}`,
       },
       openGraph: {
-        title: recipe.title,
+        title: `${recipe.title} | Cantripped`,
         description: description,
-        type: 'article',
-        url: `https://www.mtgmods.xyz/recipes/${slug}`,
-        siteName: 'MTG Mods',
+        url: `https://www.cantripped.com/recipes/${slug}`,
+        siteName: 'Cantripped',
         images: [
           {
-            url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=${encodeURIComponent(recipe.title)}&description=${encodeURIComponent(description)}&type=recipe`,
+            url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=${encodeURIComponent(recipe.title)}&description=${encodeURIComponent(description)}&type=recipe`,
             width: 1200,
             height: 630,
-            alt: recipe.title
+            alt: `${recipe.title} - Cantripped Recipe`
           }
         ],
         locale: 'en_US',
+        type: 'article',
       },
       twitter: {
         card: 'summary_large_image',
-        title: recipe.title,
+        title: `${recipe.title} | Cantripped`,
         description: description,
-        images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mtgmods.xyz'}/api/og?title=${encodeURIComponent(recipe.title)}&description=${encodeURIComponent(description)}&type=recipe`]
+        images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=${encodeURIComponent(recipe.title)}&description=${encodeURIComponent(description)}&type=recipe`]
       }
     };
-  } catch (error) {
-    console.error('Error generating metadata for recipe:', error);
+  } catch {
     return {
-      title: 'Recipe - MTG Mods',
-      description: 'View MTG recipe details and instructions.',
+      title: 'Recipe - Cantripped',
+      description: 'View and discover Magic: The Gathering rule modifications and game variants.',
+      keywords: ['recipe', 'MTG', 'Magic the Gathering', 'Cantripped'],
     };
   }
 }

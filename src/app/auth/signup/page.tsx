@@ -85,7 +85,7 @@ export default function SignupPage() {
   return (
     <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100">
       <div className="bg-[#5A31F4] p-4">
-        <h1 className="text-2xl font-bold text-center text-white">Join MTG Mods</h1>
+        <h1 className="text-2xl font-bold text-center text-white">Join Cantripped</h1>
       </div>
       
       <div className="p-6">

@@ -1,5 +1,5 @@
 /**
- * Utility functions for the MTG Mods application
+ * Utility functions for the Cantripped application
  */
 
 /**

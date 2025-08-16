@@ -1,6 +1,44 @@
 # Changelog
 
-All notable changes to the mtg-mods project will be documented in this file.
+All notable changes to this project will be documented in this file.
+
+## [Unreleased]
+
+## [2.0.1] - 2025-08-16
+### 🔧 **Final Branding Cleanup & Bug Fixes**
+- **Lint error fixes**: Resolved all ESLint and TypeScript compilation errors
+- **Admin account scripts**: Added SQL and Node.js scripts for updating admin account branding
+- **Code quality**: Fixed unused variables, unescaped entities, and method name mismatches
+- **Production readiness**: All branding updates complete and ready for deployment
+
+---
+
+## [2.0.0] - 2025-08-16
+### 🎉 **MAJOR REBRAND: MTG Mods → Cantripped**
+- **Complete platform rebrand** from "MTG Mods" to "Cantripped"
+- **New domain**: Platform now accessible at cantripped.com
+- **Updated branding**: All user-facing content, metadata, and references updated
+- **Preserved functionality**: All features, recipes, and user data maintained
+- **Enhanced identity**: New name better reflects our mission to transform gameplay experiences
+- **Community continuity**: Same great community, same great features, new exciting brand
+
+### 🔧 **Technical Updates**
+- Updated package.json project name
+- Updated all metadata and OpenGraph data
+- Updated Docker container and database references
+- Updated sitemap and robots.txt
+- Updated all policy pages and legal references
+- Updated contact information and support channels
+
+---
+
+## [1.0.0] - 2025-01-15
+### 🚀 **Platform Launch**
+- **First public deployment** of MTG Mods with recipe creation, user authentication, community features, and comprehensive MTG rule modification sharing capabilities
+- **Core features**: Recipe creation and management, user profiles, voting system, tag organization
+- **Admin tools**: Dashboard, moderation tools, content management
+- **Responsive design**: Mobile-optimized interface for all devices
+- **Community features**: User interactions, feedback system, reporting tools
 
 ## [2025-01-15] - Homepage Layout Improvements and Trending Recipes
 
@@ -128,8 +166,8 @@ All notable changes to the mtg-mods project will be documented in this file.
 
 ### Changed
 - **Special Badges Attribution**
-  - Always display "Awarded by MTG Mods" when the awarding user is not set
-  - Default `awardedBy` to MTG Mods for system-awarded badges
+  - Always display "Awarded by Cantripped" when the awarding user is not set
+- Default `awardedBy` to Cantripped for system-awarded badges
 - **Badge Display**
   - Only highest milestone per progression group is shown in user collections
 

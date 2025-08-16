@@ -56,9 +56,7 @@ export default function SetupUsernamePage() {
 
   return (
     <div className="max-w-2xl mx-auto py-12 px-4">
-      <h1 className="text-3xl font-bold text-center text-[#2C2E3A] mb-8">
-        Welcome to MTG Mods!
-      </h1>
+      <h1 className="text-2xl font-bold text-center text-white">Welcome to Cantripped!</h1>
       
       <div className="mb-8">
         <p className="text-center text-gray-600">
