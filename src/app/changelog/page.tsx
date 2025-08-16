@@ -72,7 +72,7 @@ const changelogData: ChangelogEntry[] = [
     date: '2025-08-07',
     version: 'v1.7.0',
     title: 'Progressive Badges, Special Badge Attribution, and UX Polish',
-    description: 'Implemented progressive badge replacement (show only highest milestone), added bronze→diamond visual tiers, and clear "Permanent Achievement" labeling for first-time badges. Ensured special badges always show Awarded by MTG Mods and added a maintenance script to retroactively clean up lower milestone badges.',
+    description: 'Implemented progressive badge replacement (show only highest milestone), added bronze→diamond visual tiers, and clear "Permanent Achievement" labeling for first-time badges. Ensured special badges always show Awarded by Cantripped and added a maintenance script to retroactively clean up lower milestone badges.',
     type: 'improvement'
   },
   {

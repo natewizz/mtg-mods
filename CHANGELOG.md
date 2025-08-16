@@ -157,8 +157,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - **Special Badges Attribution**
-  - Always display "Awarded by MTG Mods" when the awarding user is not set
-  - Default `awardedBy` to MTG Mods for system-awarded badges
+  - Always display "Awarded by Cantripped" when the awarding user is not set
+- Default `awardedBy` to Cantripped for system-awarded badges
 - **Badge Display**
   - Only highest milestone per progression group is shown in user collections
 

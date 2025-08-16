@@ -74,7 +74,7 @@ npm run sitemap:submit
 #### Cron Job (Linux/Mac)
 ```bash
 # Add to crontab -e
-0 9 * * 1 cd /path/to/mtg-mods-app && npm run sitemap:submit
+0 9 * * 1 cd /path/to/cantripped && npm run sitemap:submit
 ```
 
 #### GitHub Actions (Recommended)

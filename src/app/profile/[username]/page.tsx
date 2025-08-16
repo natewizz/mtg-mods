@@ -107,8 +107,8 @@ export async function generateMetadata({ params }: ProfilePageProps): Promise<Me
   } catch (error) {
     console.error('Error generating metadata for profile:', error);
     return {
-      title: 'Profile - MTG Mods',
-      description: 'View user profiles and recipes on MTG Mods.',
+        title: 'Profile - Cantripped',
+  description: 'View user profiles and recipes on Cantripped.',
     };
   }
 }
