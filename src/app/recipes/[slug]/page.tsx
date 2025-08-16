@@ -76,9 +76,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
     if (!recipe) {
       return {
-        title: 'Recipe Not Found - Cantripped',
+        title: 'Recipe Not Found - cantripped',
         description: 'The requested recipe could not be found.',
-        keywords: ['recipe', 'not found', 'Cantripped'],
+        keywords: ['recipe', 'not found', 'cantripped'],
       };
     }
 
@@ -87,25 +87,25 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       : recipe.instructions;
 
     return {
-      title: `${recipe.title} | Cantripped`,
-      description: description,
-      keywords: [
-        'Magic the Gathering', 'MTG', 'recipe', recipe.title, 'rule modification', 'game variant', 'Cantripped'
-      ],
+              title: `${recipe.title} | cantripped`,
+        description: description,
+        keywords: [
+          'Magic the Gathering', 'MTG', 'recipe', recipe.title, 'rule modification', 'game variant', 'cantripped'
+        ],
       alternates: {
         canonical: `https://www.cantripped.com/recipes/${slug}`,
       },
       openGraph: {
-        title: `${recipe.title} | Cantripped`,
+        title: `${recipe.title} | cantripped`,
         description: description,
         url: `https://www.cantripped.com/recipes/${slug}`,
-        siteName: 'Cantripped',
+        siteName: 'cantripped',
         images: [
           {
             url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=${encodeURIComponent(recipe.title)}&description=${encodeURIComponent(description)}&type=recipe`,
             width: 1200,
             height: 630,
-            alt: `${recipe.title} - Cantripped Recipe`
+                          alt: `${recipe.title} - cantripped Recipe`
           }
         ],
         locale: 'en_US',
@@ -113,16 +113,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       },
       twitter: {
         card: 'summary_large_image',
-        title: `${recipe.title} | Cantripped`,
+        title: `${recipe.title} | cantripped`,
         description: description,
         images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=${encodeURIComponent(recipe.title)}&description=${encodeURIComponent(description)}&type=recipe`]
       }
     };
   } catch {
     return {
-      title: 'Recipe - Cantripped',
+      title: 'Recipe - cantripped',
       description: 'View and discover Magic: The Gathering rule modifications and game variants.',
-      keywords: ['recipe', 'MTG', 'Magic the Gathering', 'Cantripped'],
+      keywords: ['recipe', 'MTG', 'Magic the Gathering', 'cantripped'],
     };
   }
 }

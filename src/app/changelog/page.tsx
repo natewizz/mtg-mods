@@ -1,23 +1,23 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Changelog - Cantripped',
-  description: 'See the latest updates and new features added to Cantripped. Track the evolution of our platform with detailed release notes and improvements.',
-  keywords: ['changelog', 'updates', 'features', 'releases', 'Cantripped', 'MTG', 'Magic the Gathering'],
+  title: 'Changelog - cantripped',
+  description: 'See the latest updates and new features added to cantripped. Track the evolution of our platform with detailed release notes and improvements.',
+  keywords: ['changelog', 'updates', 'features', 'releases', 'cantripped', 'MTG', 'Magic the Gathering'],
   alternates: {
     canonical: 'https://www.cantripped.com/changelog',
   },
   openGraph: {
-    title: 'Changelog - Cantripped',
-    description: 'See the latest updates and new features added to Cantripped. Track the evolution of our platform with detailed release notes and improvements.',
-    url: 'https://www.cantripped.com/changelog',
-    siteName: 'Cantripped',
+            title: 'Changelog - cantripped',
+        description: 'See the latest updates and new features added to cantripped. Track the evolution of our platform with detailed release notes and improvements.',
+        url: 'https://www.cantripped.com/changelog',
+        siteName: 'cantripped',
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=Changelog%20-%20Cantripped&description=See%20the%20latest%20updates%20and%20new%20features%20added%20to%20Cantripped&type=default`,
         width: 1200,
         height: 630,
-        alt: 'Changelog - Cantripped'
+                      alt: 'Changelog - cantripped'
       }
     ],
     locale: 'en_US',
@@ -25,8 +25,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Changelog - Cantripped',
-    description: 'See the latest updates and new features added to Cantripped. Track the evolution of our platform with detailed release notes and improvements.',
+            title: 'Changelog - cantripped',
+        description: 'See the latest updates and new features added to cantripped. Track the evolution of our platform with detailed release notes and improvements.',
     images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=Changelog%20-%20Cantripped&description=See%20the%20latest%20updates%20and%20new%20features%20added%20to%20Cantripped&type=default`]
   }
 };
@@ -43,8 +43,8 @@ const changelogData: ChangelogEntry[] = [
   {
     date: '2025-08-16',
     version: 'v2.0.0',
-    title: '🎉 MAJOR REBRAND: MTG Mods → Cantripped',
-    description: 'Complete platform rebrand to Cantripped! New domain, enhanced branding, and exciting new identity while preserving all functionality and community features.',
+            title: '🎉 MAJOR REBRAND: MTG Mods → cantripped',
+        description: 'Complete platform rebrand to cantripped! New domain, enhanced branding, and exciting new identity while preserving all functionality and community features.',
     type: 'major'
   },
   {
@@ -72,7 +72,7 @@ const changelogData: ChangelogEntry[] = [
     date: '2025-08-07',
     version: 'v1.7.0',
     title: 'Progressive Badges, Special Badge Attribution, and UX Polish',
-    description: 'Implemented progressive badge replacement (show only highest milestone), added bronze→diamond visual tiers, and clear "Permanent Achievement" labeling for first-time badges. Ensured special badges always show Awarded by Cantripped and added a maintenance script to retroactively clean up lower milestone badges.',
+            description: 'Implemented progressive badge replacement (show only highest milestone), added bronze→diamond visual tiers, and clear "Permanent Achievement" labeling for first-time badges. Ensured special badges always show Awarded by cantripped and added a maintenance script to retroactively clean up lower milestone badges.',
     type: 'improvement'
   },
   {
@@ -281,7 +281,7 @@ export default function ChangelogPage() {
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-[#5A31F4] mb-4">Changelog</h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Track the evolution of Cantripped with our latest updates, new features, and improvements.
+          Track the evolution of cantripped with our latest updates, new features, and improvements.
         </p>
       </div>
 
