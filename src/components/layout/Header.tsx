@@ -100,7 +100,7 @@ export default function Header() {
             <div className="relative h-14">
               <Image 
                 src="/images/logo.png" 
-                alt="MTG Mods Logo" 
+                alt="Cantripped Logo" 
                 width={56} 
                 height={56} 
                 className="object-contain"
