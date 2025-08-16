@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.0.1] - 2025-08-16
+### 🔧 **Final Branding Cleanup & Bug Fixes**
+- **Lint error fixes**: Resolved all ESLint and TypeScript compilation errors
+- **Admin account scripts**: Added SQL and Node.js scripts for updating admin account branding
+- **Code quality**: Fixed unused variables, unescaped entities, and method name mismatches
+- **Production readiness**: All branding updates complete and ready for deployment
+
+---
+
 ## [2.0.0] - 2025-08-16
 ### 🎉 **MAJOR REBRAND: MTG Mods → Cantripped**
 - **Complete platform rebrand** from "MTG Mods" to "Cantripped"

@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
   
   // Popular tags from the plan document
@@ -54,7 +53,7 @@ export default function Footer() {
             <div className="flex items-center gap-3 mb-4">
               <div className="relative h-10 w-10">
                 <Image 
-                  src="/images/logo.png" 
+                  src="/cantripped-logo.png" 
                   alt="Cantripped Logo" 
                   width={40} 
                   height={40} 

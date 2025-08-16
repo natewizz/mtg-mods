@@ -51,9 +51,7 @@ type RecipeData = {
   redirect: string;
 } | null;
 
-interface RecipePageProps {
-  params: Promise<{ slug: string }>;
-}
+
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -120,7 +118,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         images: [`${process.env.NEXT_PUBLIC_APP_URL || 'https://www.cantripped.com'}/api/og?title=${encodeURIComponent(recipe.title)}&description=${encodeURIComponent(description)}&type=recipe`]
       }
     };
-  } catch (error) {
+  } catch {
     return {
       title: 'Recipe - Cantripped',
       description: 'View and discover Magic: The Gathering rule modifications and game variants.',

@@ -1,161 +1,198 @@
 import { prisma } from './prisma';
 import { BadgeCategory } from '@prisma/client';
 
-export interface BadgeAward {
-  userId: string;
-  badgeName: string;
-  reason?: string;
-}
-
-// Define progressive badge groups where higher badges replace lower ones
+// Progressive badge groups - users can only have the highest badge in each group
 const PROGRESSIVE_BADGE_GROUPS = {
-  'recipe': ['recipe-1', 'recipe-5', 'recipe-10', 'recipe-25', 'recipe-50', 'recipe-100'],
-  'likes': ['likes-1', 'likes-5', 'likes-10', 'likes-25', 'likes-50', 'likes-100'],
-  'tried': ['tried-1', 'tried-5', 'tried-10', 'tried-25', 'tried-50', 'tried-100'],
-  'bookmarks': ['bookmarks-1', 'bookmarks-5', 'bookmarks-10', 'bookmarks-25', 'bookmarks-50', 'bookmarks-100']
+  recipes: ['first-recipe', 'recipe-master', 'recipe-legend'],
+  votes: ['first-vote', 'voting-enthusiast', 'voting-champion'],
+  bookmarks: ['first-bookmark', 'bookmark-collector', 'bookmark-master'],
+  tried: ['first-tried', 'tried-enthusiast', 'tried-master']
 };
 
 export class BadgeService {
   /**
-   * Check and award badges for recipe creation with progressive replacement
+   * Check and award recipe creation badges
    */
   static async checkRecipeBadges(userId: string) {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        recipes: true,
-        userBadges: {
-          include: { badge: true }
-        }
-      }
-    });
+    try {
+      const recipeCount = await prisma.recipe.count({
+        where: { authorId: userId }
+      });
 
-    if (!user) return;
-
-    const recipeCount = user.recipes.length;
-    const existingBadgeNames = user.userBadges.map(ub => ub.badge.name);
-
-    // Check first recipe badge (non-progressive)
-    if (recipeCount === 1 && !existingBadgeNames.includes('first-recipe')) {
-      await this.awardBadge(userId, 'first-recipe');
-    }
-
-    // Check progressive recipe milestone badges
-    const milestones = [1, 5, 10, 25, 50, 100];
-    let highestMilestone = 0;
-    
-    for (const milestone of milestones) {
-      if (recipeCount >= milestone) {
-        highestMilestone = milestone;
-      }
-    }
-
-    if (highestMilestone > 0) {
-      const targetBadgeName = `recipe-${highestMilestone}`;
+      const existingBadgeNames = await this.getUserBadgeNames(userId);
       
-      // Remove lower milestone badges and award the highest one
-      await this.handleProgressiveBadge(userId, 'recipe', targetBadgeName, existingBadgeNames);
+      // Check for first recipe badge
+      if (recipeCount >= 1 && !existingBadgeNames.includes('first-recipe')) {
+        await this.awardBadge(userId, 'first-recipe');
+      }
+
+      // Check for recipe master badge
+      if (recipeCount >= 10 && !existingBadgeNames.includes('recipe-master')) {
+        await this.awardBadge(userId, 'recipe-master');
+      }
+
+      // Check for recipe legend badge
+      if (recipeCount >= 50 && !existingBadgeNames.includes('recipe-legend')) {
+        await this.awardBadge(userId, 'recipe-legend');
+      }
+
+      // Handle progressive badges
+      if (recipeCount >= 50) {
+        await this.handleProgressiveBadge(userId, 'recipes', 'recipe-legend', existingBadgeNames);
+      } else if (recipeCount >= 10) {
+        await this.handleProgressiveBadge(userId, 'recipes', 'recipe-master', existingBadgeNames);
+      } else if (recipeCount >= 1) {
+        await this.handleProgressiveBadge(userId, 'recipes', 'first-recipe', existingBadgeNames);
+      }
+    } catch (error) {
+      console.error('Error checking recipe badges:', error);
     }
   }
 
   /**
-   * Check and award badges for likes received with progressive replacement
+   * Check and award voting badges
    */
-  static async checkLikeBadges(userId: string) {
-    const totalLikes = await prisma.vote.count({
-      where: {
-        recipe: { authorId: userId },
-        value: 1
-      }
-    });
+  static async checkVotingBadges(userId: string) {
+    try {
+      const voteCount = await prisma.vote.count({
+        where: { userId }
+      });
 
-    const existingBadgeNames = await this.getUserBadgeNames(userId);
-
-    // Check first like badge (non-progressive)
-    if (totalLikes === 1 && !existingBadgeNames.includes('first-like')) {
-      await this.awardBadge(userId, 'first-like');
-    }
-
-    // Check progressive like milestone badges
-    const milestones = [1, 5, 10, 25, 50, 100];
-    let highestMilestone = 0;
-    
-    for (const milestone of milestones) {
-      if (totalLikes >= milestone) {
-        highestMilestone = milestone;
-      }
-    }
-
-    if (highestMilestone > 0) {
-      const targetBadgeName = `likes-${highestMilestone}`;
+      const existingBadgeNames = await this.getUserBadgeNames(userId);
       
-      // Remove lower milestone badges and award the highest one
-      await this.handleProgressiveBadge(userId, 'likes', targetBadgeName, existingBadgeNames);
+      // Check for first vote badge
+      if (voteCount >= 1 && !existingBadgeNames.includes('first-vote')) {
+        await this.awardBadge(userId, 'first-vote');
+      }
+
+      // Check for voting enthusiast badge
+      if (voteCount >= 25 && !existingBadgeNames.includes('voting-enthusiast')) {
+        await this.awardBadge(userId, 'voting-enthusiast');
+      }
+
+      // Check for voting champion badge
+      if (voteCount >= 100 && !existingBadgeNames.includes('voting-champion')) {
+        await this.awardBadge(userId, 'voting-champion');
+      }
+
+      // Handle progressive badges
+      if (voteCount >= 100) {
+        await this.handleProgressiveBadge(userId, 'votes', 'voting-champion', existingBadgeNames);
+      } else if (voteCount >= 25) {
+        await this.handleProgressiveBadge(userId, 'votes', 'voting-enthusiast', existingBadgeNames);
+      } else if (voteCount >= 1) {
+        await this.handleProgressiveBadge(userId, 'votes', 'first-vote', existingBadgeNames);
+      }
+    } catch (error) {
+      console.error('Error checking voting badges:', error);
     }
   }
 
   /**
-   * Check and award badges for tries received with progressive replacement
-   */
-  static async checkTriedBadges(userId: string) {
-    const totalTries = await prisma.tried.count({
-      where: {
-        recipe: { authorId: userId }
-      }
-    });
-
-    const existingBadgeNames = await this.getUserBadgeNames(userId);
-
-    // Check first tried badge (non-progressive)
-    if (totalTries === 1 && !existingBadgeNames.includes('first-tried')) {
-      await this.awardBadge(userId, 'first-tried');
-    }
-
-    // Check progressive tried milestone badges
-    const milestones = [1, 5, 10, 25, 50, 100];
-    let highestMilestone = 0;
-    
-    for (const milestone of milestones) {
-      if (totalTries >= milestone) {
-        highestMilestone = milestone;
-      }
-    }
-
-    if (highestMilestone > 0) {
-      const targetBadgeName = `tried-${highestMilestone}`;
-      
-      // Remove lower milestone badges and award the highest one
-      await this.handleProgressiveBadge(userId, 'tried', targetBadgeName, existingBadgeNames);
-    }
-  }
-
-  /**
-   * Check and award badges for bookmarks received with progressive replacement
+   * Check and award bookmark badges
    */
   static async checkBookmarkBadges(userId: string) {
-    const totalBookmarks = await prisma.bookmark.count({
-      where: {
-        recipe: { authorId: userId }
-      }
-    });
+    try {
+      const bookmarkCount = await prisma.bookmark.count({
+        where: { userId }
+      });
 
-    const existingBadgeNames = await this.getUserBadgeNames(userId);
-
-    // Check progressive bookmark milestone badges
-    const milestones = [1, 5, 10, 25, 50, 100];
-    let highestMilestone = 0;
-    
-    for (const milestone of milestones) {
-      if (totalBookmarks >= milestone) {
-        highestMilestone = milestone;
-      }
-    }
-
-    if (highestMilestone > 0) {
-      const targetBadgeName = `bookmarks-${highestMilestone}`;
+      const existingBadgeNames = await this.getUserBadgeNames(userId);
       
-      // Remove lower milestone badges and award the highest one
-      await this.handleProgressiveBadge(userId, 'bookmarks', targetBadgeName, existingBadgeNames);
+      // Check for first bookmark badge
+      if (bookmarkCount >= 1 && !existingBadgeNames.includes('first-bookmark')) {
+        await this.awardBadge(userId, 'first-bookmark');
+      }
+
+      // Check for bookmark collector badge
+      if (bookmarkCount >= 10 && !existingBadgeNames.includes('bookmark-collector')) {
+        await this.awardBadge(userId, 'bookmark-collector');
+      }
+
+      // Check for bookmark master badge
+      if (bookmarkCount >= 50 && !existingBadgeNames.includes('bookmark-master')) {
+        await this.awardBadge(userId, 'bookmark-master');
+      }
+
+      // Handle progressive badges
+      if (bookmarkCount >= 50) {
+        await this.handleProgressiveBadge(userId, 'bookmarks', 'bookmark-master', existingBadgeNames);
+      } else if (bookmarkCount >= 10) {
+        await this.handleProgressiveBadge(userId, 'bookmarks', 'bookmark-collector', existingBadgeNames);
+      } else if (bookmarkCount >= 1) {
+        await this.handleProgressiveBadge(userId, 'bookmarks', 'first-bookmark', existingBadgeNames);
+      }
+    } catch (error) {
+      console.error('Error checking bookmark badges:', error);
+    }
+  }
+
+  /**
+   * Check and award tried badges
+   */
+  static async checkTriedBadges(userId: string) {
+    try {
+      const triedCount = await prisma.tried.count({
+        where: { userId }
+      });
+
+      const existingBadgeNames = await this.getUserBadgeNames(userId);
+      
+      // Check for first tried badge
+      if (triedCount >= 1 && !existingBadgeNames.includes('first-tried')) {
+        await this.awardBadge(userId, 'first-tried');
+      }
+
+      // Check for tried enthusiast badge
+      if (triedCount >= 10 && !existingBadgeNames.includes('tried-enthusiast')) {
+        await this.awardBadge(userId, 'tried-enthusiast');
+      }
+
+      // Check for tried master badge
+      if (triedCount >= 50 && !existingBadgeNames.includes('tried-master')) {
+        await this.awardBadge(userId, 'tried-master');
+      }
+
+      // Handle progressive badges
+      if (triedCount >= 50) {
+        await this.handleProgressiveBadge(userId, 'tried', 'tried-master', existingBadgeNames);
+      } else if (triedCount >= 10) {
+        await this.handleProgressiveBadge(userId, 'tried', 'tried-enthusiast', existingBadgeNames);
+      } else if (triedCount >= 1) {
+        await this.handleProgressiveBadge(userId, 'tried', 'first-tried', existingBadgeNames);
+      }
+    } catch (error) {
+      console.error('Error checking tried badges:', error);
+    }
+  }
+
+  /**
+   * Check and award bookmark milestone badges
+   */
+  static async checkBookmarkMilestoneBadges(userId: string) {
+    try {
+      const totalBookmarks = await prisma.bookmark.count({
+        where: { userId }
+      });
+
+      const existingBadgeNames = await this.getUserBadgeNames(userId);
+      const milestones = [10, 25, 50, 100, 250, 500, 1000];
+      let highestMilestone = 0;
+      
+      for (const milestone of milestones) {
+        if (totalBookmarks >= milestone) {
+          highestMilestone = milestone;
+        }
+      }
+
+      if (highestMilestone > 0) {
+        const targetBadgeName = `bookmarks-${highestMilestone}`;
+        
+        // Remove lower milestone badges and award the highest one
+        await this.handleProgressiveBadge(userId, 'bookmarks', targetBadgeName, existingBadgeNames);
+      }
+    } catch (error) {
+      console.error('Error checking bookmark milestone badges:', error);
     }
   }
 
@@ -243,4 +280,166 @@ export class BadgeService {
         }
       });
 
-      console.log(`
+      console.log(`🏆 Awarded badge "${badge.displayName}" to user ${userId}`);
+      
+      // Create notification for the user
+      await this.createBadgeNotification(userId, badge);
+      
+    } catch (error) {
+      console.error(`Error awarding badge ${badgeName} to user ${userId}:`, error);
+    }
+  }
+
+  /**
+   * Get all badge names for a user
+   */
+  static async getUserBadgeNames(userId: string): Promise<string[]> {
+    const userBadges = await prisma.userBadge.findMany({
+      where: { userId },
+      include: { badge: true }
+    });
+
+    return userBadges.map(ub => ub.badge.name);
+  }
+
+  /**
+   * Get all badges for a user with details, filtering out lower progressive badges
+   */
+  static async getUserBadges(userId: string) {
+    const userBadges = await prisma.userBadge.findMany({
+      where: { userId },
+      include: {
+        badge: true,
+        admin: {
+          select: {
+            id: true,
+            name: true,
+            username: true
+          }
+        }
+      },
+      orderBy: {
+        earnedAt: 'desc'
+      }
+    });
+
+    // Filter out lower progressive badges, keeping only the highest in each group
+    const filteredBadges = await this.filterProgressiveBadges(userBadges);
+
+    return filteredBadges;
+  }
+
+  /**
+   * Filter out lower progressive badges, keeping only the highest achieved badge in each group
+   */
+  static async filterProgressiveBadges(userBadges: Array<{
+    id: string;
+    badge: { name: string; displayName: string; description: string; icon: string; color: string; category: string };
+    earnedAt: Date;
+    awardedBy?: string | null;
+  }>) {
+    const badgeNames = userBadges.map(ub => ub.badge.name);
+    const filteredBadges = [...userBadges];
+
+    // For each progressive group, find the highest badge the user has
+    for (const [, badgeGroup] of Object.entries(PROGRESSIVE_BADGE_GROUPS)) {
+      let highestBadgeIndex = -1;
+
+      // Find the highest badge in this group that the user has
+      for (let i = badgeGroup.length - 1; i >= 0; i--) {
+        if (badgeNames.includes(badgeGroup[i])) {
+          highestBadgeIndex = i;
+          break;
+        }
+      }
+
+      // Remove all lower badges in this group
+      if (highestBadgeIndex > 0) {
+        const lowerBadges = badgeGroup.slice(0, highestBadgeIndex);
+        for (const lowerBadgeName of lowerBadges) {
+          const indexToRemove = filteredBadges.findIndex(ub => ub.badge.name === lowerBadgeName);
+          if (indexToRemove !== -1) {
+            filteredBadges.splice(indexToRemove, 1);
+          }
+        }
+      }
+    }
+
+    return filteredBadges;
+  }
+
+  /**
+   * Create a notification when a badge is awarded
+   */
+  static async createBadgeNotification(userId: string, badge: { displayName: string; description: string }) {
+    try {
+      await prisma.adminNotification.create({
+        data: {
+          type: 'badge_awarded',
+          title: 'New Badge Earned!',
+          message: `Congratulations! You've earned the "${badge.displayName}" badge: ${badge.description}`,
+          userId,
+          adminId: userId, // Self-notification
+          reason: 'badge_earned'
+        }
+      });
+    } catch (error) {
+      console.error('Error creating badge notification:', error);
+    }
+  }
+
+  /**
+   * Award beta user badge to early adopters
+   */
+  static async awardBetaUserBadge(userId: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        userBadges: {
+          include: { badge: true }
+        }
+      }
+    });
+
+    if (!user) return;
+
+    const hasBetaBadge = user.userBadges.some(ub => ub.badge.name === 'beta-user');
+    const isEarlyUser = user.createdAt < new Date('2025-01-01'); // Adjust date as needed
+
+    if (!hasBetaBadge && isEarlyUser) {
+      await this.awardBadge(userId, 'beta-user');
+    }
+  }
+
+  /**
+   * Get all available badges
+   */
+  static async getAllBadges() {
+    try {
+      return await prisma.badge.findMany({
+        where: { isActive: true },
+        orderBy: [
+          { category: 'asc' },
+          { triggerValue: 'asc' }
+        ]
+      });
+    } catch (error) {
+      console.error('Error fetching badges:', error);
+      // Return empty array if table doesn't exist or other error
+      return [];
+    }
+  }
+
+  /**
+   * Get badges by category
+   */
+  static async getBadgesByCategory(category: string) {
+    return await prisma.badge.findMany({
+      where: { 
+        category: category as BadgeCategory,
+        isActive: true 
+      },
+      orderBy: { triggerValue: 'asc' }
+    });
+  }
+}
