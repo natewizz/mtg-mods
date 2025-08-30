@@ -4,6 +4,41 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### 📱 **Mobile UI Improvements & Recipe Card Enhancements**
+- **Recipe Page Layout Optimization**
+  - Fixed download link overlap with title text on mobile devices
+  - Reorganized layout to stack title and buttons vertically on mobile
+  - Repositioned report button to bottom right of interaction box
+  - Improved responsive spacing and container padding throughout
+- **Recipe Interactions Enhancement**
+  - Converted stacked interaction buttons to inline layout on mobile
+  - Added subtle colored borders matching brand color scheme
+  - Reduced vertical spacing for more compact mobile experience
+  - Enhanced touch targets and mobile-friendly button sizing
+- **Filter System Improvements**
+  - Converted sort options from horizontal buttons to dropdown menu
+  - Limited filter pills to exactly 2 rows for mobile optimization
+  - Added proper visibility control instead of height-based hiding
+  - Enhanced mobile touch targets and spacing
+- **Homepage Visual Appeal**
+  - Enhanced Latest/Trending recipe sections with gradient backgrounds
+  - Added meaningful icons for each section (book, lightning bolt)
+  - Improved "View All" links with hover animations and arrow icons
+  - Better color coordination using brand color scheme
+- **Recipe Card Enhancements**
+  - Restored text snippets for homepage recipe cards
+  - Improved username display with "Posted by:" prefix for clarity
+  - Enhanced tag pill styling with primary color scheme and hover effects
+  - Better shadows, borders, and hover transitions throughout
+  - Increased compact card height to accommodate text previews
+
+### Technical
+- Updated RecipeCard component with responsive mobile-first design
+- Enhanced RecipeInteractions component with inline button layout
+- Improved RecipeFilters component with dropdown sort and limited pill display
+- Updated homepage sections with gradient backgrounds and enhanced visual hierarchy
+- Maintained consistent styling between compact and full recipe card versions
+
 ## [2.0.1] - 2025-08-16
 ### 🔧 **Final Branding Cleanup & Bug Fixes**
 - **Lint error fixes**: Resolved all ESLint and TypeScript compilation errors

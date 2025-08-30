@@ -41,10 +41,17 @@ interface ChangelogEntry {
 
 const changelogData: ChangelogEntry[] = [
   {
+    date: '2025-01-15',
+    version: 'v1.11.0',
+    title: '📱 Mobile UI Improvements & Recipe Card Enhancements',
+    description: 'Significantly enhanced mobile experience with inline interaction buttons, improved recipe page layout, and enhanced filter system. Added text snippets back to homepage recipe cards, improved visual appeal with gradient backgrounds and better tag styling. Fixed download link overlap issues and optimized spacing for mobile devices.',
+    type: 'improvement'
+  },
+  {
     date: '2025-08-16',
     version: 'v2.0.0',
-            title: '🎉 MAJOR REBRAND: MTG Mods → cantripped',
-        description: 'Complete platform rebrand to cantripped! New domain, enhanced branding, and exciting new identity while preserving all functionality and community features.',
+    title: '🎉 MAJOR REBRAND: MTG Mods → cantripped',
+    description: 'Complete platform rebrand to cantripped! New domain, enhanced branding, and exciting new identity while preserving all functionality and community features.',
     type: 'major'
   },
   {
