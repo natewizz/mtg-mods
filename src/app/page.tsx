@@ -242,12 +242,22 @@ export default function Home() {
         </div>
         
         {/* Latest Recipes Section */}
-        <div className="pt-12 sm:pt-16 pb-6 bg-[#F1F3FA]">
+        <div className="pt-12 sm:pt-16 pb-6 bg-gradient-to-br from-[#F1F3FA] via-white to-[#F1F3FA]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <div className="flex items-center justify-between mb-6 sm:mb-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#2C2E3A]">Latest Recipes</h2>
-              <Link href="/recipes" className="text-[#5A31F4] hover:underline font-semibold">
-                View All →
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] flex items-center justify-center shadow-lg">
+                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#2C2E3A]">Latest Recipes</h2>
+              </div>
+              <Link href="/recipes" className="text-[#5A31F4] hover:text-[#4A21E4] hover:underline font-semibold transition-colors duration-200 flex items-center gap-1 group">
+                View All 
+                <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </Link>
             </div>
             
@@ -266,18 +276,28 @@ export default function Home() {
         </div>
         
         {/* Trending Recipes Section */}
-        <div className="pt-6 pb-6 bg-[#F1F3FA]">
+        <div className="pt-6 pb-6 bg-gradient-to-br from-white via-[#F1F3FA] to-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <div className="flex items-center justify-between mb-6 sm:mb-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#2C2E3A]">Trending Recipes</h2>
-              <Link href="/recipes" className="text-[#5A31F4] hover:underline font-semibold">
-                View All →
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--accent)] to-[#FF6B4A] flex items-center justify-center shadow-lg">
+                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#2C2E3A]">Trending Recipes</h2>
+              </div>
+              <Link href="/recipes" className="text-[#FF8661] hover:text-[#FF6B4A] hover:underline font-semibold transition-colors duration-200 flex items-center gap-1 group">
+                View All 
+                <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </Link>
             </div>
             
             {trendingLoading ? (
               <div className="flex justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5A31F4]"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FF8661]"></div>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -290,7 +310,7 @@ export default function Home() {
         </div>
         
         {/* Random Recipe Button Section */}
-        <div className="pt-6 pb-6 bg-[#F1F3FA]">
+        <div className="pt-6 pb-6 bg-gradient-to-br from-[#F1F3FA] via-white to-[#F1F3FA]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <div className="flex justify-center">
               <RandomRecipeButton />
@@ -341,7 +361,7 @@ export default function Home() {
               <Link href="/learn" className="card-3d p-8 flex flex-col items-center text-center group hover:scale-105 transition-transform duration-200">
                 <div className="w-16 h-16 rounded-full bg-[var(--contrast)]/10 flex items-center justify-center mb-6">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-[var(--contrast)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-[var(--contrast)]">Learn & Grow</h3>
