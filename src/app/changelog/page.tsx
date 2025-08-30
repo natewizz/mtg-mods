@@ -41,7 +41,7 @@ interface ChangelogEntry {
 
 const changelogData: ChangelogEntry[] = [
   {
-    date: '2025-01-15',
+    date: '2025-08-30',
     version: 'v1.11.0',
     title: '📱 Mobile UI Improvements & Recipe Card Enhancements',
     description: 'Significantly enhanced mobile experience with inline interaction buttons, improved recipe page layout, and enhanced filter system. Added text snippets back to homepage recipe cards, improved visual appeal with gradient backgrounds and better tag styling. Fixed download link overlap issues and optimized spacing for mobile devices.',

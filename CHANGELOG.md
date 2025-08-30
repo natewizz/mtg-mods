@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-### 📱 **Mobile UI Improvements & Recipe Card Enhancements**
+### 📱 **Mobile UI Improvements & Recipe Card Enhancements** *(Updated: 2025-08-30)*
 - **Recipe Page Layout Optimization**
   - Fixed download link overlap with title text on mobile devices
   - Reorganized layout to stack title and buttons vertically on mobile
