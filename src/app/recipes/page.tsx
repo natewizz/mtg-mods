@@ -24,12 +24,12 @@ export default async function RecipesPage({ searchParams }: { searchParams: Prom
   
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-[var(--dark)]">All Recipes</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[var(--dark)]">All Recipes</h1>
         
         <Link 
           href="/recipes/new" 
-          className="btn-primary"
+          className="btn-primary w-full sm:w-auto text-center"
         >
           Create Recipe
         </Link>
@@ -44,13 +44,13 @@ export default async function RecipesPage({ searchParams }: { searchParams: Prom
       
       <Suspense fallback={<div>Loading recipes...</div>}>
         {recipes.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {recipes.map((recipe) => (
               <RecipeCard key={recipe.id} recipe={recipe} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-8 bg-white rounded-xl shadow-sm p-8">
+          <div className="text-center py-8 bg-white rounded-xl shadow-sm p-6 sm:p-8">
             <h2 className="text-xl font-semibold mb-2">No recipes found</h2>
             {tagFilters.length > 0 ? (
               <p className="text-gray-500">No recipes match your current filter selection.</p>

@@ -77,7 +77,7 @@ export default function RootLayout({
         <NextAuthProvider>
           <UserStrikesProvider>
             <Header />
-            <main className="container mx-auto px-4 py-8 flex-grow">
+            <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 flex-grow">
               {children}
             </main>
             <Footer />

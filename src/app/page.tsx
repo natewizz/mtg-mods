@@ -207,21 +207,21 @@ export default function Home() {
       <main className="min-h-screen">
         <WaitlistModal isOpen={waitlistOpen} onClose={() => setWaitlistOpen(false)} />
         {/* Hero section with animated gradient background */}
-        <div className="gradient-bg py-16 relative overflow-hidden">
+        <div className="gradient-bg py-12 sm:py-16 relative overflow-hidden">
           <div className="absolute inset-0 bg-[rgba(0,0,0,0.2)]"></div>
           <div className="absolute w-60 h-60 rounded-full bg-[var(--primary)]/30 -top-10 -left-10 blur-3xl"></div>
           <div className="absolute w-60 h-60 rounded-full bg-[var(--accent)]/30 -bottom-10 -right-10 blur-3xl"></div>
           
-          <div className="max-w-6xl mx-auto px-6 relative z-10">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
             <div className="text-center">
-              <h1 className="text-5xl md:text-7xl font-extrabold mb-6 text-white">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-4 sm:mb-6 text-white">
                 <span className="block">cantripped</span>
-                <span className="block text-3xl md:text-4xl mt-2 text-[var(--accent)]/90">transform your games</span>
+                <span className="block text-2xl sm:text-3xl md:text-4xl mt-2 text-[var(--accent)]/90">transform your games</span>
               </h1>
-              <p className="text-xl md:text-2xl max-w-3xl mx-auto mb-8 text-white/80">
+              <p className="text-lg sm:text-xl md:text-2xl max-w-3xl mx-auto mb-6 sm:mb-8 text-white/80">
                 Discover innovative game and rule modifications for Magic: The Gathering that transform how you play
               </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4 mb-4">
+              <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-4">
                 <Link href="/recipes" className="btn-primary btn-shine rounded-full text-center">
                   Explore Recipes
                 </Link>
@@ -231,7 +231,7 @@ export default function Home() {
               </div>
               <div className="flex justify-center">
                 <button
-                  className="transition-all duration-200 bg-gradient-to-r from-[#FF8661] to-[#5A31F4] text-white font-extrabold py-3 px-6 rounded-full shadow-xl text-lg tracking-wider border-4 border-white hover:scale-110 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-[#5A31F4] focus:ring-offset-2 animate-bounce-slow"
+                  className="transition-all duration-200 bg-gradient-to-r from-[#FF8661] to-[#5A31F4] text-white font-extrabold py-2.5 sm:py-3 px-4 sm:px-6 rounded-full shadow-xl text-base sm:text-lg tracking-wider border-4 border-white hover:scale-110 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-[#5A31F4] focus:ring-offset-2 animate-bounce-slow"
                   onClick={() => setWaitlistOpen(true)}
                 >
                   Join Kickstarter Waitlist
@@ -242,10 +242,10 @@ export default function Home() {
         </div>
         
         {/* Latest Recipes Section */}
-        <div className="pt-16 pb-6 bg-[#F1F3FA]">
-          <div className="max-w-6xl mx-auto px-6">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-[#2C2E3A]">Latest Recipes</h2>
+        <div className="pt-12 sm:pt-16 pb-6 bg-[#F1F3FA]">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6">
+            <div className="flex items-center justify-between mb-6 sm:mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#2C2E3A]">Latest Recipes</h2>
               <Link href="/recipes" className="text-[#5A31F4] hover:underline font-semibold">
                 View All →
               </Link>
@@ -256,7 +256,7 @@ export default function Home() {
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5A31F4]"></div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {latestRecipes.map((recipe) => (
                   <RecipeCard key={recipe.id} recipe={toRecipeWithRelations(recipe)} compact={true} />
                 ))}
@@ -266,10 +266,10 @@ export default function Home() {
         </div>
         
         {/* Trending Recipes Section */}
-        <div className="pt-8 pb-6 bg-[#F1F3FA]">
-          <div className="max-w-6xl mx-auto px-6">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-[#2C2E3A]">Trending Recipes</h2>
+        <div className="pt-6 pb-6 bg-[#F1F3FA]">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6">
+            <div className="flex items-center justify-between mb-6 sm:mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#2C2E3A]">Trending Recipes</h2>
               <Link href="/recipes" className="text-[#5A31F4] hover:underline font-semibold">
                 View All →
               </Link>
@@ -280,7 +280,7 @@ export default function Home() {
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5A31F4]"></div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {trendingRecipes.map((recipe) => (
                   <RecipeCard key={recipe.id} recipe={toRecipeWithRelations(recipe)} compact={true} />
                 ))}
@@ -291,7 +291,7 @@ export default function Home() {
         
         {/* Random Recipe Button Section */}
         <div className="pt-6 pb-6 bg-[#F1F3FA]">
-          <div className="max-w-6xl mx-auto px-6">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <div className="flex justify-center">
               <RandomRecipeButton />
             </div>

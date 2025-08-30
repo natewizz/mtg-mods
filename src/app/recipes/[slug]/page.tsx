@@ -261,8 +261,8 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
 
   return (
     <>
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center mb-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center mb-4 sm:mb-6">
           <Link href="/recipes" className="text-gray-500 hover:underline mr-2">
             ← Back to Recipes
           </Link>
@@ -280,8 +280,8 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
             </Link>
           ) : null}
 
-          <article className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <header className="mb-8">
+          <article className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+            <header className="mb-6">
               {/* Top row with title, copy link button, and attachment */}
               <div className="flex items-start justify-between mb-4">
                 <h1 className="text-3xl font-bold text-[var(--dark)] flex-1 min-w-0 pr-4">
@@ -310,7 +310,7 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
                 </div>
               </div>
               
-              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6">
+              <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 mb-4">
                 <div className="flex items-center">
                   <span className="font-medium">By</span>
                   {recipe.author.username ? (
@@ -331,19 +331,19 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
                     })}
                   </time>
                 </div>
-
-                {/* Tags */}
-                {recipe.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {recipe.tags.map((tag: { id: string; name: string }) => (
-                      <TagPill
-                        key={tag.id}
-                        tag={tag.name}
-                      />
-                    ))}
-                  </div>
-                )}
               </div>
+
+              {/* Tags - moved to separate section for better organization */}
+              {recipe.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {recipe.tags.map((tag: { id: string; name: string }) => (
+                    <TagPill
+                      key={tag.id}
+                      tag={tag.name}
+                    />
+                  ))}
+                </div>
+              )}
             </header>
 
             {/* Interactions (Voting, Bookmark, Tried) */}

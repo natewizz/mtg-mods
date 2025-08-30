@@ -75,15 +75,15 @@ export default function RecipeFilters({
   };
   
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm mb-6">
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+    <div className="bg-white rounded-xl p-3 sm:p-4 shadow-sm mb-4 sm:mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4">
         {/* Filters side */}
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-lg font-medium text-[var(--dark)]">Filters</h2>
+            <h2 className="text-base sm:text-lg font-medium text-[var(--dark)]">Filters</h2>
             {selectedTags.length > 0 && (
               <button 
-                className="text-sm text-gray-500 hover:underline"
+                className="text-sm text-gray-500 hover:underline px-2 py-1 rounded hover:bg-gray-100"
                 onClick={clearTagFilters}
               >
                 Clear
@@ -95,10 +95,10 @@ export default function RecipeFilters({
         {/* Sort side */}
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-lg font-medium text-[var(--dark)]">Sort</h2>
+            <h2 className="text-base sm:text-lg font-medium text-[var(--dark)]">Sort</h2>
             {sortOption !== 'newest' && (
               <button 
-                className="text-sm text-gray-500 hover:underline"
+                className="text-sm text-gray-500 hover:underline px-2 py-1 rounded hover:bg-gray-100"
                 onClick={clearSortOption}
               >
                 Reset
@@ -117,7 +117,7 @@ export default function RecipeFilters({
               <button
                 key={option.value}
                 onClick={() => handleSortChange(option.value as SortOption)}
-                className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                className={`px-3 py-1.5 text-xs rounded-full transition-colors ${
                   sortOption === option.value
                     ? 'bg-[var(--primary)] text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -168,7 +168,7 @@ export default function RecipeFilters({
           <div className="text-right">
             <button 
               onClick={toggleShowAllTags}
-              className="text-sm text-[var(--primary)] hover:underline inline-flex items-center"
+              className="text-sm text-[var(--primary)] hover:underline inline-flex items-center px-3 py-1.5 rounded hover:bg-gray-100"
             >
               {showAllTags ? 'Show Less' : `See All Filters (${availableTags.length})`}
               <svg 
