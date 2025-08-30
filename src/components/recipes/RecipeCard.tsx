@@ -70,11 +70,11 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
   if (compact) {
     // Compact version for trending recipes
     return (
-      <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-3 min-h-[140px] h-full flex flex-col">
+      <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-[var(--primary)]/20 p-4 min-h-[160px] h-full flex flex-col group">
         {/* Top row with title and copy link button */}
-        <div className="flex items-start justify-between mb-2">
+        <div className="flex items-start justify-between mb-3">
           <Link href={recipeUrl} className="flex-1 min-w-0">
-            <h2 className="text-sm font-semibold text-[var(--dark)] line-clamp-2 leading-tight hover:text-[#5A31F4] pr-2">{recipe.title}</h2>
+            <h2 className="text-sm font-semibold text-[var(--dark)] line-clamp-2 leading-tight group-hover:text-[#5A31F4] transition-colors duration-200 pr-2">{recipe.title}</h2>
           </Link>
           
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -83,49 +83,60 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
           </div>
         </div>
         
+        {/* Recipe preview text - added back for compact cards */}
+        {previewText && (
+          <p className="text-gray-600 text-xs mb-3 line-clamp-2 leading-relaxed">
+            {previewText}
+            {previewText.length === 140 && '...'}
+          </p>
+        )}
+        
         {/* Display tags if available */}
         {recipe.tags && recipe.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-2">
+          <div className="flex flex-wrap gap-1.5 mb-3">
             {recipe.tags.slice(0, 2).map((tag) => (
               <span 
                 key={tag.id} 
-                className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full"
+                className="inline-block px-2 py-1 text-xs bg-gradient-to-r from-[var(--primary)]/10 to-[var(--primary)]/5 text-[var(--primary)] rounded-full border border-[var(--primary)]/20 hover:border-[var(--primary)]/40 hover:bg-[var(--primary)]/15 transition-all duration-200 font-medium"
               >
                 {tag.name}
               </span>
             ))}
             {recipe.tags.length > 2 && (
-              <span className="text-xs text-gray-400">+{recipe.tags.length - 2}</span>
+              <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full border border-gray-200">+{recipe.tags.length - 2}</span>
             )}
           </div>
         )}
         
-        <div className="flex justify-between items-center text-xs text-gray-500 mt-auto pt-2 border-t border-gray-100">
-          {authorUrl ? (
-            <Link href={authorUrl} className="truncate max-w-[60%] hover:text-[#5A31F4] hover:underline">
-              {authorName}
-            </Link>
-          ) : (
-            <span className="truncate max-w-[60%]">{authorName}</span>
-          )}
+        <div className="flex justify-between items-center text-xs text-gray-500 mt-auto pt-3 border-t border-gray-100">
+          <div className="flex items-center gap-1.5">
+            <span className="text-gray-400 font-medium">Posted by:</span>
+            {authorUrl ? (
+              <Link href={authorUrl} className="truncate max-w-[60%] hover:text-[#5A31F4] hover:underline transition-colors duration-200 font-medium">
+                {authorName}
+              </Link>
+            ) : (
+              <span className="truncate max-w-[60%] font-medium">{authorName}</span>
+            )}
+          </div>
           
           <div className="flex items-center space-x-3 flex-shrink-0">
             <div className="flex items-center">
-              <svg className="w-3 h-3 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg className="w-3 h-3 mr-1 text-[var(--primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
               </svg>
-              <span>{voteCount}</span>
+              <span className="font-medium">{voteCount}</span>
             </div>
             
             <div className="flex items-center">
-              <span className="mr-1">✅</span>
-              <span>{triedCount}</span>
+              <span className="mr-1 text-[var(--supporting)]">✅</span>
+              <span className="font-medium">{triedCount}</span>
             </div>
           </div>
         </div>
         
         {/* Report Content Button */}
-        <div className="mt-2 flex justify-end">
+        <div className="mt-3 flex justify-end">
           <ReportContentButton 
             recipeId={recipe.id}
             recipeTitle={recipe.title}
@@ -138,11 +149,11 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
 
   // Full version for regular recipes with preview
   return (
-    <div className="card hover:shadow-lg transition-shadow min-h-[240px] h-full flex flex-col">
+    <div className="card hover:shadow-lg transition-all duration-300 min-h-[240px] h-full flex flex-col group border border-gray-100 hover:border-[var(--primary)]/20">
       {/* Top row with title, copy link button, and attachment */}
-      <div className="flex items-start justify-between mb-2">
+      <div className="flex items-start justify-between mb-3">
         <Link href={recipeUrl} className="flex-1 min-w-0">
-          <h2 className="text-lg font-bold text-[var(--dark)] hover:text-[#5A31F4] pr-2">{recipe.title}</h2>
+          <h2 className="text-lg font-bold text-[var(--dark)] group-hover:text-[#5A31F4] transition-colors duration-200 pr-2">{recipe.title}</h2>
         </Link>
         
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -152,7 +163,7 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
               href={recipe.attachmentUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-2 py-1 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded transition-colors"
+              className="inline-flex items-center gap-1 px-2 py-1 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded transition-colors border border-gray-200 hover:border-[var(--primary)]/30"
               title={recipe.attachmentName}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -169,7 +180,7 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
       
       {/* Recipe preview */}
       {previewText && (
-        <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
           {previewText}
           {previewText.length === 140 && '...'}
         </p>
@@ -177,7 +188,7 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
       
       {/* Display tags if available */}
       {recipe.tags && recipe.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1 mb-2">
+        <div className="flex flex-wrap gap-1.5 mb-3">
           {recipe.tags.slice(0, 3).map((tag) => (
             <TagPill 
               key={tag.id} 
@@ -186,34 +197,34 @@ export default function RecipeCard({ recipe, compact = false }: RecipeCardProps)
             />
           ))}
           {recipe.tags.length > 3 && (
-            <span className="text-xs text-gray-500">+{recipe.tags.length - 3} more</span>
+            <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full border border-gray-200">+{recipe.tags.length - 3} more</span>
           )}
         </div>
       )}
       
       <div className="flex justify-between items-center text-sm text-gray-500 mt-auto">
-        <div className="flex items-center">
-          <span className="font-medium mr-1">By</span>
+        <div className="flex items-center gap-1.5">
+          <span className="text-gray-400 font-medium">Posted by:</span>
           {authorUrl ? (
-            <Link href={authorUrl} className="hover:text-[#5A31F4] hover:underline">
+            <Link href={authorUrl} className="hover:text-[#5A31F4] hover:underline transition-colors duration-200 font-medium">
               {authorName}
             </Link>
           ) : (
-            <span>{authorName}</span>
+            <span className="font-medium">{authorName}</span>
           )}
         </div>
         
         <div className="flex items-center space-x-4">
           <div className="flex items-center">
-            <svg className="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg className="w-4 h-4 mr-1 text-[var(--primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
             </svg>
-            <span>{voteCount}</span>
+            <span className="font-medium">{voteCount}</span>
           </div>
           
           <div className="flex items-center">
-            <span className="mr-1">✅</span>
-            <span>{triedCount}</span>
+            <span className="mr-1 text-[var(--supporting)]">✅</span>
+            <span className="font-medium">{triedCount}</span>
           </div>
         </div>
       </div>

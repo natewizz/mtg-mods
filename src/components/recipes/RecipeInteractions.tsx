@@ -162,58 +162,71 @@ export default function RecipeInteractions({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-center gap-6 border-t border-b py-4 my-6">
-      {/* Voting */}
-      <div className="flex items-center">
+    <div className="relative border-t border-b py-3 my-4">
+      {/* Main interaction buttons - inline layout */}
+      <div className="flex flex-wrap items-center gap-3 mb-3">
+        {/* Voting */}
+        <div className="flex items-center">
+          <button 
+            onClick={handleVote}
+            disabled={isUpdating}
+            className={`p-2 rounded-full transition-colors border-2 ${
+              userVote === 1 
+                ? 'bg-green-100 text-green-700 border-green-300' 
+                : 'hover:bg-gray-100 border-gray-200 hover:border-gray-300'
+            }`}
+            aria-label="Like"
+          >
+            <svg className="w-5 h-5" fill={userVote === 1 ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+            </svg>
+          </button>
+          
+          <span className="mx-2 font-medium text-base">{totalVotes}</span>
+        </div>
+
+        {/* Bookmark button */}
         <button 
-          onClick={handleVote}
+          onClick={handleBookmark}
           disabled={isUpdating}
-          className={`p-2 rounded-full transition-colors ${userVote === 1 ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100'}`}
-          aria-label="Like"
+          className={`flex items-center px-3 py-2 rounded-md transition-colors border-2 text-sm ${
+            bookmarked 
+              ? 'bg-[var(--accent)] text-white border-[var(--accent)]' 
+              : 'border-[var(--accent)]/30 text-[var(--accent)] hover:bg-[var(--accent)]/10 hover:border-[var(--accent)]/50'
+          }`}
         >
-          <svg className="w-6 h-6" fill={userVote === 1 ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+          <svg className="w-4 h-4 mr-1.5" fill={bookmarked ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
           </svg>
+          {bookmarked ? 'Saved' : 'Save'}
         </button>
-        
-        <span className="mx-2 font-medium text-lg">{totalVotes}</span>
+
+        {/* Tried button */}
+        <button 
+          onClick={handleTried}
+          disabled={isUpdating}
+          className={`flex items-center px-3 py-2 rounded-md transition-colors border-2 text-sm ${
+            tried 
+              ? 'bg-[var(--supporting)] text-white border-[var(--supporting)]' 
+              : 'border-[var(--supporting)]/30 text-[var(--supporting)] hover:bg-[var(--supporting)]/10 hover:border-[var(--supporting)]/50'
+          }`}
+        >
+          <svg className="w-4 h-4 mr-1.5" fill={tried ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {tried ? 'Tried' : 'I Tried This'} 
+          {totalTried > 0 && <span className="ml-1 text-xs">({totalTried})</span>}
+        </button>
       </div>
-
-      {/* Bookmark button */}
-      <button 
-        onClick={handleBookmark}
-        disabled={isUpdating}
-        className={`flex items-center px-4 py-2 rounded-md transition-colors ${
-          bookmarked ? 'bg-[var(--accent)] text-white' : 'border border-gray-300 hover:bg-gray-100'
-        }`}
-      >
-        <svg className="w-5 h-5 mr-2" fill={bookmarked ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-        </svg>
-        {bookmarked ? 'Saved' : 'Save'}
-      </button>
-
-      {/* Tried button */}
-      <button 
-        onClick={handleTried}
-        disabled={isUpdating}
-        className={`flex items-center px-4 py-2 rounded-md transition-colors ${
-          tried ? 'bg-[var(--supporting)] text-white' : 'border border-gray-300 hover:bg-gray-100'
-        }`}
-      >
-        <svg className="w-5 h-5 mr-2" fill={tried ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        {tried ? 'Tried' : 'I Tried This'} 
-        {totalTried > 0 && <span className="ml-1 text-sm">({totalTried})</span>}
-      </button>
-
-      {/* Report Content Button */}
-      <ReportContentButton 
-        recipeId={recipeId}
-        recipeTitle={recipeTitle}
-        recipeSlug={recipeSlug}
-      />
+      
+      {/* Report Content Button - positioned at bottom right */}
+      <div className="flex justify-end">
+        <ReportContentButton 
+          recipeId={recipeId}
+          recipeTitle={recipeTitle}
+          recipeSlug={recipeSlug}
+        />
+      </div>
     </div>
   );
 } 
