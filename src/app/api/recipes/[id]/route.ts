@@ -194,12 +194,12 @@ export async function PUT(
     });
 
     // Invalidate cache to ensure fresh data
-    revalidateTag('recipes');
-    revalidateTag('filtered-recipes');
-    revalidateTag('trending-recipes');
-    revalidateTag('latest-recipes');
-    revalidateTag('tags');
-    revalidateTag('popular-tags');
+    revalidateTag('recipes', 'max');
+    revalidateTag('filtered-recipes', 'max');
+    revalidateTag('trending-recipes', 'max');
+    revalidateTag('latest-recipes', 'max');
+    revalidateTag('tags', 'max');
+    revalidateTag('popular-tags', 'max');
 
     return NextResponse.json(updatedRecipe);
   } catch (error) {
@@ -287,12 +287,12 @@ export async function DELETE(
     });
 
     // Invalidate cache to ensure fresh data
-    revalidateTag('recipes');
-    revalidateTag('filtered-recipes');
-    revalidateTag('trending-recipes');
-    revalidateTag('latest-recipes');
-    revalidateTag('tags');
-    revalidateTag('popular-tags');
+    revalidateTag('recipes', 'max');
+    revalidateTag('filtered-recipes', 'max');
+    revalidateTag('trending-recipes', 'max');
+    revalidateTag('latest-recipes', 'max');
+    revalidateTag('tags', 'max');
+    revalidateTag('popular-tags', 'max');
 
     return NextResponse.json({ message: 'Recipe deleted successfully' });
   } catch (error) {
