@@ -44,7 +44,7 @@ export async function POST(
       data: { bio: newBio }
     });
 
-    // Invalidate cache to ensure fresh data
+    // Invalidate cache to ensure fresh data using max profile
     revalidateTag('recipes', 'max');
     revalidateTag('filtered-recipes', 'max');
     revalidateTag('trending-recipes', 'max');
