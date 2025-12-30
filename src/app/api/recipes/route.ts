@@ -113,6 +113,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Invalidate cache to ensure fresh data
+    // Revalidate cached recipe/tag lists using max profile
     revalidateTag('recipes', 'max');
     revalidateTag('filtered-recipes', 'max');
     revalidateTag('trending-recipes', 'max');

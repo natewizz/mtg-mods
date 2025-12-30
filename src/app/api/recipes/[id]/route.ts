@@ -194,6 +194,7 @@ export async function PUT(
     });
 
     // Invalidate cache to ensure fresh data
+    // Revalidate cached recipe/tag lists using max profile
     revalidateTag('recipes', 'max');
     revalidateTag('filtered-recipes', 'max');
     revalidateTag('trending-recipes', 'max');
@@ -286,7 +287,7 @@ export async function DELETE(
       });
     });
 
-    // Invalidate cache to ensure fresh data
+    // Invalidate cache to ensure fresh data using max profile
     revalidateTag('recipes', 'max');
     revalidateTag('filtered-recipes', 'max');
     revalidateTag('trending-recipes', 'max');
