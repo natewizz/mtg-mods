@@ -113,12 +113,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Invalidate cache to ensure fresh data
-    revalidateTag('recipes');
-    revalidateTag('filtered-recipes');
-    revalidateTag('trending-recipes');
-    revalidateTag('latest-recipes');
-    revalidateTag('tags');
-    revalidateTag('popular-tags');
+    // Revalidate cached recipe/tag lists using max profile
+    revalidateTag('recipes', 'max');
+    revalidateTag('filtered-recipes', 'max');
+    revalidateTag('trending-recipes', 'max');
+    revalidateTag('latest-recipes', 'max');
+    revalidateTag('tags', 'max');
+    revalidateTag('popular-tags', 'max');
 
     return NextResponse.json(recipe, { status: 201 });
   } catch (error) {

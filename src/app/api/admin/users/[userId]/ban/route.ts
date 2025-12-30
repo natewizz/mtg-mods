@@ -44,11 +44,11 @@ export async function POST(
       data: { bio: newBio }
     });
 
-    // Invalidate cache to ensure fresh data
-    revalidateTag('recipes');
-    revalidateTag('filtered-recipes');
-    revalidateTag('trending-recipes');
-    revalidateTag('latest-recipes');
+    // Invalidate cache to ensure fresh data using max profile
+    revalidateTag('recipes', 'max');
+    revalidateTag('filtered-recipes', 'max');
+    revalidateTag('trending-recipes', 'max');
+    revalidateTag('latest-recipes', 'max');
 
     console.log(`User ${user.username || user.email} (${userId}) has been banned by admin ${session.user.email}`);
 
